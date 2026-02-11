@@ -10,7 +10,7 @@ Nor with compliance
 Take any test. Thou shalt not sit
 With statisticians nor commit
 A social science"
-- W.H. Auden<fn>1The quote comes from Auden's 1946 poem Under Which Lyre: A Reactionary Tract for the Times, delivered as part of
+- W.H. Auden<fn>The quote comes from Auden's 1946 poem Under Which Lyre: A Reactionary Tract for the Times, delivered as part of
 a commencement address at Harvard University. The history of the poem is kind of interesting: http://harvardmagazine.com/2007/11/a-poets-warning.html</fn> </p>
   </blockquote>
 
@@ -295,7 +295,7 @@ knitr::include_graphics("imgs/figures/1Simpson.png")
 
     <figure xml:id="fig-simpson">
       <caption>The Berkeley 1973 college admissions data. This figure plots the admission rate for the 85 departments that had at least one female applicant, as a function of the percentage of applicants that were female. The plot is a redrawing of Figure 1 from <xref ref="biblio-Bickel1975">Bickel et al. (1975)</xref>. Circles plot departments with more than 40 applicants; the area of the circle is proportional to the total number of applicants. The crosses plot department with fewer than 40 applicants.</caption>
-      <image source="images/figures/1Simpson.png" width="80%">
+      <image source="images/1Simpson.png" width="80%">
         <description>Scatter plot showing the relationship between percentage of female applicants and admission rates across Berkeley departments in 1973</description>
       </image>
     </figure>
