@@ -19,7 +19,7 @@ pretext view web
 
 ## GitHub Actions Deployment
 
-The book is automatically built and deployed to GitHub Pages when changes are pushed to the main branch. See `.github/workflows/deploy-pretext.yml` for the deployment configuration.
+The book is automatically built and validated when commits are made to pull requests, and deployed to GitHub Pages when changes are pushed to the main branch. See `.github/workflows/deploy-pretext.yml` for the deployment configuration.
 
 ## R Code Support
 

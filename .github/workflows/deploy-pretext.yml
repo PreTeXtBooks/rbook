@@ -5,6 +5,10 @@ on:
   push:
     branches:
       - main
+  # Trigger on pull request events
+  pull_request:
+    branches:
+      - main
   # Allow manual trigger from Actions tab
   workflow_dispatch:
 
@@ -37,9 +41,15 @@ jobs:
           pip install pretextbook
           
       - name: Build PreTeXt book (HTML)
+        id: build
         run: |
           cd pretext
           pretext build web
+          # Verify build succeeded by checking if output exists
+          if [ ! -d "output/web" ]; then
+            echo "Build failed: output/web directory not created"
+            exit 1
+          fi
           
       - name: Upload artifact for GitHub Pages
         uses: actions/upload-pages-artifact@v3
@@ -49,6 +59,8 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    # Only deploy on pushes to main, not on PRs
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     
     environment:
       name: github-pages

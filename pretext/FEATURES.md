@@ -119,13 +119,14 @@ The workflow in `.github/workflows/deploy-pretext.yml` automatically:
 
 1. Installs PreTeXt CLI
 2. Builds the HTML version of the book
-3. Deploys to GitHub Pages
+3. Deploys to GitHub Pages (on main branch only)
 
 ### Configuration Notes
 
 - Triggered on pushes to `main` branch
+- Triggered on pull request events (builds but doesn't deploy)
 - Can be manually triggered from the Actions tab
-- Deploys to GitHub Pages (requires Pages to be enabled in repository settings)
+- Deploys to GitHub Pages only on main branch pushes (requires Pages to be enabled in repository settings)
 
 ## 5. Mathematical Content
 
