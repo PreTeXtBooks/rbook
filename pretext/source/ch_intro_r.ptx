@@ -1,0 +1,100 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!-- Sample chapter demonstrating R code examples -->
+<chapter xml:id="ch_intro_r" xmlns:xi="http://www.w3.org/2001/XInclude">
+
+  <title>Introduction to R</title>
+  
+  <introduction>
+    <p>This chapter provides an introduction to using R for statistical analysis.</p>
+  </introduction>
+
+  <section xml:id="sec_basic_r">
+    <title>Basic R Commands</title>
+    
+    <p>
+      R can be used as a simple calculator. Here's an example of basic arithmetic:
+    </p>
+    
+    <listing xml:id="listing-r-arithmetic">
+      <caption>Basic arithmetic in R</caption>
+      <program language="r">
+        <input>
+# Addition
+2 + 3
+
+# Multiplication  
+4 * 5
+
+# Division
+10 / 2
+        </input>
+      </program>
+    </listing>
+
+    <p>
+      You can also assign values to variables:
+    </p>
+
+    <program language="r" interactive="yes">
+      <input>
+# Create variables
+x &lt;- 10
+y &lt;- 20
+
+# Calculate sum
+x + y
+      </input>
+    </program>
+
+  </section>
+
+  <section xml:id="sec_data_structures">
+    <title>Data Structures</title>
+    
+    <p>
+      R has several fundamental data structures. The most basic is the vector:
+    </p>
+
+    <listing xml:id="listing-r-vectors">
+      <caption>Creating vectors in R</caption>
+      <program language="r">
+        <input>
+# Create a numeric vector
+numbers &lt;- c(1, 2, 3, 4, 5)
+
+# Create a character vector
+names &lt;- c("Alice", "Bob", "Charlie")
+
+# Display the vectors
+print(numbers)
+print(names)
+        </input>
+      </program>
+    </listing>
+
+    <example xml:id="example-mean-calculation">
+      <title>Calculating Mean</title>
+      <statement>
+        <p>
+          Calculate the mean of a vector of numbers.
+        </p>
+      </statement>
+      <solution>
+        <program language="r">
+          <input>
+# Create a vector
+data &lt;- c(10, 20, 30, 40, 50)
+
+# Calculate mean
+mean(data)
+          </input>
+        </program>
+        <p>
+          The <c>mean()</c> function computes the average of all values in the vector.
+        </p>
+      </solution>
+    </example>
+
+  </section>
+
+</chapter>
