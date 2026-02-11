@@ -197,7 +197,7 @@
         <image source="images/mechanics/workspacepanel.png"/>
       </figure>
       <figure xml:id="fig-workspace2">
-        <caption>The RStudio \</caption>
+        <caption>The RStudio "Environment" panel shows you the contents of the workspace. Compare this "grid" view to the "list" view earlier</caption>
         <image source="images/mechanics/workspacepanel2.png"/>
       </figure>
       <p>The first thing that you need to know how to do is examine the contents of the workspace. If you're using RStudio, you will probably find that the easiest way to do this is to use the "Environment" panel in the top right hand corner. Click on that, and you'll see a list that looks very much like the one shown in Figures <xref ref="fig:workspace"/> and <xref ref="fig:workspace2"/>.  If you're using the commmand line, then the <c>objects()</c> function may come in handy:</p>
@@ -325,7 +325,7 @@
       <title>Navigating the file system using the RStudio file panel</title>
       <p>Although I think it's important to understand how all this command line stuff works, in many (maybe even most) situations there's an easier way. For our purposes, the easiest way to navigate the file system is to make use of RStudio's built in tools. The "file" panel -- the lower right hand area in Figure <xref ref="fig:filepanel"/> -- is actually a pretty decent file browser. Not only can you just point and click on the names to move around the file system, you can also use it to set the working directory, and even load files.</p>
       <figure xml:id="fig-filepanel">
-        <caption>The \</caption>
+        <caption>The "file panel" is the area shown in the lower right hand corner. It provides a very easy way to browse and navigate your computer using R. See main text for details.</caption>
         <image source="images/mechanics/filepanel.png"/>
       </figure>
       <p>Here's what you need to do to change the working directory using the file panel. Let's say I'm looking at the actual screen shown in Figure <xref ref="fig:filepanel"/>. At the top of the file panel you see some text that says "Home $>$ Rbook $>$ data". What that means is that it's <em>displaying</em> the files that are stored in the ``<c> /Users/dan/Rbook/data </c>`<c> directory on my computer. It does <em>not</em> mean that this is the R working directory. If you want to change the R working directory, using the file panel, you need to click on the button that reads "More". This will bring up a little menu, and one of the options will be "Set as Working Directory". If you select that option, then R really will change the working directory. You can tell that it has done so because this command appears in the console: </c>`<c> setwd("~/Rbook/data") </c>`<c> In other words, RStudio sends a command to the R console, exactly as if you'd typed it yourself. The file panel can be used to do other things too. If you want to move "up" to the parent folder (e.g., from </c>/Users/dan/Rbook/data<c> to </c>/Users/dan/Rbook` click on the ".." link in the file panel. To move to a subfolder, click on the name of the folder that you want to open. You can open some types of file by clicking on them. You can delete files from your computer using the "delete" button, rename them with the "rename" button, and so on.</p>
@@ -820,15 +820,15 @@
     <p>The very last topic I want to mention in this chapter is where to go to find help. Obviously, I've tried to make this book as helpful as possible, but it's not even close to being a comprehensive guide, and there's thousands of things it doesn't cover. So where should you go for help?</p>
     <subsection>
       <title>How to read the help documentation</title>
-      <p>I have somewhat mixed feelings about the help documentation in R. On the plus side, there’s a lot of it, and it’s very thorough. On the minus side, there’s a lot of it, and it’s very thorough. There’s so much help documentation that it sometimes doesn’t help, and most of it is written with an advanced user in mind. Often it feels like most of the help ﬁles work on the assumption that the reader already understands everything about R except for the speciﬁc topic that it’s providing help for. What that means is that, once you’ve been using R for a long time and are beginning to get a feel for how to use it, the help documentation is awesome. These days, I ﬁnd myself really liking the help ﬁles (most of them anyway). But when I ﬁrst started using R I found it very dense.</p>
-      <p>To some extent, there’s not much I can do to help you with this. You just have to work at it yourself; once you’re moving away from being a pure beginner and are becoming a skilled user, you’ll start ﬁnding the help documentation more and more helpful. In the meantime, I’ll help as much as I can by trying to explain to you what you’re looking at when you open a help ﬁle. To that end, let’s look at the help documentation for the <c>load()</c> function. To do so, I type either of the following:</p>
+      <p>I have somewhat mixed feelings about the help documentation in R. On the plus side, there’s a lot of it, and it’s very thorough. On the minus side, there’s a lot of it, and it’s very thorough. There’s so much help documentation that it sometimes doesn’t help, and most of it is written with an advanced user in mind. Often it feels like most of the help files work on the assumption that the reader already understands everything about R except for the specific topic that it’s providing help for. What that means is that, once you’ve been using R for a long time and are beginning to get a feel for how to use it, the help documentation is awesome. These days, I find myself really liking the help files (most of them anyway). But when I first started using R I found it very dense.</p>
+      <p>To some extent, there’s not much I can do to help you with this. You just have to work at it yourself; once you’re moving away from being a pure beginner and are becoming a skilled user, you’ll start finding the help documentation more and more helpful. In the meantime, I’ll help as much as I can by trying to explain to you what you’re looking at when you open a help file. To that end, let’s look at the help documentation for the <c>load()</c> function. To do so, I type either of the following:</p>
       <program language="r">
         <input>
           ?load
           help("load")
         </input>
       </program>
-      <p>When I do that, R goes looking for the help ﬁle for the "load" topic. If it ﬁnds one, Rstudio takes it and displays it in the help panel. Alternatively, you can try a fuzzy search for a help topic</p>
+      <p>When I do that, R goes looking for the help file for the "load" topic. If it finds one, Rstudio takes it and displays it in the help panel. Alternatively, you can try a fuzzy search for a help topic</p>
       <program language="r">
         <input>
           ??load
@@ -836,7 +836,7 @@
 
         </input>
       </program>
-      <p>This will bring up a list of possible topics that you might want to follow up in. Regardless, at some point you’ll ﬁnd yourself looking at an actual help ﬁle. And when you do, you’ll see there’s a quite a lot of stuﬀ written down there, and it comes in a pretty standardised format. So let’s go through it slowly, using the "<c>load</c>" topic as our example. Firstly, at the very top we see this:</p>
+      <p>This will bring up a list of possible topics that you might want to follow up in. Regardless, at some point you’ll find yourself looking at an actual help file. And when you do, you’ll see there’s a quite a lot of stuff written down there, and it comes in a pretty standardised format. So let’s go through it slowly, using the "<c>load</c>" topic as our example. Firstly, at the very top we see this:</p>
       <p>load {base}R Documentation</p>
       <p>Reload Saved Datasets</p>
       <p>Description:</p>
@@ -844,9 +844,9 @@
       <p>Fairly straightforward. The next section describes how the function is used:</p>
       <p>Usage:</p>
       <p>load(file, envir = parent.frame(), verbose = FALSE)</p>
-      <p>In this instance, the usage section is actually pretty readable. It’s telling you that there are two arguments to the <c>load()</c> function: the ﬁrst one is called <c>file</c>, and the second one is called <c>envir</c>. It’s also telling you that there is a default value for the envir argument; so if the user doesn’t specify what the value of envir should be, then R will assume that <c>envir = parent.frame()</c>. In contrast, the file argument has no default value at all, so the user must specify a value for it. So in one sense, this section is very straightforward.</p>
-      <p>The problem, of course, is that you don’t know what the <c>parent.frame()</c> function actually does, so it’s hard for you to know what the <c>envir = parent.frame()</c> bit is all about. What you could do is then go look up the help documents for the <c>parent.frame()</c> function (and sometimes that’s actually a good idea), but often you’ll ﬁnd that the help documents for those functions are just as dense (if not more dense) than the help ﬁle that you’re currently reading. As an alternative, my general approach when faced with something like this is to skim over it, see if I can make any sense of it. If so, great. If not, I ﬁnd that the best thing to do is ignore it. In fact, the ﬁrst time I read the help ﬁle for the load() function, I had no idea what any of the <c>envir</c> related stuﬀ was about. But fortunately I didn’t have to: the default setting here (i.e., <c>envir = parent.frame()</c>) is actually the thing you want in about 99% of cases, so it’s safe to ignore it.</p>
-      <p>Basically, what I’m trying to say is: don’t let the scary, incomprehensible parts of the help ﬁle intimidate you. Especially because there’s often some parts of the help ﬁle that will make sense. Of course, I guarantee you that sometimes this strategy will lead you to make mistakes... often embarrassing mistakes. But it’s still better than getting paralysed with fear.</p>
+      <p>In this instance, the usage section is actually pretty readable. It’s telling you that there are two arguments to the <c>load()</c> function: the first one is called <c>file</c>, and the second one is called <c>envir</c>. It’s also telling you that there is a default value for the envir argument; so if the user doesn’t specify what the value of envir should be, then R will assume that <c>envir = parent.frame()</c>. In contrast, the file argument has no default value at all, so the user must specify a value for it. So in one sense, this section is very straightforward.</p>
+      <p>The problem, of course, is that you don’t know what the <c>parent.frame()</c> function actually does, so it’s hard for you to know what the <c>envir = parent.frame()</c> bit is all about. What you could do is then go look up the help documents for the <c>parent.frame()</c> function (and sometimes that’s actually a good idea), but often you’ll find that the help documents for those functions are just as dense (if not more dense) than the help file that you’re currently reading. As an alternative, my general approach when faced with something like this is to skim over it, see if I can make any sense of it. If so, great. If not, I find that the best thing to do is ignore it. In fact, the first time I read the help file for the load() function, I had no idea what any of the <c>envir</c> related stuff was about. But fortunately I didn’t have to: the default setting here (i.e., <c>envir = parent.frame()</c>) is actually the thing you want in about 99% of cases, so it’s safe to ignore it.</p>
+      <p>Basically, what I’m trying to say is: don’t let the scary, incomprehensible parts of the help file intimidate you. Especially because there’s often some parts of the help file that will make sense. Of course, I guarantee you that sometimes this strategy will lead you to make mistakes... often embarrassing mistakes. But it’s still better than getting paralysed with fear.</p>
       <p>So, let’s continue on. The next part of the help documentation discusses each of the arguments, and what they’re supposed to do:</p>
       <p>Arguments:</p>
       <p><c>file</c></p>
@@ -857,8 +857,8 @@
       <p>the environment where the data should be loaded.</p>
       <p><c>verbose</c></p>
       <p>should item names be printed during loading?</p>
-      <p>Okay, so what this is telling us is that the <c>file</c> argument needs to be a string (i.e., text data) which tells R the name of the ﬁle to load. It also seems to be hinting that there’s other possibilities too (e.g., a “binary mode connection”), and you probably aren’t quite sure what “tilde expansion” means<fn>It’s extremely simple, by the way. We discussed it in Section 4.4, though I didn’t call it by that name. Tilde expansion is the thing where R recognises that, in the context of specifying a ﬁle location, the tilde symbol ~ corresponds to the user home directory (e.g., /Users/dan/).</fn>. But overall, the meaning is pretty clear.</p>
-      <p>Turning to the <c>envir</c> argument, it’s now a little clearer what the Usage section was babbling about. The <c>envir</c> argument speciﬁes the name of an environment (see Section 4.3 if you’ve forgotten what environments are) into which R should place the variables when it loads the ﬁle. Almost always, this is a no-brainer: you want R to load the data into the same damn environment in which you’re invoking the <c>load()</c> command. That is, if you’re typing <c>load()</c> at the R prompt, then you want the data to be loaded into your workspace (i.e., the global environment). But if you’re writing your own function that needs to load some data, you want the data to be loaded inside that function’s private workspace. And in fact, that’s exactly what the <c>parent.frame()</c> thing is all about. It’s telling the <c>load()</c> function to send the data to the same place that the <c>load()</c> command itself was coming from. As it turns out, if we’d just ignored the envir bit we would have been totally safe. Which is nice to know.</p>
+      <p>Okay, so what this is telling us is that the <c>file</c> argument needs to be a string (i.e., text data) which tells R the name of the file to load. It also seems to be hinting that there’s other possibilities too (e.g., a “binary mode connection”), and you probably aren’t quite sure what “tilde expansion” means<fn>It’s extremely simple, by the way. We discussed it in Section 4.4, though I didn’t call it by that name. Tilde expansion is the thing where R recognises that, in the context of specifying a file location, the tilde symbol ~ corresponds to the user home directory (e.g., /Users/dan/).</fn>. But overall, the meaning is pretty clear.</p>
+      <p>Turning to the <c>envir</c> argument, it’s now a little clearer what the Usage section was babbling about. The <c>envir</c> argument specifies the name of an environment (see Section 4.3 if you’ve forgotten what environments are) into which R should place the variables when it loads the file. Almost always, this is a no-brainer: you want R to load the data into the same damn environment in which you’re invoking the <c>load()</c> command. That is, if you’re typing <c>load()</c> at the R prompt, then you want the data to be loaded into your workspace (i.e., the global environment). But if you’re writing your own function that needs to load some data, you want the data to be loaded inside that function’s private workspace. And in fact, that’s exactly what the <c>parent.frame()</c> thing is all about. It’s telling the <c>load()</c> function to send the data to the same place that the <c>load()</c> command itself was coming from. As it turns out, if we’d just ignored the envir bit we would have been totally safe. Which is nice to know.</p>
       <p>Moving on, next up we get a detailed description of what the function actually does:</p>
       <p>Details:</p>
       <p><c>load</c> can load R objects saved in the current or any earlier</p>
@@ -894,7 +894,7 @@
       <p>Then it tells you what the output value of the function is:</p>
       <p>Value:</p>
       <p>A character vector of the names of objects created, invisibly.</p>
-      <p>This is usually a bit more interesting, but since the <c>load()</c> function is mainly used to load variables into the workspace rather than to return a value, it’s no surprise that this doesn’t do much or say much. Moving on, we sometimes see a few additional sections in the help ﬁle, which can be diﬀerent depending on what the function is:</p>
+      <p>This is usually a bit more interesting, but since the <c>load()</c> function is mainly used to load variables into the workspace rather than to return a value, it’s no surprise that this doesn’t do much or say much. Moving on, we sometimes see a few additional sections in the help file, which can be different depending on what the function is:</p>
       <p>Warning:</p>
       <p>Saved R objects are binary files, even those saved with</p>
       <p><c>ascii = TRUE</c>, so ensure that they are transferred without</p>
@@ -909,13 +909,13 @@
       <p>Note:</p>
       <p><c>file</c> can be a UTF-8-encoded filepath that cannot be translated to</p>
       <p>the current locale.</p>
-      <p>Yeah, yeah. Warning, warning, blah blah blah. Towards the bottom of the help ﬁle, we see something like this, which suggests a bunch of related topics that you might want to look at. These can be quite helpful:</p>
+      <p>Yeah, yeah. Warning, warning, blah blah blah. Towards the bottom of the help file, we see something like this, which suggests a bunch of related topics that you might want to look at. These can be quite helpful:</p>
       <p>See Also:</p>
       <p>save, download.file; further</p>
       <p>attach as wrapper for <c>load()</c>.</p>
       <p>For other interfaces to the underlying serialization format, see</p>
       <p>unserialize and readRDS.</p>
-      <p>Finally, it gives you some examples of how to use the function(s) that the help ﬁle describes. These are supposed to be proper R commands, meaning that you should be able to type them into the console yourself and they’ll actually work. Sometimes it can be quite helpful to try the examples yourself. Anyway, here they are for the "<c>load</c>" help ﬁle:</p>
+      <p>Finally, it gives you some examples of how to use the function(s) that the help file describes. These are supposed to be proper R commands, meaning that you should be able to type them into the console yourself and they’ll actually work. Sometimes it can be quite helpful to try the examples yourself. Anyway, here they are for the "<c>load</c>" help file:</p>
       <p>Examples:</p>
       <p>## save all data</p>
       <p>xx &lt;- pi # to ensure there is some data</p>
@@ -945,7 +945,7 @@
       <p>print(load(con))</p>
       <p>close(con) # url() always opens the connection</p>
       <p>## End(Not run)</p>
-      <p>As you can see, they’re pretty dense, and not at all obvious to the novice user. However, they do provide good examples of the various diﬀerent things that you can do with the <c>load()</c> function, so it’s not a bad idea to have a look at them, and to try not to ﬁnd them too intimidating.</p>
+      <p>As you can see, they’re pretty dense, and not at all obvious to the novice user. However, they do provide good examples of the various different things that you can do with the <c>load()</c> function, so it’s not a bad idea to have a look at them, and to try not to find them too intimidating.</p>
     </subsection>
     <subsection>
       <title>Other resources</title>
