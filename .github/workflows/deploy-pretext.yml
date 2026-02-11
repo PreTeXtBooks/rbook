@@ -45,9 +45,13 @@ jobs:
         run: |
           cd pretext
           pretext build web
+          # Verify build succeeded by checking if output exists
+          if [ ! -d "output/web" ]; then
+            echo "Build failed: output/web directory not created"
+            exit 1
+          fi
           
       - name: Upload artifact for GitHub Pages
-        if: success()
         uses: actions/upload-pages-artifact@v3
         with:
           path: 'pretext/output/web'
