@@ -21,6 +21,47 @@
     <notation-list/>
   </appendix>
 
+  <references>
+    <title>References</title>
+    
+    <biblio type="raw" xml:id="biblio-Adair1984">
+      Adair, G. (1984). The Hawthorne effect: A reconsideration of the methodological artifact. <em>Journal of Applied Psychology</em>, 69, 334-345.
+    </biblio>
+
+    <biblio type="raw" xml:id="biblio-Campbell1963">
+      Campbell, D. T., &amp; Stanley, J. C. (1963). <em>Experimental and Quasi-Experimental Designs for Research</em>. Boston, MA: Houghton Mifflin.
+    </biblio>
+
+    <biblio type="raw" xml:id="biblio-Hothersall2004">
+      Hothersall, D. (2004). <em>History of Psychology</em>. McGraw-Hill.
+    </biblio>
+
+    <biblio type="raw" xml:id="biblio-Ioannidis2005">
+      Ioannidis, John P. A. (2005). Why Most Published Research Findings Are False. <em>PLoS Med</em>, 2(8), 697-701.
+    </biblio>
+
+    <biblio type="raw" xml:id="biblio-Kahneman1973">
+      Kahneman, D., &amp; Tversky, A. (1973). On the psychology of prediction. <em>Psychological Review</em>, 80, 237-251.
+    </biblio>
+
+    <biblio type="raw" xml:id="biblio-Kuhberger2014">
+      Kühberger, A., Fritz, A., &amp; Scherndl, T. (2014). Publication bias in psychology: A diagnosis based on the correlation between effect size and sample size. <em>Public Library of Science One</em>, 9, 1-8.
+    </biblio>
+
+    <biblio type="raw" xml:id="biblio-Pfungst1911">
+      Pfungst, O. (1911). <em>Clever Hans (The horse of Mr. von Osten): A contribution to experimental animal and human psychology</em> (C. L. Rahn, Trans.). New York: Henry Holt.
+    </biblio>
+
+    <biblio type="raw" xml:id="biblio-Rosenthal1966">
+      Rosenthal, R. (1966). <em>Experimenter effects in behavioral research</em>. New York: Appleton.
+    </biblio>
+
+    <biblio type="raw" xml:id="biblio-Stevens1946">
+      Stevens, S. S. (1946). On the theory of scales of measurement. <em>Science</em>, 103, 677-680.
+    </biblio>
+
+  </references>
+
   <index>
     <title>Index</title>
     <index-list/>
