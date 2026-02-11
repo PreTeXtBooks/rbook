@@ -23,8 +23,9 @@
     <!-- out for now and write this when the book is more complete -->
     <xi:include href="./meta_frontmatter.ptx" />
 
-    <!-- Sample chapter demonstrating R code examples -->
-    <xi:include href="./ch_intro_r.ptx" />
+    <!-- First two chapters -->
+    <xi:include href="./ch1-why-statistics.ptx" />
+    <xi:include href="./ch2-research-statistics.ptx" />
 
     <!-- Example chapters from template - commented out for now -->
     <!-- <xi:include href="./ch_first.ptx" /> -->
