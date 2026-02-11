@@ -41,11 +41,13 @@ jobs:
           pip install pretextbook
           
       - name: Build PreTeXt book (HTML)
+        id: build
         run: |
           cd pretext
           pretext build web
           
       - name: Upload artifact for GitHub Pages
+        if: success()
         uses: actions/upload-pages-artifact@v3
         with:
           path: 'pretext/output/web'
