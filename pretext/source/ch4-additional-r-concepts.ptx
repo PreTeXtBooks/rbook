@@ -266,71 +266,103 @@
     <subsection xml:id="navigationR">
       <title>Navigating the file system using the R console</title>
       <p>In this section I'll talk about how to navigate this file system from within R itself. It's not particularly user friendly, and so you'll probably be happy to know that RStudio provides you with an easier method, and I will describe it in Section <xref ref="nav3"/>. So in practice, you won't <em>really</em> need to use the commands that I babble on about in this section, but I do think it helps to see them in operation at least once before forgetting about them forever.</p>
-      <p>Okay, let's get started. When you want to load or save a file in R it's important to know what the working directory is. You can find out by using the <c>getwd()</c> command. For the moment, let's assume that I'm using Mac OS or Linux, since there's some subtleties to Windows. Here's what happens: ``` getwd()</p>
-    </subsection>
-  </section>
-  <section>
-    <title>[1] "/Users/dan"</title>
-    <p>``<c> We can change the working directory quite easily using </c>setwd()<c>. The </c>setwd()<c> function has only the one argument, </c>dir<c>,  is a character string specifying a path to a directory, or a path relative to the working directory. Since I'm currently located at </c>/Users/dan<c>, the following two are equivalent: </c>`<c> setwd("/Users/dan/Rbook/data") setwd("./Rbook/data") </c>`<c> Now that we're here, we can type </c>list.files()<c> command to get a listing of all the files in that directory. Since this is the directory in which I store all of the data files that we'll use in this book, here's what we get as the result: </c>`` list.files()</p>
-  </section>
-  <section>
-    <title>[1] "afl24.Rdata"             "aflsmall.Rdata"          "aflsmall2.Rdata"</title>
-  </section>
-  <section>
-    <title>[4] "agpp.Rdata"              "all.zip"                 "annoying.Rdata"</title>
-  </section>
-  <section>
-    <title>[7] "anscombesquartet.Rdata"  "awesome.Rdata"           "awesome2.Rdata"</title>
-  </section>
-  <section>
-    <title>[10] "booksales.csv"           "booksales.Rdata"         "booksales2.csv"</title>
-  </section>
-  <section>
-    <title>[13] "cakes.Rdata"             "cards.Rdata"             "chapek9.Rdata"</title>
-  </section>
-  <section>
-    <title>[16] "chico.Rdata"             "clinicaltrial_old.Rdata" "clinicaltrial.Rdata"</title>
-  </section>
-  <section>
-    <title>[19] "coffee.Rdata"            "drugs.wmc.rt.Rdata"      "dwr_all.Rdata"</title>
-  </section>
-  <section>
-    <title>[22] "effort.Rdata"            "happy.Rdata"             "harpo.Rdata"</title>
-  </section>
-  <section>
-    <title>[25] "harpo2.Rdata"            "likert.Rdata"            "nightgarden.Rdata"</title>
-  </section>
-  <section>
-    <title>[28] "nightgarden2.Rdata"      "parenthood.Rdata"        "parenthood2.Rdata"</title>
-  </section>
-  <section>
-    <title>[31] "randomness.Rdata"        "repeated.Rdata"          "rtfm.Rdata"</title>
-  </section>
-  <section>
-    <title>[34] "salem.Rdata"             "zeppo.Rdata"</title>
-    <p>``<c> Not terribly exciting, I'll admit, but it's useful to know about. In any case, there's only one more thing I want to make a note of, which is that R also makes use of the home directory. You can find out what it is by using the </c>path.expand()<c> function, like this: </c>`` path.expand("~")</p>
-  </section>
-  <section>
-    <title>[1] "/Users/dan"</title>
-    <p>``<c> You can change the user directory if you want, but we're not going to make use of it very much so there's no reason to. The only reason I'm even bothering to mention it at all is that when you use RStudio to open a file, you'll see output on screen that defines the path to the file relative to  the </c>~<c> directory. I'd prefer you not to be confused when you see it.^[One additional thing worth calling your attention to is the </c>file.choose()<c> function. Suppose you want to load a file and you don't quite remember where it is, but would like to browse for it. Typing </c>file.choose()` at the command line will open a window in which you can browse to find the file; when you click on the file you want, R will print out the full path to that file. This is kind of handy.]</p>
-    <subsection>
-      <title>Why do the Windows paths use the wrong slash?</title>
-      <p>Let's suppose I'm on Windows. As before, I can find out what my current working directory is like this: ``` getwd()</p>
-    </subsection>
-  </section>
-  <section>
-    <title>[1] "C:/Users/dan/</title>
-    <p>``<c> This seems about right, but you might be wondering why R is displaying a Windows path using the wrong type of slash. The answer is slightly complicated, and has to do with the fact that R treats the </c>\<c> character as "special" (see Section <xref ref="escapechars"/>). If you're deeply wedded to the idea of specifying a path using the Windows style slashes, then what you need to do is to type </c>/<c> whenever you mean </c>\<c>. In other words, if you want to specify the working directory on a Windows computer, you need to use one of the following commands: </c>`<c> setwd( "C:/Users/dan" ) setwd( "C:\\Users\\dan" ) </c>`` It's kind of annoying to have to do it this way, but as you'll see later on in Section <xref ref="escapechars"/> it's a necessary evil. Fortunately, as we'll see in the next section, RStudio provides a much simpler way of changing directories...</p>
-    <subsection xml:id="nav3">
-      <title>Navigating the file system using the RStudio file panel</title>
-      <p>Although I think it's important to understand how all this command line stuff works, in many (maybe even most) situations there's an easier way. For our purposes, the easiest way to navigate the file system is to make use of RStudio's built in tools. The "file" panel -- the lower right hand area in Figure <xref ref="fig:filepanel"/> -- is actually a pretty decent file browser. Not only can you just point and click on the names to move around the file system, you can also use it to set the working directory, and even load files.</p>
-      <figure xml:id="fig-filepanel">
-        <caption>The "file panel" is the area shown in the lower right hand corner. It provides a very easy way to browse and navigate your computer using R. See main text for details.</caption>
-        <image source="images/mechanics/filepanel.png"/>
-      </figure>
-      <p>Here's what you need to do to change the working directory using the file panel. Let's say I'm looking at the actual screen shown in Figure <xref ref="fig:filepanel"/>. At the top of the file panel you see some text that says "Home $>$ Rbook $>$ data". What that means is that it's <em>displaying</em> the files that are stored in the ``<c> /Users/dan/Rbook/data </c>`<c> directory on my computer. It does <em>not</em> mean that this is the R working directory. If you want to change the R working directory, using the file panel, you need to click on the button that reads "More". This will bring up a little menu, and one of the options will be "Set as Working Directory". If you select that option, then R really will change the working directory. You can tell that it has done so because this command appears in the console: </c>`<c> setwd("~/Rbook/data") </c>`<c> In other words, RStudio sends a command to the R console, exactly as if you'd typed it yourself. The file panel can be used to do other things too. If you want to move "up" to the parent folder (e.g., from </c>/Users/dan/Rbook/data<c> to </c>/Users/dan/Rbook` click on the ".." link in the file panel. To move to a subfolder, click on the name of the folder that you want to open. You can open some types of file by clicking on them. You can delete files from your computer using the "delete" button, rename them with the "rename" button, and so on.</p>
-      <p>As you can tell, the file panel is a very handy little tool for navigating the file system. But it can do more than just navigate. As we'll see later, it can be used to open files. And if you look at the buttons and menu options that it presents, you can even use it to rename, delete, copy or move files, and create new folders. However, since most of that functionality isn't critical to the basic goals of this book, I'll let you discover those on your own.</p>
-    </subsection>
+      <p>Okay, let's get started. When you want to load or save a file in R it's important to know what the working directory is. You can find out by using the <c>getwd()</c> command. For the moment, let's assume that I'm using Mac OS or Linux, since there's some subtleties to Windows. Here's what happens:</p>
+      <program language="r">
+        <input>
+          getwd()
+        </input>
+      </program>
+  <console>
+    <output>
+      [1] "/Users/dan"
+    </output>
+  </console>
+  <p>We can change the working directory quite easily using <c>setwd()</c>. The <c>setwd()</c> function has only the one argument, <c>dir</c>,  is a character string specifying a path to a directory, or a path relative to the working directory. Since I'm currently located at <c>/Users/dan</c>, the following two are equivalent:</p>
+  <program language="r">
+    <input>
+      setwd("/Users/dan/Rbook/data")
+      setwd("./Rbook/data")
+    </input>
+  </program>
+  <p>Now that we're here, we can type <c>list.files()</c> command to get a listing of all the files in that directory. Since this is the directory in which I store all of the data files that we'll use in this book, here's what we get as the result:</p>
+  <program language="r">
+    <input>
+      list.files()
+    </input>
+  </program>
+  <console>
+    <output>
+      ## [1] "afl24.Rdata"             "aflsmall.Rdata"          "aflsmall2.Rdata"        
+      ## [4] "agpp.Rdata"              "all.zip"                 "annoying.Rdata"         
+      ## [7] "anscombesquartet.Rdata"  "awesome.Rdata"           "awesome2.Rdata"         
+      ## [10] "booksales.csv"           "booksales.Rdata"         "booksales2.csv"         
+      ## [13] "cakes.Rdata"             "cards.Rdata"             "chapek9.Rdata"          
+      ## [16] "chico.Rdata"             "clinicaltrial_old.Rdata" "clinicaltrial.Rdata"    
+      ## [19] "coffee.Rdata"            "drugs.wmc.rt.Rdata"      "dwr_all.Rdata"          
+      ## [22] "effort.Rdata"            "happy.Rdata"             "harpo.Rdata"            
+      ## [25] "harpo2.Rdata"            "likert.Rdata"            "nightgarden.Rdata"      
+      ## [28] "nightgarden2.Rdata"      "parenthood.Rdata"        "parenthood2.Rdata"      
+      ## [31] "randomness.Rdata"        "repeated.Rdata"          "rtfm.Rdata"             
+      ## [34] "salem.Rdata"             "zeppo.Rdata"
+    </output>
+  </console>
+  <p>Not terribly exciting, I'll admit, but it's useful to know about. In any case, there's only one more thing I want to make a note of, which is that R also makes use of the home directory. You can find out what it is by using the <c>path.expand()</c> function, like this:</p>
+  <program language="r">
+    <input>
+      path.expand("~")
+    </input>
+  </program>
+  <console>
+    <output>
+      ## [1] "/Users/dan"
+    </output>
+  </console>
+  <p>You can change the user directory if you want, but we're not going to make use of it very much so there's no reason to. The only reason I'm even bothering to mention it at all is that when you use RStudio to open a file, you'll see output on screen that defines the path to the file relative to  the <c>~</c> directory. I'd prefer you not to be confused when you see it.<fn>One additional thing worth calling your attention to is the <c>file.choose()</c> function. Suppose you want to load a file and you don't quite remember where it is, but would like to browse for it. Typing <c>file.choose()</c> at the command line will open a window in which you can browse to find the file; when you click on the file you want, R will print out the full path to that file. This is kind of handy.</fn></p>
+  <subsection>
+    <title>Why do the Windows paths use the wrong slash?</title>
+    <p>Let's suppose I'm on Windows. As before, I can find out what my current working directory is like this:</p>
+    <program language="r">
+      <input>
+        getwd()
+      </input>
+    </program>
+    <console>
+      <output>
+        ## [1] "C:/Users/dan/
+      </output>
+    </console>
+    <p>This seems about right, but you might be wondering why R is displaying a Windows path using the wrong type of slash. The answer is slightly complicated, and has to do with the fact that R treats the <c>\</c> character as "special" (see Section <xref ref="escapechars"/>). If you're deeply wedded to the idea of specifying a path using the Windows style slashes, then what you need to do is to type <c>/</c> whenever you mean <c>\</c>. In other words, if you want to specify the working directory on a Windows computer, you need to use one of the following commands:</p>
+    <program language="r">
+      <input>
+        setwd( "C:/Users/dan" )
+        setwd( "C:\\Users\\dan" )
+      </input>
+    </program>
+    <p>It's kind of annoying to have to do it this way, but as you'll see later on in Section <xref ref="escapechars"/> it's a necessary evil. Fortunately, as we'll see in the next section, RStudio provides a much simpler way of changing directories...</p>
+  </subsection>
+  <subsection xml:id="nav3">
+    <title>Navigating the file system using the RStudio file panel</title>
+    <p>Although I think it's important to understand how all this command line stuff works, in many (maybe even most) situations there's an easier way. For our purposes, the easiest way to navigate the file system is to make use of RStudio's built in tools. The "file" panel -- the lower right hand area in Figure <xref ref="fig:filepanel"/> -- is actually a pretty decent file browser. Not only can you just point and click on the names to move around the file system, you can also use it to set the working directory, and even load files.</p>
+    <figure xml:id="fig-filepanel">
+      <caption>The "file panel" is the area shown in the lower right hand corner. It provides a very easy way to browse and navigate your computer using R. See main text for details.</caption>
+      <image source="images/mechanics/filepanel.png"/>
+    </figure>
+    <p>Here's what you need to do to change the working directory using the file panel. Let's say I'm looking at the actual screen shown in Figure <xref ref="fig:filepanel"/>. At the top of the file panel you see some text that says "Home $>$ Rbook $>$ data". What that means is that it's <em>displaying</em> the files that are stored in the</p>
+    <console>
+      <output>
+        /Users/dan/Rbook/data
+      </output>
+    </console>
+    <p>directory on my computer. It does <em>not</em> mean that this is the R working directory. If you want to change the R working directory, using the file panel, you need to click on the button that reads "More". This will bring up a little menu, and one of the options will be "Set as Working Directory". If you select that option, then R really will change the working directory. You can tell that it has done so because this command appears in the console:</p>
+    <program language="r">
+      <input>
+        setwd("~/Rbook/data")
+      </input>
+    </program>
+    <p>In other words, RStudio sends a command to the R console, exactly as if you'd typed it yourself. The file panel can be used to do other things too. If you want to move "up" to the parent folder (e.g., from <c>/Users/dan/Rbook/data</c> to <c>/Users/dan/Rbook</c> click on the ".." link in the file panel. To move to a subfolder, click on the name of the folder that you want to open. You can open some types of file by clicking on them. You can delete files from your computer using the "delete" button, rename them with the "rename" button, and so on.</p>
+    <p>As you can tell, the file panel is a very handy little tool for navigating the file system. But it can do more than just navigate. As we'll see later, it can be used to open files. And if you look at the buttons and menu options that it presents, you can even use it to rename, delete, copy or move files, and create new folders. However, since most of that functionality isn't critical to the basic goals of this book, I'll let you discover those on your own.</p>
+  </subsection>
+  </subsection>
   </section>
   <section xml:id="load">
     <title>Loading and saving data</title>
@@ -959,13 +991,13 @@
     <title>Summary</title>
     <p>This chapter continued where Chapter <xref ref="introR"/> left off. The focus was still primarily on introducing basic R concepts, but this time at least you can see how those concepts are related to data analysis:</p>
     <ul>
-      <li><p>[Installing, loading and updating packages](#packageinstall). Knowing how to extend the functionality of R by installing and using packages is critical to becoming an effective R user</p></li>
+      <li><p>Installing, loading and updating packages. Section <xref ref="packageinstall"/> explained how to extend the functionality of R by installing and using packages, which is critical to becoming an effective R user.</p></li>
       <li><p>Getting around. Section <xref ref="workspace"/> talked about how to manage your workspace and how to keep it tidy. Similarly, Section <xref ref="navigation"/> talked about how to get R to interact with the rest of the file system.</p></li>
-      <li><p>[Loading and saving data](#load). Finally, we encountered actual data files. Loading and saving data is obviously a crucial skill, one we discussed in Section <xref ref="load"/>.</p></li>
-      <li><p>[Useful things to know about variables](#useful). In particular, we talked about special values, element names and classes.</p></li>
+      <li><p>Loading and saving data. Finally, we encountered actual data files. Loading and saving data is obviously a crucial skill, one we discussed in Section <xref ref="load"/>.</p></li>
+      <li><p>Useful things to know about variables. In particular, we talked about special values, element names and classes in Section <xref ref="useful"/>.</p></li>
       <li><p>More complex types of variables. R has a number of important variable types that will be useful when analysing real data. I talked about factors in Section <xref ref="factors"/>, data frames in Section <xref ref="dataframes"/>, lists in Section <xref ref="lists"/> and formulas in Section <xref ref="formulas"/>.</p></li>
-      <li><p>[Generic functions](#generics). How is it that some function seem to be able to do lots of different things? Section <xref ref="generics"/> tells you how.</p></li>
-      <li><p>[Getting help](#help). Assuming that you're not looking for counselling, Section <xref ref="help"/> covers several possibilities. If you are looking for counselling, well, this book really can't help you there. Sorry.</p></li>
+      <li><p>Generic functions. How is it that some function seem to be able to do lots of different things? Section <xref ref="generics"/> tells you how.</p></li>
+      <li><p>Getting help. Assuming that you're not looking for counselling, Section <xref ref="help"/> covers several possibilities. If you are looking for counselling, well, this book really can't help you there. Sorry.</p></li>
     </ul>
     <p>Taken together, Chapters <xref ref="introR"/> and <xref ref="mechanics"/> provide enough of a background that you can finally get started doing some statistics! Yes, there's a lot more R concepts that you ought to know (and we'll talk about some of them in Chapters<xref ref="datahandling"/> and<xref ref="scripting"/>), but I think that we've talked quite enough about programming for the moment. It's time to see how your experience with programming can be used to do some data analysis...</p>
   </section>
