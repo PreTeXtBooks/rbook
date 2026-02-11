@@ -3,7 +3,12 @@
 Learning statistics with R
 ==========================
 
-This repository contains all the source materials for *Learning Statistics with R*. There are two versions of the content, the `original` version (LSR v0.6) written in LaTeX and the `bookdown` adaptation (LSR v0.6.1). The two versions are kept in distinct folders to ensure they share no dependencies.
+This repository contains all the source materials for *Learning Statistics with R*. There are three versions of the content, the `original` version (LSR v0.6) written in LaTeX, the `bookdown` adaptation (LSR v0.6.1), and the new `pretext` version. The versions are kept in distinct folders to ensure they share no dependencies.
+
+PreTeXt
+-------
+
+A PreTeXt version of the book is now available in the `pretext` directory. This version includes support for R code examples with syntax highlighting and image support. The PreTeXt version is automatically built and deployed to GitHub Pages via GitHub Actions. See `pretext/README.md` for more details on building and working with the PreTeXt version.
 
 Bookdown
 --------
