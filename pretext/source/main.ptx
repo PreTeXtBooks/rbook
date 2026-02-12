@@ -30,11 +30,16 @@
     <!-- Chapter 4: Additional R concepts -->
     <xi:include href="./ch4-additional-r-concepts.ptx" />
 
-    <!-- Chapter 6: Bayesian Statistics -->
-    <xi:include href="./ch6-bayesian-statistics.ptx" />
+    <!-- Part VI: Endings, alternatives and prospects -->
+    <part xml:id="part-vi-endings">
+      <title>Endings, alternatives and prospects</title>
 
-    <!-- Chapter 7: Epilogue -->
-    <xi:include href="./ch7-epilogue.ptx" />
+      <!-- Chapter 6: Bayesian Statistics -->
+      <xi:include href="./ch6-bayesian-statistics.ptx" />
+
+      <!-- Chapter 7: Epilogue -->
+      <xi:include href="./ch7-epilogue.ptx" />
+    </part>
 
     <!-- Example chapters from template - commented out for now -->
     <!-- <xi:include href="./ch_first.ptx" /> -->
