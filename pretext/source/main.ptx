@@ -30,6 +30,9 @@
     <!-- Chapter 4: Additional R concepts -->
     <xi:include href="./ch4-additional-r-concepts.ptx" />
 
+    <!-- Comparing several means (one-way ANOVA) -->
+    <xi:include href="./ch-anova.ptx" />
+
     <!-- Linear Regression -->
     <xi:include href="./ch-regression.ptx" />
 
