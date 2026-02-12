@@ -30,6 +30,9 @@
     <!-- Chapter 4: Additional R concepts -->
     <xi:include href="./ch4-additional-r-concepts.ptx" />
 
+    <!-- Chapter 5: Factorial ANOVA -->
+    <xi:include href="./ch5-factorial-anova.ptx" />
+
     <!-- Part VI: Endings, alternatives and prospects -->
     <part xml:id="part-vi-endings">
       <title>Endings, alternatives and prospects</title>
