@@ -23,9 +23,9 @@
   <p>
     This output doesn't make it easy to get a sense of what the data are actually saying. Just "looking at the data" isn't a terribly effective way of understanding data. In order to get some idea about what's going on, we need to calculate some descriptive statistics (this chapter) and draw some nice pictures (<xref ref="graphics" />. Since the descriptive statistics are the easier of the two topics, I'll start with those, but nevertheless I'll show you a histogram of the <c>afl.margins</c> data, since it should help you get a sense of what the data we're trying to describe actually look like. But for what it's worth, this histogram <mdash /> which is shown in <xref ref="fig-histogram1" /> <mdash /> was generated using the <c>hist()</c> function. We'll talk a lot more about how to draw histograms in <xref ref="hist" />. For now, it's enough to look at the histogram and note that it provides a fairly interpretable representation of the <c>afl.margins</c> data.
   </p>
-  <figure>
+  <figure xml:id="fig-histogram1">
     <caption>A histogram of the AFL 2010 winning margin data (the <c>afl.margins</c> variable). As you might expect, the larger the margin the less frequently you tend to see it.</caption>
-    <image source="generated/plot.png"/>
+    <image source="generated/histogram1.png"/>
   </figure>
   <section xml:id="centraltendency">
     <title>Measures of central tendency</title>
@@ -141,7 +141,7 @@
     </subsection>
     <subsection>
       <title>Mean or median? What's the difference?</title>
-      <figure>
+      <figure xml:id="fig-meanmedian">
         <caption>An illustration of the difference between how the mean and the median should be interpreted. The mean is basically the "centre of gravity" of the data set: if you imagine that the histogram of the data is a solid object, then the point on which you could balance it (as if on a see-saw) is the mean. In contrast, the median is the middle observation. Half of the observations are smaller, and half of the observations are larger.</caption>
         <image source="images/descriptives2/meanmedian.png"/>
       </figure>
@@ -160,7 +160,7 @@
         </li>
       </ul>
       <p>
-        Let's expand on that last part a little. One consequence is that there's systematic differences between the mean and the median when the histogram is asymmetric (skewed; see <xref ref="skewandkurtosis" />). This is illustrated in <xref ref="fig-meanmedian" /> notice that the median (right hand side) is located closer to the "body" of the histogram, whereas the mean (left hand side) gets dragged towards the "tail" (where the extreme values are). To give a concrete example, suppose Bob (income $50,000), Kate (income $60,000) and Jane (income $65,000) are sitting at a table: the average income at the table is $58,333 and the median income is $60,000. Then Bill sits down with them (income $100,000,000). The average income has now jumped to $25,043,750 but the median rises only to $62,500. If you're interested in looking at the overall income at the table, the mean might be the right answer; but if you're interested in what counts as a typical income at the table, the median would be a better choice here.
+        Let's expand on that last part a little. One consequence is that there's systematic differences between the mean and the median when the histogram is asymmetric (skewed; see <xref ref="skewandkurtosis" />). This is illustrated in <xref ref="fig-meanmedian" /> notice that the median (right hand side) is located closer to the "body" of the histogram, whereas the mean (left hand side) gets dragged towards the "tail" (where the extreme values are). To give a concrete example, suppose Bob (income \$50,000), Kate (income \$60,000) and Jane (income \$65,000) are sitting at a table: the average income at the table is \$58,333 and the median income is \$60,000. Then Bill sits down with them (income \$100,000,000). The average income has now jumped to \$25,043,750 but the median rises only to \$62,500. If you're interested in looking at the overall income at the table, the mean might be the right answer; but if you're interested in what counts as a typical income at the table, the median would be a better choice here.
       </p>
     </subsection>
     <subsection xml:id="housingpriceexample">
@@ -285,7 +285,7 @@
         Taken together, we observe that Geelong (39 finals) played in more finals than any other team during the 1987-2010 period.
       </p>
       <p>
-        One last point to make with respect to the mode. While it's generally true that the mode is most often calculated when you have nominal scale data (because means and medians are useless for those sorts of variables), there are some situations in which you really do want to know the mode of an ordinal, interval or ratio scale variable. For instance, let's go back to thinking about our <c>afl.margins</c> variable. This variable is clearly ratio scale (if it's not clear to you, it may help to re-read <xref ref="scales" />), and so in most situations the mean or the median is the measure of central tendency that you want. But consider this scenario... a friend of yours is offering a bet. They pick a football game at random, and (without knowing who is playing) you have to guess the <em>exact</em> margin. If you guess correctly, you win $50. If you don't, you lose $1. There are no consolation prizes for "almost" getting the right answer. You have to guess exactly the right margin<fn>This is called a "0-1 loss function", meaning that you either win (1) or you lose (0), with no middle ground.</fn> For this bet, the mean and the median are completely useless to you. It is the mode that you should bet on. So, we calculate this modal value
+        One last point to make with respect to the mode. While it's generally true that the mode is most often calculated when you have nominal scale data (because means and medians are useless for those sorts of variables), there are some situations in which you really do want to know the mode of an ordinal, interval or ratio scale variable. For instance, let's go back to thinking about our <c>afl.margins</c> variable. This variable is clearly ratio scale (if it's not clear to you, it may help to re-read <xref ref="scales" />), and so in most situations the mean or the median is the measure of central tendency that you want. But consider this scenario... a friend of yours is offering a bet. They pick a football game at random, and (without knowing who is playing) you have to guess the <em>exact</em> margin. If you guess correctly, you win \$50. If you don't, you lose \$1. There are no consolation prizes for "almost" getting the right answer. You have to guess exactly the right margin<fn>This is called a "0-1 loss function", meaning that you either win (1) or you lose (0), with no middle ground.</fn> For this bet, the mean and the median are completely useless to you. It is the mode that you should bet on. So, we calculate this modal value
       </p>
       <program language="r">
         <input>
@@ -303,7 +303,7 @@
   <section xml:id="var">
     <title>Measures of variability</title>
     <p>
-      The statistics that we've discussed so far all relate to *central tendency*. That is, they all talk about which values are "in the middle" or "popular" in the data. However, central tendency is not the only type of summary statistic that we want to calculate. The second thing that we really want is a measure of the <term>variability</term> of the data. That is, how "spread out" are the data? How "far" away from the mean or median do the observed values tend to be? For now, let's assume that the data are interval or ratio scale, so we'll continue to use the <c>afl.margins</c> data.  We'll use this data to discuss several different measures of spread, each with different strengths and weaknesses.
+      The statistics that we've discussed so far all relate to <em>central tendency</em>. That is, they all talk about which values are "in the middle" or "popular" in the data. However, central tendency is not the only type of summary statistic that we want to calculate. The second thing that we really want is a measure of the <term>variability</term> of the data. That is, how "spread out" are the data? How "far" away from the mean or median do the observed values tend to be? For now, let's assume that the data are interval or ratio scale, so we'll continue to use the <c>afl.margins</c> data.  We'll use this data to discuss several different measures of spread, each with different strengths and weaknesses.
     </p>
     <subsection xml:id="range">
       <title>Range</title>
@@ -416,7 +416,7 @@
     <subsection>
       <title>Variance</title>
       <p>
-        Although the mean absolute deviation measure has its uses, it's not the best measure of variability to use. From a purely mathematical perspective, there are some solid reasons to prefer squared deviations rather than absolute deviations. If we do that, we obtain a measure is called the <term>variance</term>, which has a lot of really nice statistical properties that I'm going to ignore,<fn>Well, I will very briefly mention the one that I think is coolest, for a very particular definition of "cool", that is. Variances are *additive*. Here's what that means: suppose I have two variables <m>X</m> and <m>Y</m>, whose variances are <m>\mbox{Var}](X)</m> and <m>\mbox{Var}(Y)</m> respectively. Now imagine I want to define a new variable <m>Z</m> that is the sum of the two, <m>Z = X+Y</m>. As it turns out, the variance of <m>Z</m> is equal to <m>\mbox{Var}(X) + \mbox{Var}(Y)</m>. This is a <em>very</em> useful property, but it's not true of the other measures that I talk about in this section.</fn> and one massive psychological flaw that I'm going to make a big deal out of in a moment. The variance of a data set <m>X</m> is sometimes written as <m>\mbox{Var}(X)</m>, but it's more commonly denoted <m>s^2</m> (the reason for this will become clearer shortly). The formula that we use to calculate the variance of a set of observations is as follows: <me> \mbox{Var}(X) = \frac{1}{N} \sum_{i=1}^N \left( X_i - \bar{X} \right)^2 </me> <me>\mbox{Var}(X) = \frac{\sum_{i=1}^N \left( X_i - \bar{X} \right)^2}{N}</me> As you can see, it's basically the same formula that we used to calculate the mean absolute deviation, except that instead of using "absolute deviations" we use "squared deviations". It is for this reason that the variance is sometimes referred to as the "mean square deviation".
+        Although the mean absolute deviation measure has its uses, it's not the best measure of variability to use. From a purely mathematical perspective, there are some solid reasons to prefer squared deviations rather than absolute deviations. If we do that, we obtain a measure is called the <term>variance</term>, which has a lot of really nice statistical properties that I'm going to ignore,<fn>Well, I will very briefly mention the one that I think is coolest, for a very particular definition of "cool", that is. Variances are <em>additive</em>. Here's what that means: suppose I have two variables <m>X</m> and <m>Y</m>, whose variances are <m>\mbox{Var}](X)</m> and <m>\mbox{Var}(Y)</m> respectively. Now imagine I want to define a new variable <m>Z</m> that is the sum of the two, <m>Z = X+Y</m>. As it turns out, the variance of <m>Z</m> is equal to <m>\mbox{Var}(X) + \mbox{Var}(Y)</m>. This is a <em>very</em> useful property, but it's not true of the other measures that I talk about in this section.</fn> and one massive psychological flaw that I'm going to make a big deal out of in a moment. The variance of a data set <m>X</m> is sometimes written as <m>\mbox{Var}(X)</m>, but it's more commonly denoted <m>s^2</m> (the reason for this will become clearer shortly). The formula that we use to calculate the variance of a set of observations is as follows: <me> \mbox{Var}(X) = \frac{1}{N} \sum_{i=1}^N \left( X_i - \bar{X} \right)^2 </me> <me>\mbox{Var}(X) = \frac{\sum_{i=1}^N \left( X_i - \bar{X} \right)^2}{N}</me> As you can see, it's basically the same formula that we used to calculate the mean absolute deviation, except that instead of using "absolute deviations" we use "squared deviations". It is for this reason that the variance is sometimes referred to as the "mean square deviation".
       </p>
       <p>
         Now that we've got the basic idea, let's have a look at a concrete example. Once again, let's use the first five AFL games as our data. If we follow the same approach that we took last time, we end up with the following table:
@@ -497,7 +497,7 @@
         </input>
       </program>
       <p>
-        This is the same answer that R gave us originally when we calculated <c>var(X)</c> originally. So that's the *what*. The real question is <em>why</em> R is dividing by <m>N-1</m> and not by <m>N</m>. After all, the variance is supposed to be the <em>mean</em> squared deviation, right? So shouldn't we be dividing by <m>N</m>, the actual number of observations in the sample? Well, yes, we should. However, as we'll discuss in <xref ref="estimation" />, there's a subtle distinction between "describing a sample" and "making guesses about the population from which the sample came". Up to this point, it's been a distinction without a difference. Regardless of whether you're describing a sample or drawing inferences about the population, the mean is calculated exactly the same way. Not so for the variance, or the standard deviation, or for many other measures besides. What I outlined to you initially (i.e., take the actual average, and thus divide by <m>N</m>) assumes that you literally intend to calculate the variance of the sample. Most of the time, however, you're not terribly interested in the sample *in and of itself*. Rather, the sample exists to tell you something about the world. If so, you're actually starting to move away from calculating a "sample statistic", and towards the idea of estimating a "population parameter". However, I'm getting ahead of myself. For now, let's just take it on faith that R knows what it's doing, and we'll revisit the question later on when we talk about estimation in <xref ref="estimation" />.
+        This is the same answer that R gave us originally when we calculated <c>var(X)</c> originally. So that's the <em>what</em>. The real question is <em>why</em> R is dividing by <m>N-1</m> and not by <m>N</m>. After all, the variance is supposed to be the <em>mean</em> squared deviation, right? So shouldn't we be dividing by <m>N</m>, the actual number of observations in the sample? Well, yes, we should. However, as we'll discuss in <xref ref="estimation" />, there's a subtle distinction between "describing a sample" and "making guesses about the population from which the sample came". Up to this point, it's been a distinction without a difference. Regardless of whether you're describing a sample or drawing inferences about the population, the mean is calculated exactly the same way. Not so for the variance, or the standard deviation, or for many other measures besides. What I outlined to you initially (i.e., take the actual average, and thus divide by <m>N</m>) assumes that you literally intend to calculate the variance of the sample. Most of the time, however, you're not terribly interested in the sample <em>in and of itself</em>. Rather, the sample exists to tell you something about the world. If so, you're actually starting to move away from calculating a "sample statistic", and towards the idea of estimating a "population parameter". However, I'm getting ahead of myself. For now, let's just take it on faith that R knows what it's doing, and we'll revisit the question later on when we talk about estimation in <xref ref="estimation" />.
       </p>
       <p>
         Okay, one last thing. This section so far has read a bit like a mystery novel. I've shown you how to calculate the variance, described the weird "<m>N-1</m>" thing that R does and hinted at the reason why it's there, but I haven't mentioned the single most important thing... how do you <em>interpret</em> the variance? Descriptive statistics are supposed to describe things, after all, and right now the variance is really just a gibberish number. Unfortunately, the reason why I haven't given you the human-friendly interpretation of the variance is that there really isn't one. This is the most serious problem with the variance. Although it has some elegant mathematical properties that suggest that it really is a fundamental quantity for expressing variation, it's completely useless if you want to communicate with an actual human... variances are completely uninterpretable in terms of the original variable! All the numbers have been squared, and they don't mean anything anymore. This is a huge issue. For instance, according to the table I presented earlier, the margin in game 1 was "376.36 points-squared higher than the average margin". This is <em>exactly</em> as stupid as it sounds; and so when we calculate a variance of 324.64, we're in the same situation. I've watched a lot of footy games, and never has anyone referred to "points squared". It's <em>not</em> a real unit of measurement, and since the variance is expressed in terms of this gibberish unit, it is totally meaningless to a human.
@@ -517,7 +517,7 @@
       <p>
         Interpreting standard deviations is slightly more complex. Because the standard deviation is derived from the variance, and the variance is a quantity that has little to no meaning that makes sense to us humans, the standard deviation doesn't have a simple interpretation. As a consequence, most of us just rely on a simple rule of thumb: in general, you should expect 68% of the data to fall within 1 standard deviation of the mean, 95% of the data to fall within 2 standard deviation of the mean, and 99.7% of the data to fall within 3 standard deviations of the mean. This rule tends to work pretty well most of the time, but it's not exact: it's actually calculated based on an <em>assumption</em> that the histogram is symmetric and "bell shaped".<fn>Strictly, the assumption is that the data are <em>normally</em> distributed, which is an important concept that we'll discuss more in Chapter \@ref(probability), and will turn up over and over again later in the book.</fn> As you can tell from looking at the AFL winning margins histogram in <xref ref="fig-histogram1" />, this isn't exactly true of our data! Even so, the rule is approximately correct. As it turns out, 65.3% of the AFL margins data fall within one standard deviation of the mean. This is shown visually in <xref ref="fig-aflsd" />.
       </p>
-      <figure>
+      <figure xml:id="fig-aflsd">
         <caption>An illustration of the standard deviation, applied to the AFL winning margins data. The shaded bars in the histogram show how much of the data fall within one standard deviation of the mean. In this case, 65.3% of the data set lies within this range, which is pretty consistent with the "approximately 68% rule" discussed in the main text.</caption>
         <image source="generated/plot.png"/>
       </figure>
@@ -533,7 +533,7 @@
           mean( abs(afl.margins - mean(afl.margins)) )
           
           
-          # *median* absolute deviation from the *median*:
+          # <em>median</em> absolute deviation from the <em>median</em>:
           median( abs(afl.margins - median(afl.margins)) )
         </input>
       </program>
@@ -575,22 +575,22 @@
       </p>
       <ul>
         <li>
-          <p>*Range*. Gives you the full spread of the data. It's very vulnerable to outliers, and as a consequence it isn't often used unless you have good reasons to care about the extremes in the data.</p>
+          <p><em>Range</em>. Gives you the full spread of the data. It's very vulnerable to outliers, and as a consequence it isn't often used unless you have good reasons to care about the extremes in the data.</p>
         </li>
         <li>
-          <p>*Interquartile range*. Tells you where the "middle half" of the data sits. It's pretty robust, and complements the median nicely. This is used a lot.</p>
+          <p><em>Interquartile range</em>. Tells you where the "middle half" of the data sits. It's pretty robust, and complements the median nicely. This is used a lot.</p>
         </li>
         <li>
-          <p>*Mean absolute deviation*. Tells you how far "on average" the observations are from the mean. It's very interpretable, but has a few minor issues (not discussed here) that make it less attractive to statisticians than the standard deviation. Used sometimes, but not often.</p>
+          <p><em>Mean absolute deviation</em>. Tells you how far "on average" the observations are from the mean. It's very interpretable, but has a few minor issues (not discussed here) that make it less attractive to statisticians than the standard deviation. Used sometimes, but not often.</p>
         </li>
         <li>
-          <p>*Variance*. Tells you the average squared deviation from the mean. It's mathematically elegant, and is probably the "right" way to describe variation around the mean, but it's completely uninterpretable because it doesn't use the same units as the data. Almost never used except as a mathematical tool; but it's buried "under the hood" of a very large number of statistical tools.</p>
+          <p><em>Variance</em>. Tells you the average squared deviation from the mean. It's mathematically elegant, and is probably the "right" way to describe variation around the mean, but it's completely uninterpretable because it doesn't use the same units as the data. Almost never used except as a mathematical tool; but it's buried "under the hood" of a very large number of statistical tools.</p>
         </li>
         <li>
-          <p>*Standard deviation*. This is the square root of the variance. It's fairly elegant mathematically, and it's expressed in the same units as the data so it can be interpreted pretty well. In situations where the mean is the measure of central tendency, this is the default. This is by far the most popular measure of variation.</p>
+          <p><em>Standard deviation</em>. This is the square root of the variance. It's fairly elegant mathematically, and it's expressed in the same units as the data so it can be interpreted pretty well. In situations where the mean is the measure of central tendency, this is the default. This is by far the most popular measure of variation.</p>
         </li>
         <li>
-          <p>*Median absolute deviation*. The typical (i.e., median) deviation from the median value. In the raw form it's simple and interpretable; in the corrected form it's a robust way to estimate the standard deviation, for some kinds of data sets. Not used very often, but it does get reported sometimes.</p>
+          <p><em>Median absolute deviation</em>. The typical (i.e., median) deviation from the median value. In the raw form it's simple and interpretable; in the corrected form it's a robust way to estimate the standard deviation, for some kinds of data sets. Not used very often, but it does get reported sometimes.</p>
         </li>
       </ul>
       <p>
@@ -603,7 +603,7 @@
     <p>
       There are two more descriptive statistics that you will sometimes see reported in the psychological literature, known as skew and kurtosis. In practice, neither one is used anywhere near as frequently as the measures of central tendency and variability that we've been talking about. Skew is pretty important, so you do see it mentioned a fair bit; but I've actually never seen kurtosis reported in a scientific article to date.
     </p>
-    <figure>
+    <figure xml:id="fig-skewness">
       <caption>An illustration of skewness. On the left we have a negatively skewed data set (skewness <m>= -.93</m>), in the middle we have a data set with no skew (technically, skewness <m>= -.006</m>), and on the right we have a positively skewed data set (skewness <m>= .93</m>).</caption>
       <image source="generated/plot.png"/>
     </figure>
@@ -629,12 +629,12 @@
     <p>
       The final measure that is sometimes referred to, though very rarely in practice, is the <term>kurtosis</term> of a data set. Put simply, kurtosis is a measure of the "pointiness" of a data set, as illustrated in <xref ref="fig-kurtosis" />.
     </p>
-    <figure>
+    <figure xml:id="fig-kurtosis">
       <caption>An illustration of kurtosis. On the left, we have a "platykurtic" data set (kurtosis = <m>-.95</m>), meaning that the data set is "too flat". In the middle we have a "mesokurtic" data set (kurtosis is almost exactly 0), which means that the pointiness of the data is just about right. Finally, on the right, we have a "leptokurtic" data set (kurtosis <m>= 2.12</m>) indicating that the data set is "too pointy". Note that kurtosis is measured with respect to a normal curve (black line)</caption>
       <image source="generated/plot.png"/>
     </figure>
     <p>
-      By convention, we say that the "normal curve" (black lines) has zero kurtosis, so the pointiness of a data set is assessed relative to this curve. In this Figure, the data on the left are not pointy enough, so the kurtosis is negative and we call the data *platykurtic*. The data on the right are too pointy, so the kurtosis is positive and we say that the data is *leptokurtic*. But the data in the middle are just pointy enough, so we say that it is <em>mesokurtic</em> and has kurtosis zero. This is summarised in the table below:
+      By convention, we say that the "normal curve" (black lines) has zero kurtosis, so the pointiness of a data set is assessed relative to this curve. In this Figure, the data on the left are not pointy enough, so the kurtosis is negative and we call the data <em>platykurtic</em>. The data on the right are too pointy, so the kurtosis is positive and we say that the data is <em>leptokurtic</em>. But the data in the middle are just pointy enough, so we say that it is <em>mesokurtic</em> and has kurtosis zero. This is summarised in the table below:
     </p>
     <program language="r">
       <input>
@@ -932,7 +932,7 @@
       <p>
         Finally, to give a graphical depiction of what each of the three interesting variables looks like, <xref ref="fig-parenthood" /> plots histograms.
       </p>
-      <figure>
+      <figure xml:id="fig-parenthood">
         <caption>Histograms for the three interesting variables in the <c>parenthood</c> data set</caption>
         <image source="generated/plot.png"/>
       </figure>
@@ -952,11 +952,11 @@
     </subsection>
     <subsection>
       <title>The strength and direction of a relationship</title>
-      <figure>
+      <figure xml:id="fig-scatterparent1a">
         <caption>Scatterplot showing the relationship between <c>dan.sleep</c> and <c>dan.grump</c></caption>
         <image source="generated/plot.png"/>
       </figure>
-      <figure>
+      <figure xml:id="fig-scatterparent1b">
         <caption>Scatterplot showing the relationship between <c>baby.sleep</c> and <c>dan.grump</c></caption>
         <image source="generated/plot.png"/>
       </figure>
@@ -966,9 +966,9 @@
       <p>
         In contrast, let's consider <xref ref="fig-scatterparent1b" /> vs. <xref ref="fig-scatterparent2" />. If we compare the scatterplot of "<c>baby.sleep</c> v <c>dan.grump</c>" to the scatterplot of "`<c>baby.sleep</c> v <c>dan.sleep</c>", the overall strength of the relationship is the same, but the direction is different. That is, if my son sleeps more, I get <em>more</em> sleep (positive relationship, but if he sleeps more then I get <em>less</em> grumpy (negative relationship).
       </p>
-      <figure>
+      <figure xml:id="fig-scatterparent2">
         <caption>Scatterplot showing the relationship between <c>baby.sleep</c> and <c>dan.sleep</c></caption>
-        <image source="generated/plot.png"/>
+        <image source="generated/scatterparent2.png"/>
       </figure>
     </subsection>
     <subsection>
@@ -976,7 +976,7 @@
       <p>
         We can make these ideas a bit more explicit by introducing the idea of a <term>correlation coefficient</term> (or, more specifically, Pearson's correlation coefficient), which is traditionally denoted by <m>r</m>. The correlation coefficient between two variables <m>X</m> and <m>Y</m> (sometimes denoted <m>r_{XY}</m>), which we'll define more precisely in the next section, is a measure that varies from <m>-1</m> to <m>1</m>. When <m>r = -1</m> it means that we have a perfect negative relationship, and when <m>r = 1</m> it means we have a perfect positive relationship. When <m>r = 0</m>, there's no relationship at all. If you look at <xref ref="fig-corr" />, you can see several plots showing what different correlations look like.
       </p>
-      <figure>
+      <figure xml:id="fig-corr">
         <caption>Illustration of the effect of varying the strength and direction of a correlation</caption>
         <image source="generated/plot.png"/>
       </figure>
@@ -1048,17 +1048,17 @@
       <p>
         You'd think that these four data sets would look pretty similar to one another. They do not. If we draw scatterplots of <m>X</m> against <m>Y</m> for all four variables, as shown in <xref ref="fig-anscombe" /> we see that all four of these are <em>spectacularly</em> different to each other.
       </p>
-      <figure>
+      <figure xml:id="fig-anscombe">
         <caption>Anscombe's quartet. All four of these data sets have a Pearson correlation of <m>r = .816</m>, but they are qualitatively different from one another.</caption>
-        <image source="generated/plot.png"/>
+        <image source="generated/anscombe.png"/>
       </figure>
       <p>
-        The lesson here, which so very many people seem to forget in real life is "*always graph your raw data*". This will be the focus of <xref ref="graphics" />.
+        The lesson here, which so very many people seem to forget in real life is "<em>always graph your raw data</em>". This will be the focus of <xref ref="graphics" />.
       </p>
     </subsection>
     <subsection>
       <title>Spearman's rank correlations</title>
-      <figure>
+      <figure xml:id="fig-rankcorrpic">
         <caption>The relationship between hours worked and grade received, for a toy data set consisting of only 10 students (each circle corresponds to one student). The dashed line through the middle shows the linear relationship between the two variables. This produces a strong Pearson correlation of <m>r = .91</m>. However, the interesting thing to note here is that there's actually a perfect monotonic relationship between the two variables: in this toy example at least, increasing the hours worked always increases the grade received, as illustrated by the solid line. This is reflected in a Spearman correlation of <m>rho = 1</m>. With such a small data set, however, it's an open question as to which version better describes the actual relationship involved. </caption>
         <image source="generated/plot.png"/>
       </figure>
@@ -1122,7 +1122,7 @@
         | | rank (hours worked) | rank (grade received) | |-|---------------------|-----------------------| |student | 1 |   1 |   1 | |student | 2  | 10   |10 | |student | 3 |   6  |  6 | |student | 4 |   2 |   2 | |student | 5 |   3 |   3 | |student | 6  |  5  |  5 | |student | 7  |  4  |  4 | |student | 8  |  8  |  8 | |student | 9   | 7  |  7 | |student | 10  |  9|    9
       </p>
       <p>
-        Hm. These are *identical*. The student who put in the most effort got the best grade, the student with the least effort got the worst grade, etc. We can get R to construct these rankings using the <c>rank()</c> function, like this:
+        Hm. These are <em>identical</em>. The student who put in the most effort got the best grade, the student with the least effort got the worst grade, etc. We can get R to construct these rankings using the <c>rank()</c> function, like this:
       </p>
       <program language="r">
         <input>
@@ -1344,7 +1344,7 @@
         </input>
       </program>
       <p>
-        Annoying, but it kind of makes sense. If I don't <em>know</em> what some of the values of <c>dan.sleep</c> and <c>baby.sleep</c> actually are, then I can't possibly <em>know</em> what the correlation between these two variables is either, since the formula for the correlation coefficient makes use of every single observation in the data set. Once again, it makes sense: it's just not particularly *helpful*.
+        Annoying, but it kind of makes sense. If I don't <em>know</em> what some of the values of <c>dan.sleep</c> and <c>baby.sleep</c> actually are, then I can't possibly <em>know</em> what the correlation between these two variables is either, since the formula for the correlation coefficient makes use of every single observation in the data set. Once again, it makes sense: it's just not particularly <em>helpful</em>.
       </p>
       <p>
         To make R behave more sensibly in this situation, you need to specify the <c>use</c> argument to the <c>cor()</c> function. There are several different values that you can specify for this, but the two that we care most about in practice tend to be <c>"complete.obs"</c> and <c>"pairwise.complete.obs"</c>. If we specify <c>use = "complete.obs"</c>, R will completely ignore all cases (i.e., all rows in our <c>parenthood2</c> data frame) that have any missing values at all. So, for instance, if you look back at the extract earlier when I used the <c>head()</c> function, notice that observation 1 (i.e., day 1) of the <c>parenthood2</c> data set is missing the value for <c>baby.sleep</c>, but is otherwise complete? Well, if you choose <c>use = "complete.obs"</c> R will ignore that row completely: that is, even when it's trying to calculate the correlation between <c>dan.sleep</c> and <c>dan.grump</c>, observation 1 will be ignored, because the value of <c>baby.sleep</c> is missing for that observation. Here's what we get:
@@ -1406,22 +1406,22 @@
     </p>
     <ul>
       <li>
-        <p>*Measures of central tendency*. Broadly speaking, central tendency measures tell you where the data are. There's three measures that are typically reported in the literature: the mean, median and mode. (<xref ref="centraltendency" />)</p>
+        <p><em>Measures of central tendency</em>. Broadly speaking, central tendency measures tell you where the data are. There's three measures that are typically reported in the literature: the mean, median and mode. (<xref ref="centraltendency" />)</p>
       </li>
       <li>
-        <p>*Measures of variability*. In contrast, measures of variability tell you about how "spread out" the data are. The key measures are: range, standard deviation, interquartile reange (<xref ref="var" />)</p>
+        <p><em>Measures of variability</em>. In contrast, measures of variability tell you about how "spread out" the data are. The key measures are: range, standard deviation, interquartile reange (<xref ref="var" />)</p>
       </li>
       <li>
-        <p>*Getting summaries of variables in R*. Since this book focuses on doing data analysis in R, we spent a bit of time talking about how descriptive statistics are computed in R. (<xref ref="summary" /> and <xref ref="groupdescriptives" />)</p>
+        <p><em>Getting summaries of variables in R</em>. Since this book focuses on doing data analysis in R, we spent a bit of time talking about how descriptive statistics are computed in R. (<xref ref="summary" /> and <xref ref="groupdescriptives" />)</p>
       </li>
       <li>
-        <p>*Standard scores*. The <m>z</m>-score is a slightly unusual beast. It's not quite a descriptive statistic, and not quite an inference. We talked about it in <xref ref="zscore" />. Make sure you understand that section: it'll come up again later.</p>
+        <p><em>Standard scores</em>. The <m>z</m>-score is a slightly unusual beast. It's not quite a descriptive statistic, and not quite an inference. We talked about it in <xref ref="zscore" />. Make sure you understand that section: it'll come up again later.</p>
       </li>
       <li>
-        <p>*Correlations*. Want to know how strong the relationship is between two variables? Calculate a correlation. (<xref ref="correl" />)</p>
+        <p><em>Correlations</em>. Want to know how strong the relationship is between two variables? Calculate a correlation. (<xref ref="correl" />)</p>
       </li>
       <li>
-        <p>*Missing data*. Dealing with missing data is one of those frustrating things that data analysts really wish the didn't have to think about. In real life it can be hard to do well. For the purpose of this book, we only touched on the basics in <xref ref="missing" /></p>
+        <p><em>Missing data</em>. Dealing with missing data is one of those frustrating things that data analysts really wish the didn't have to think about. In real life it can be hard to do well. For the purpose of this book, we only touched on the basics in <xref ref="missing" /></p>
       </li>
     </ul>
     <p>
@@ -1443,7 +1443,7 @@
       Yet it is not so simple: without numbers, without counts, without a description of what happened, we have <em>no chance</em> of understanding what really happened, no opportunity event to try to summon the missing feeling. And in truth, as I write this, sitting in comfort on a Saturday morning, half a world and a whole lifetime away from the Gulags, when I put the Ellman estimate next to the Stalin quote a dull dread settles in my stomach and a chill settles over me. The Stalinist repression is something truly beyond my experience, but with a combination of statistical data and those recorded personal histories that have come down to us, it is not entirely beyond my comprehension. Because what Ellman's numbers tell us is this: over a two year period, Stalinist repression wiped out the equivalent of every man, woman and child currently alive in the city where I live. Each one of those deaths had it's own story, was it's own tragedy, and only some of those are known to us now. Even so, with a few carefully chosen statistics, the scale of the atrocity starts to come into focus.
     </p>
     <p>
-      Thus it is no small thing to say that the first task of the statistician and the scientist is to summarise the data, to find some collection of numbers that can convey to an audience a sense of what has happened. This is the job of descriptive statistics, but it's not a job that can be told solely using the numbers. You are a data analyst, not a statistical software package. Part of your job is to take these <em>statistics</em> and turn them into a *description*. When you analyse data, it is not sufficient to list off a collection of numbers. Always remember that what you're really trying to do is communicate with a human audience. The numbers are important, but they need to be put together into a meaningful story that your audience can interpret. That means you need to think about framing. You need to think about context. And you need to think about the individual events that your statistics are summarising.
+      Thus it is no small thing to say that the first task of the statistician and the scientist is to summarise the data, to find some collection of numbers that can convey to an audience a sense of what has happened. This is the job of descriptive statistics, but it's not a job that can be told solely using the numbers. You are a data analyst, not a statistical software package. Part of your job is to take these <em>statistics</em> and turn them into a <em>description</em>. When you analyse data, it is not sufficient to list off a collection of numbers. Always remember that what you're really trying to do is communicate with a human audience. The numbers are important, but they need to be put together into a meaningful story that your audience can interpret. That means you need to think about framing. You need to think about context. And you need to think about the individual events that your statistics are summarising.
     </p>
   </section>
 </chapter>
