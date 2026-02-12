@@ -26,6 +26,9 @@
     <!-- First two chapters -->
     <xi:include href="./ch1-why-statistics.ptx" />
     <xi:include href="./ch2-research-statistics.ptx" />
+    
+    <!-- Chapter 4: Additional R concepts -->
+    <xi:include href="./ch4-additional-r-concepts.ptx" />
 
     <!-- Example chapters from template - commented out for now -->
     <!-- <xi:include href="./ch_first.ptx" /> -->
