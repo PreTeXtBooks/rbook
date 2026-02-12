@@ -45,7 +45,11 @@ class RmdToPreTeXt:
         math_display_parts = []
         def save_display_math(match):
             content = match.group(1).strip()
-            math_display_parts.append(f'<me>{content}</me>')
+            # Use CDATA for LaTeX content to avoid XML parsing issues
+            if '&' in content or '<' in content or '>' in content or '\\begin' in content:
+                math_display_parts.append(f'<me><![CDATA[{content}]]></me>')
+            else:
+                math_display_parts.append(f'<me>{content}</me>')
             return f"~~~DISPMATH{len(math_display_parts)-1}~~~"
         text = re.sub(r'\$\$(.+?)\$\$', save_display_math, text, flags=re.DOTALL)
         
@@ -53,7 +57,11 @@ class RmdToPreTeXt:
         math_parts = []
         def save_inline_math(match):
             content = match.group(1)
-            math_parts.append(f'<m>{content}</m>')
+            # Use CDATA for complex LaTeX
+            if '&' in content or '<' in content or '>' in content:
+                math_parts.append(f'<m><![CDATA[{content}]]></m>')
+            else:
+                math_parts.append(f'<m>{content}</m>')
             return f"~~~MATH{len(math_parts)-1}~~~"
         text = re.sub(r'\$([^\$]+?)\$', save_inline_math, text)
         
@@ -161,10 +169,11 @@ class RmdToPreTeXt:
             # Join code lines
             code_content = '\n'.join(self.code_block_lines)
             
+            # Use CDATA to avoid issues with < and & in code
             self.output.append('    <program language="r">')
-            self.output.append('      <input>')
+            self.output.append('      <input><![CDATA[')
             self.output.append(code_content)
-            self.output.append('      </input>')
+            self.output.append(']]></input>')
             self.output.append('    </program>')
             
             self.code_block_lines = []
