@@ -30,6 +30,9 @@
     <!-- Chapter 4: Additional R concepts -->
     <xi:include href="./ch4-additional-r-concepts.ptx" />
 
+    <!-- Chapter 7: Epilogue -->
+    <xi:include href="./ch7-epilogue.ptx" />
+
     <!-- Example chapters from template - commented out for now -->
     <!-- <xi:include href="./ch_first.ptx" /> -->
     <!-- <xi:include href="./ch_empty.ptx"/> -->
