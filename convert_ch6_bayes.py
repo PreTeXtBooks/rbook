@@ -163,18 +163,24 @@ class RmdToPreTeXt:
     def flush_code_block(self):
         """Flush accumulated code block"""
         if self.code_block_lines:
-            # Determine language
-            lang = 'r'  # default
+            # Check if it's an output block
+            is_output = self.code_block_params.get('output', False)
             
             # Join code lines
             code_content = '\n'.join(self.code_block_lines)
             
-            # Use CDATA to avoid issues with < and & in code
-            self.output.append('    <program language="r">')
-            self.output.append('      <input><![CDATA[')
-            self.output.append(code_content)
-            self.output.append(']]></input>')
-            self.output.append('    </program>')
+            if is_output:
+                # Output blocks are just displayed as pre/code
+                self.output.append('    <pre>')
+                self.output.append(code_content)
+                self.output.append('    </pre>')
+            else:
+                # Use CDATA to avoid issues with < and & in code
+                self.output.append('    <program language="r">')
+                self.output.append('      <input><![CDATA[')
+                self.output.append(code_content)
+                self.output.append(']]></input>')
+                self.output.append('    </program>')
             
             self.code_block_lines = []
             self.in_code_block = False
@@ -199,7 +205,15 @@ class RmdToPreTeXt:
                         key, val = param.split('=', 1)
                         self.code_block_params[key.strip()] = val.strip()
             return
-        elif line.startswith('```') and self.in_code_block:
+        elif line.strip() == '```' and not self.in_code_block:
+            # Start of plain code block (output block)
+            self.flush_paragraph()
+            self.flush_blockquote()
+            self.flush_list()
+            self.in_code_block = True
+            self.code_block_params['output'] = True
+            return
+        elif line.strip() == '```' and self.in_code_block:
             self.flush_code_block()
             return
         elif self.in_code_block:
