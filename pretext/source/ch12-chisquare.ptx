@@ -231,7 +231,7 @@
         <image source="generated/plot.png"/>
       </figure>
       <p>
-        The final step in the process of constructing our hypothesis test is to figure out what the rejection region is. That is, what values of <m>X^2</m> would lead is to reject the null hypothesis. As we saw earlier, large values of <m>X^2</m> imply that the null hypothesis has done a poor job of predicting the data from our experiment, whereas small values of <m>X^2</m> imply that it's actually done pretty well. Therefore, a pretty sensible strategy would be to say there is some critical value, such that if <m>X^2</m> is bigger than the critical value we reject the null; but if <m>X^2</m> is smaller than this value we retain the null. In other words, to use the language we introduced in <xref ref="hypothesistesting" />, the chi-squared goodness of fit test is always a <term>one-sided test</term>. Right, so all we have to do is figure out what this critical value is. And it's pretty straightforward. If we want our test to have significance level of <m>\alpha = .05</m> (that is, we are willing to tolerate a Type I error rate of 5%), then we have to choose our critical value so that there is only a 5% chance that <m>X^2</m> could get to be that big if the null hypothesis is true. That is to say, we want the 95th percentile of the sampling distribution. This is illustrated in <xref ref="fig-goftest" />.
+        The final step in the process of constructing our hypothesis test is to figure out what the rejection region is. That is, what values of <m>X^2</m> would lead is to reject the null hypothesis. As we saw earlier, large values of <m>X^2</m> imply that the null hypothesis has done a poor job of predicting the data from our experiment, whereas small values of <m>X^2</m> imply that it's actually done pretty well. Therefore, a pretty sensible strategy would be to say there is some critical value, such that if <m>X^2</m> is bigger than the critical value we reject the null; but if <m>X^2</m> is smaller than this value we retain the null. In other words, to use the language we introduced in <xref ref="hypothesistesting the chi-squared goodness of fit test is always a <term>one-sided test</term>. Right" />, then we have to choose our critical value so that there is only a 5\% chance that <m>X^2</m> could get to be that big if the null hypothesis is true. That is to say, we want the 95th percentile of the sampling distribution. This is illustrated in <xref ref="fig-goftest" />.
       </p>
       <p>
         Ah, but <mdash /> I hear you ask <mdash /> how do I calculate the 95th percentile of a chi-squared distribution with <m>k-1</m> degrees of freedom? If only R had some function, called... oh, I don't know, <c>qchisq()</c> ... that would let you calculate this percentile (see <xref ref="probability" /> if you've forgotten). Like this...
@@ -258,7 +258,7 @@
         </input>
       </program>
       <p>
-        So, in this case we would reject the null hypothesis, since <m>p &lt; .05</m>.  And that's it, basically. You now know "Pearson's <m>\chi^2</m> test for the goodness of fit". Lucky you.
+        So, in this case we would reject the null hypothesis, since <m>p < .05</m>.  And that's it, basically. You now know "Pearson's <m>\chi^2</m> test for the goodness of fit". Lucky you.
       </p>
     </subsection>
     <subsection xml:id="gofTestInR">
@@ -354,7 +354,7 @@
         So now you know how the test works, and you know how to do the test using a wonderful magic computing box. The next thing you need to know is how to write up the results. After all, there's no point in designing and running an experiment and then analysing the data if you don't tell anyone about it! So let's now talk about what you need to do when reporting your analysis. Let's stick with our card-suits example. If I wanted to write this result up for a paper or something, the conventional way to report this would be to write something like this:
       </p>
       <blockquote>
-        <p>Of the 200 participants in the experiment, 64 selected hearts for their first choice, 51 selected diamonds, 50 selected spades, and 35 selected clubs. A chi-square goodness of fit test was conducted to test whether the choice probabilities were identical for all four suits. The results were significant (<m>\chi^2(3) = 8.44, p&lt;.05</m>), suggesting that people did not select suits purely at random.</p>
+        <p>Of the 200 participants in the experiment, 64 selected hearts for their first choice, 51 selected diamonds, 50 selected spades, and 35 selected clubs. A chi-square goodness of fit test was conducted to test whether the choice probabilities were identical for all four suits. The results were significant (<m>\chi^2(3) = 8.44, p &lt; .05</m>), suggesting that people did not select suits purely at random.</p>
       </blockquote>
       <p>
         This is pretty straightforward, and hopefully it seems pretty unremarkable. That said, there's a few things that you should note about this description:
@@ -508,7 +508,7 @@
     <subsection xml:id="AssocTestInR">
       <title>Doing the test in R</title>
       <p>
-        Okay, now that we know how the test works, let's have a look at how it's done in R. As tempting as it is to lead you through the tedious calculations so that you're forced to learn it the long way, I figure there's no point. I already showed you how to do it the long way for the goodness of fit test in the last section, and since the test of independence isn't conceptually any different, you won't learn anything new by doing it the long way. So instead, I'll go straight to showing you the easy way. As always, R lets you do it multiple ways. There's the <c>chisq.test()</c> function, which I'll talk about in <xref ref="chisq.test" />, but first I want to use the <c>associationTest()</c> function in the <c>lsr</c> package, which I think is easier on beginners. It works in the exact same way as the <c>xtabs()</c> function. Recall that, in order to produce the contingency table, we used this command:
+        Okay, now that we know how the test works, let's have a look at how it's done in R. As tempting as it is to lead you through the tedious calculations so that you're forced to learn it the long way, I figure there's no point. I already showed you how to do it the long way for the goodness of fit test in the last section, and since the test of independence isn't conceptually any different, you won't learn anything new by doing it the long way. So instead, I'll go straight to showing you the easy way. As always, R lets you do it multiple ways. There's the <c>chisq.test()</c> function, which I'll talk about in <xref ref="chisq.test" /></c> function in the <c>lsr</c> package, which I think is easier on beginners. It works in the exact same way as the <c>xtabs()</c> function. Recall that, in order to produce the contingency table, we used this command:
       </p>
       <program language="r">
         <input>
@@ -857,7 +857,7 @@
         </input>
       </program>
       <p>
-        And we're done. We've just run a McNemar's test to determine if people were just as likely to vote AGPP after the ads as they were before hand. The test was significant (<m>\chi^2(1) = 12.04, p&lt;.001</m>), suggesting that they were not. And in fact, it looks like the ads had a negative effect: people were less likely to vote AGPP after seeing the ads. Which makes a lot of sense when you consider the quality of a typical political advertisement.
+        And we're done. We've just run a McNemar's test to determine if people were just as likely to vote AGPP after the ads as they were before hand. The test was significant (<m>\chi^2(1) = 12.04, p &lt; .001</m>), suggesting that they were not. And in fact, it looks like the ads had a negative effect: people were less likely to vote AGPP after seeing the ads. Which makes a lot of sense when you consider the quality of a typical political advertisement.
       </p>
     </subsection>
   </section>

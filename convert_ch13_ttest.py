@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Conversion of 05.13-ttest.Rmd (1,387 lines) to PreTeXt XML format
-Handles t-tests with proper formatting of mathematical notation
+Conversion of 05.13-ttest.Rmd (775 lines) to PreTeXt XML format
+Handles t-test tests with proper formatting of mathematical notation
 """
 
 import re
@@ -46,15 +46,11 @@ class RmdToPreTeXt:
         def save_display_math(match):
             # Convert $$...$$ to <me>...</me> immediately
             content = match.group(1)
-            # Escape XML special characters in math content
-            content = content.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
             math_parts.append(f'<me>{content}</me>')
             return f"__MATH_{len(math_parts)-1}__"
         def save_inline_math(match):
             # Convert $...$ to <m>...</m> immediately
             content = match.group(1)
-            # Escape XML special characters in math content
-            content = content.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
             math_parts.append(f'<m>{content}</m>')
             return f"__MATH_{len(math_parts)-1}__"
         
@@ -82,9 +78,7 @@ class RmdToPreTeXt:
         
         # Restore code as <c>code</c>
         for i, code in enumerate(code_parts):
-            # Escape XML characters in code
-            escaped_code = code.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
-            text = text.replace(f"__CODE_{i}__", f'<c>{escaped_code}</c>')
+            text = text.replace(f"__CODE_{i}__", f'<c>{code}</c>')
         
         # Restore literal dollar signs as plain dollar signs
         text = text.replace('___LITERAL_DOLLAR___', '$')
@@ -251,10 +245,6 @@ class RmdToPreTeXt:
         # Handle escaped quotes within the caption
         caption = caption.replace(r'\"', '"')
         caption = caption.replace(r"\'", "'")
-        
-        # Handle double backslashes in R string literals (e.g., \\sigma -> \sigma)
-        # In R, \\ in a string represents a single backslash, which is needed for LaTeX commands
-        caption = caption.replace('\\\\', '\\')
         
         # Process inline formatting
         caption = self.process_text_line(caption)

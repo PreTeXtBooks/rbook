@@ -68,6 +68,9 @@
       <!-- Chapter 12: Chi-square tests -->
       <xi:include href="./ch12-chisquare.ptx" />
 
+      <!-- Chapter 13: T-tests -->
+      <xi:include href="./ch13-ttest.ptx" />
+
       <!-- Chapter 14: Comparing several means (one-way ANOVA) -->
       <xi:include href="./ch-anova.ptx" />
 

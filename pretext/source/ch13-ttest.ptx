@@ -16,7 +16,7 @@
   <section>
     <title>The one-sample <m>z</m>-test</title>
     <p>
-      In this section I'll describe one of the most useless tests in all of statistics: the <term><m>z</m>-test</term>. Seriously <mdash /> this test is almost never used in real life. Its only real purpose is that, when teaching statistics, it's a very convenient stepping stone along the way towards the <m>t</m>-test, which is probably the most (over)used tool in all statistics.
+      In this section I'll describe one of the most useless tests in all of statistics: the <em>_<m>z</m>-test_</em>. Seriously <mdash /> this test is almost never used in real life. Its only real purpose is that, when teaching statistics, it's a very convenient stepping stone along the way towards the <m>t</m>-test, which is probably the most (over)used tool in all statistics.
     </p>
     <subsection>
       <title>The inference problem that the test addresses</title>
@@ -56,19 +56,14 @@
       <p>
         The first step in constructing a hypothesis test is to be clear about what the null and alternative hypotheses are. This isn't too hard to do. Our null hypothesis, <m>H_0</m>, is that the true population mean <m>\mu</m> for psychology student grades is 67.5\%; and our alternative hypothesis is that the population mean <em>isn't</em> 67.5\%. If we write this in mathematical notation, these hypotheses become, <me> \begin{array}{ll} H_0: &amp; \mu = 67.5 \\ H_1: &amp; \mu \neq 67.5 \end{array} </me> though to be honest this notation doesn't add much to our understanding of the problem, it's just a compact way of writing down what we're trying to learn from the data. The null hypotheses <m>H_0</m> and the alternative hypothesis <m>H_1</m> for our test are both illustrated in <xref ref="fig-ztesthyp" />. In addition to providing us with these hypotheses, the scenario outlined above provides us with a fair amount of background knowledge that might be useful. Specifically, there are two special pieces of information that we can add:
       </p>
-      <ol>
-        <li>
-          <p>The psychology grades are normally distributed.</p>
-        </li>
-        <li>
-          <p>The true standard deviation of these scores <m>\sigma</m> is known to be 9.5.</p>
-        </li>
-      </ol>
+      <p>
+        1 The psychology grades are normally distributed. 1 The true standard deviation of these scores <m>\sigma</m> is known to be 9.5.
+      </p>
       <p>
         For the moment, we'll act as if these are absolutely trustworthy facts. In real life, this kind of absolutely trustworthy background knowledge doesn't exist, and so if we want to rely on these facts we'll just have make the <em>assumption</em> that these things are true. However, since these assumptions may or may not be warranted, we might need to check them. For now though, we'll keep things simple.
       </p>
       <figure>
-        <caption>Graphical illustration of the null and alternative hypotheses assumed by the one sample <m>z</m>-test (the two sided version, that is). The null and alternative hypotheses both assume that the population distribution is normal, and additionally assumes that the population standard deviation is known (fixed at some value <m>\sigma_0</m>). The null hypothesis (left) is that the population mean <m>\mu</m> is equal to some specified value <m>\mu_0</m>. The alternative hypothesis is that the population mean differs from this value, <m>\mu \neq \mu_0</m>.</caption>
+        <caption>Graphical illustration of the null and alternative hypotheses assumed by the one sample <m>z</m>-test (the two sided version, that is). The null and alternative hypotheses both assume that the population distribution is normal, and additionally assumes that the population standard deviation is known (fixed at some value <m>\\sigma_0</m>). The null hypothesis (left) is that the population mean <m>\\mu</m> is equal to some specified value <m>\\mu_0</m>. The alternative hypothesis is that the population mean differs from this value, <m>\\mu \\neq \\mu_0</m>.</caption>
         <image source="generated/plot.png"/>
       </figure>
       <p>
@@ -215,7 +210,7 @@
       Okay, cool. The obvious thing that you might think to do is run a <m>z</m>-test, but using the estimated standard deviation of 9.52 instead of relying on my assumption that the true standard deviation is 9.5. So, we could just type this new number into R and out would come the answer. And you probably wouldn't be surprised to hear that this would still give us a significant result. This approach is close, but it's not <em>quite</em> correct. Because we are now relying on an <em>estimate</em> of the population standard deviation, we need to make some adjustment for the fact that we have some uncertainty about what the true population standard deviation actually is. Maybe our data are just a fluke ... maybe the true population standard deviation is 11, for instance. But if that were actually true, and we ran the <m>z</m>-test assuming <m>\sigma=11</m>, then the result would end up being *non-significant*. That's a problem, and it's one we're going to have to address.
     </p>
     <figure>
-      <caption>Graphical illustration of the null and alternative hypotheses assumed by the (two sided) one sample <m>t</m>-test. Note the similarity to the <m>z</m>-test. The null hypothesis is that the population mean <m>\mu</m> is equal to some specified value <m>\mu_0</m>, and the alternative hypothesis is that it is not. Like the <m>z</m>-test, we assume that the data are normally distributed; but we do not assume that the population standard deviation <m>\sigma</m> is known in advance.</caption>
+      <caption>Graphical illustration of the null and alternative hypotheses assumed by the (two sided) one sample <m>t</m>-test. Note the similarity to the <m>z</m>-test. The null hypothesis is that the population mean <m>\\mu</m> is equal to some specified value <m>\\mu_0</m>, and the alternative hypothesis is that it is not. Like the <m>z</m>-test, we assume that the data are normally distributed; but we do not assume that the population standard deviation <m>\\sigma</m> is known in advance.</caption>
       <image source="generated/plot.png"/>
     </figure>
     <subsection>
@@ -372,7 +367,7 @@
         Okay, so let's let <m>\mu_1</m> denote the true population mean for group 1 (e.g., Anastasia's students), and <m>\mu_2</m> will be the true population mean for group 2 (e.g., Bernadette's students),<fn>A funny question almost always pops up at this point: what the heck <em>is</em> the population being referred to in this case? Is it the set of students actually taking Dr Harpo's class (all 33 of them)? The set of people who might take the class (an unknown number) of them? Or something else? Does it matter which of these we pick? It's traditional in an introductory behavioural stats class to mumble a lot at this point, but since I get asked this question every year by my students, I'll give a brief answer. Technically yes, it does matter: if you change your definition of what the "real world" population actually is, then the sampling distribution of your observed mean <m>\bar{X}</m> changes too. The <m>t</m>-test relies on an assumption that the observations are sampled at random from an infinitely large population; and to the extent that real life isn't like that, then the <m>t</m>-test can be wrong. In practice, however, this isn't usually a big deal: even though the assumption is almost always wrong, it doesn't lead to a lot of pathological behaviour from the test, so we tend to just ignore it.</fn> and as usual we'll let <m>\bar{X}_1</m> and <m>\bar{X}_2</m> denote the observed sample means for both of these groups. Our null hypothesis states that the two population means are identical (<m>\mu_1 = \mu_2</m>) and the alternative to this is that they are not (<m>\mu_1 \neq \mu_2</m>). Written in mathematical-ese, this is... <me> \begin{array}{ll} H_0: &amp; \mu_1 = \mu_2  \\ H_1: &amp; \mu_1 \neq \mu_2 \end{array} </me>
       </p>
       <figure>
-        <caption>Graphical illustration of the null and alternative hypotheses assumed by the Student <m>t</m>-test. The null hypothesis assumes that both groups have the same mean <m>\mu</m>, whereas the alternative assumes that they have different means <m>\mu_1</m> and <m>\mu_2</m>. Notice that it is assumed that the population distributions are normal, and that, although the alternative hypothesis allows the group to have different means, it assumes they have the same standard deviation</caption>
+        <caption>Graphical illustration of the null and alternative hypotheses assumed by the Student <m>t</m>-test. The null hypothesis assumes that both groups have the same mean <m>\\mu</m>, whereas the alternative assumes that they have different means <m>\\mu_1</m> and <m>\\mu_2</m>. Notice that it is assumed that the population distributions are normal, and that, although the alternative hypothesis allows the group to have different means, it assumes they have the same standard deviation</caption>
         <image source="generated/plot.png"/>
       </figure>
       <p>
@@ -980,11 +975,11 @@
         The skewness of the data in Figures <xref ref="fig-qq2a" /> and <xref ref="fig-qq2b" /> is 1.94, and is reflected in a QQ plot that curves upwards. As a consequence, the Shapiro-Wilk statistic is <m>W=.80</m>, reflecting a significant departure from normality (<m>p&lt;.001</m>).
       </p>
       <figure>
-        <caption>A histogram of the 100 observations in a <em>heavy tailed</em> data set, again consisting of 100 observations.</caption>
+        <caption>A histogram of the 100 observations in a *heavy tailed*` data set, again consisting of 100 observations. </caption>
         <image source="generated/plot.png"/>
       </figure>
       <figure>
-        <caption>A QQ plot of the 100 observations in a <em>heavy tailed</em> data set, again consisting of 100 observations.</caption>
+        <caption>A histogram of the 100 observations in a *heavy tailed*` data set, again consisting of 100 observations. </caption>
         <image source="generated/plot.png"/>
       </figure>
       <p>
