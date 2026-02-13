@@ -61,14 +61,22 @@
       <xi:include href="./ch-hypothesistesting.ptx" />
     </part>
 
-    <!-- Comparing several means (one-way ANOVA) -->
-    <xi:include href="./ch-anova.ptx" />
+    <!-- Part V: Statistical tools -->
+    <part xml:id="part-v-statistical-tools">
+      <title>Statistical tools</title>
 
-    <!-- Linear Regression -->
-    <xi:include href="./ch-regression.ptx" />
+      <!-- Chapter 12: Chi-square tests -->
+      <xi:include href="./ch12-chisquare.ptx" />
 
-    <!-- Chapter 5: Factorial ANOVA -->
-    <xi:include href="./ch5-factorial-anova.ptx" />
+      <!-- Chapter 14: Comparing several means (one-way ANOVA) -->
+      <xi:include href="./ch-anova.ptx" />
+
+      <!-- Chapter 15: Linear Regression -->
+      <xi:include href="./ch-regression.ptx" />
+
+      <!-- Chapter 16: Factorial ANOVA -->
+      <xi:include href="./ch5-factorial-anova.ptx" />
+    </part>
 
     <!-- Part VI: Endings, alternatives and prospects -->
     <part xml:id="part-vi-endings">
