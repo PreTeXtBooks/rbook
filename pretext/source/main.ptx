@@ -37,6 +37,9 @@
       <!-- Chapter 5: Descriptive statistics -->
       <xi:include href="./ch5-descriptive-statistics.ptx" />
 
+      <!-- Chapter 6: Graphics (Drawing graphs) -->
+      <xi:include href="./ch6-graphics.ptx" />
+
       <!-- Chapter 7: Data handling (Pragmatic matters) -->
       <xi:include href="./ch7-data-handling.ptx" />
     </part>
