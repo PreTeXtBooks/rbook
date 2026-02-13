@@ -42,6 +42,9 @@
 
       <!-- Chapter 7: Data handling (Pragmatic matters) -->
       <xi:include href="./ch7-data-handling.ptx" />
+
+      <!-- Chapter 8: Scripting (Basic programming) -->
+      <xi:include href="./ch8-scripting.ptx" />
     </part>
 
     <!-- Part IV: Statistical theory -->
