@@ -73,8 +73,9 @@ class RmdToPreTeXt:
         # Convert **bold** to <em>
         text = re.sub(r'\*\*([^*]+)\*\*', r'<em>\1</em>', text)
         
-        # Convert *italics* (at start of line or after space) to <em>
-        text = re.sub(r'(^|\s)\*([^*]+)\*($|\s)', r'\1<em>\2</em>\3', text)
+        # Convert *italics* - now handles all cases, not just at word boundaries
+        # This pattern avoids matching ** by using negative lookahead/lookbehind
+        text = re.sub(r'(?<!\*)\*(?!\*)([^*]+)(?<!\*)\*(?!\*)', r'<em>\1</em>', text)
         
         # Convert -- to <mdash />
         text = text.replace(' -- ', ' <mdash /> ')
@@ -248,6 +249,10 @@ class RmdToPreTeXt:
         # Handle escaped quotes within the caption
         caption = caption.replace(r'\"', '"')
         caption = caption.replace(r"\'", "'")
+        
+        # Normalize double backslashes in @ref to single backslash
+        # This happens because fig.cap has \\@ref which becomes \@ref after parsing
+        caption = caption.replace(r'\\@ref', r'\@ref')
         
         # Process inline formatting
         caption = self.process_text_line(caption)
