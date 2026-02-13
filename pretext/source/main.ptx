@@ -23,12 +23,24 @@
     <!-- out for now and write this when the book is more complete -->
     <xi:include href="./meta_frontmatter.ptx" />
 
-    <!-- First two chapters -->
-    <xi:include href="./ch1-why-statistics.ptx" />
-    <xi:include href="./ch2-research-statistics.ptx" />
-    
-    <!-- Chapter 4: Additional R concepts -->
-    <xi:include href="./ch4-additional-r-concepts.ptx" />
+    <!-- Part I: Background -->
+    <part xml:id="part-i-background">
+      <title>Background</title>
+
+      <!-- Why do we learn statistics? -->
+      <xi:include href="./ch1-why-statistics.ptx" />
+
+      <!-- A brief introduction to research design -->
+      <xi:include href="./ch2-research-statistics.ptx" />
+    </part>
+
+    <!-- Part II: An Introduction to R -->
+    <part xml:id="part-ii-introduction-to-r">
+      <title>An Introduction to R</title>
+
+      <!-- Additional R concepts -->
+      <xi:include href="./ch4-additional-r-concepts.ptx" />
+    </part>
 
     <!-- Part IV: Statistical theory -->
     <part xml:id="part-iv-statistical-theory">
@@ -44,14 +56,19 @@
       <xi:include href="./ch-hypothesistesting.ptx" />
     </part>
 
-    <!-- Comparing several means (one-way ANOVA) -->
-    <xi:include href="./ch-anova.ptx" />
+    <!-- Part V: Statistical Tools -->
+    <part xml:id="part-v-statistical-tools">
+      <title>Statistical Tools</title>
 
-    <!-- Linear Regression -->
-    <xi:include href="./ch-regression.ptx" />
+      <!-- Comparing several means (one-way ANOVA) -->
+      <xi:include href="./ch-anova.ptx" />
 
-    <!-- Chapter 5: Factorial ANOVA -->
-    <xi:include href="./ch5-factorial-anova.ptx" />
+      <!-- Linear Regression -->
+      <xi:include href="./ch-regression.ptx" />
+
+      <!-- Factorial ANOVA -->
+      <xi:include href="./ch5-factorial-anova.ptx" />
+    </part>
 
     <!-- Part VI: Endings, alternatives and prospects -->
     <part xml:id="part-vi-endings">
