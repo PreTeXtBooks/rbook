@@ -30,6 +30,40 @@
     <!-- Chapter 4: Additional R concepts -->
     <xi:include href="./ch4-additional-r-concepts.ptx" />
 
+    <!-- Part IV: Statistical theory -->
+    <part xml:id="part-iv-statistical-theory">
+      <title>Statistical theory</title>
+
+      <!-- Probability -->
+      <xi:include href="./ch-probability.ptx" />
+
+      <!-- Estimation -->
+      <xi:include href="./ch-estimation.ptx" />
+
+      <!-- Hypothesis Testing -->
+      <xi:include href="./ch-hypothesistesting.ptx" />
+    </part>
+
+    <!-- Comparing several means (one-way ANOVA) -->
+    <xi:include href="./ch-anova.ptx" />
+
+    <!-- Linear Regression -->
+    <xi:include href="./ch-regression.ptx" />
+
+    <!-- Chapter 5: Factorial ANOVA -->
+    <xi:include href="./ch5-factorial-anova.ptx" />
+
+    <!-- Part VI: Endings, alternatives and prospects -->
+    <part xml:id="part-vi-endings">
+      <title>Endings, alternatives and prospects</title>
+
+      <!-- Chapter 6: Bayesian Statistics -->
+      <xi:include href="./ch6-bayesian-statistics.ptx" />
+
+      <!-- Chapter 7: Epilogue -->
+      <xi:include href="./ch7-epilogue.ptx" />
+    </part>
+
     <!-- Example chapters from template - commented out for now -->
     <!-- <xi:include href="./ch_first.ptx" /> -->
     <!-- <xi:include href="./ch_empty.ptx"/> -->
