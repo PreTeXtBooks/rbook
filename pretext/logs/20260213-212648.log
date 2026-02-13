@@ -1,0 +1,34 @@
+WARNING : Using CLI version 2.36.0 but project's `requirements.txt`
+WARNING : is configured to use 0.8.3. Consider either installing
+WARNING : CLI version 0.8.3 or running `pretext update`
+WARNING : to update `requirements.txt` and other managed files to match 2.36.0.
+INFO    : Building target web
+INFO    : XSL conversion of /home/runner/work/rbook/rbook/pretext/source/main.ptx by /home/runner/.ptx/2.36.0/core/xsl/utilities/pretext-enhanced-source.xsl
+INFO    : messages from the log for XSL processing:
+WARNING : * PTX:WARNING: The "default" style requested in publication/html/css is deprecated. Your book will be built with theme="default-modern". See the PreTeXt Guide for options for the newer HTML themes and their specification .
+INFO    : successful application of /home/runner/.ptx/2.36.0/core/xsl/utilities/pretext-enhanced-source.xsl
+INFO    : Generating any needed assets.
+INFO    : Finished generating assets.
+
+INFO    : Preparing to build into /home/runner/work/rbook/rbook/pretext/output/web.
+INFO    : discovering source file's directory name: /home/runner/work/rbook/rbook/pretext/source
+INFO    : verifying and expanding input directory: /home/runner/work/rbook/rbook/pretext/source/../generated-assets
+INFO    : input directory expanded to absolute path: /home/runner/work/rbook/rbook/pretext/generated-assets
+INFO    : verifying and expanding input directory: /home/runner/work/rbook/rbook/pretext/source/../assets
+INFO    : input directory expanded to absolute path: /home/runner/work/rbook/rbook/pretext/assets
+INFO    : discovering source file's directory name: /home/runner/work/rbook/rbook/pretext/source
+INFO    : XSL conversion of /home/runner/work/rbook/rbook/pretext/source/main.ptx by /home/runner/.ptx/2.36.0/core/xsl/utilities/report-publisher-variables.xsl
+INFO    : messages from the log for XSL processing:
+WARNING : * PTX:WARNING: The "default" style requested in publication/html/css is deprecated. Your book will be built with theme="default-modern". See the PreTeXt Guide for options for the newer HTML themes and their specification .
+INFO    : successful application of /home/runner/.ptx/2.36.0/core/xsl/utilities/report-publisher-variables.xsl
+INFO    : Downloading rs services file from https://runestone.academy/cdn/runestone/latest/webpack_static_imports.xml.
+WARNING : Could not download rs services file from https://runestone.academy/cdn/runestone/latest/webpack_static_imports.xml.  Using cached version instead.
+CRITICAL: cannot access local variable 'services_xml' where it is not associated with a value
+INFO    : ------------------------
+CRITICAL: Failed to build without errors.  Exiting...
+INFO    : 
+----------------------------------------------------
+INFO    : While running pretext, the following errors occurred:
+
+INFO    : (see log messages above or in the 'logs' folder for more information)
+INFO    : ----------------------------------------------------

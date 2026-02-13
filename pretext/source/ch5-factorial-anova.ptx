@@ -14,6 +14,15 @@ load(file.path(projecthome, "data","clinicaltrial.Rdata"))
 xtabs( ~ drug + therapy, clin.trial )
         ]]></input>
       </program>
+    <console>
+      <output><![CDATA[
+##           therapy
+## drug       no.therapy CBT
+##   placebo           3   3
+##   anxifree          3   3
+##   joyzepam          3   3
+]]></output>
+    </console>
       <p>As you can see, not only do we have participants corresponding to all possible combinations of the two factors, indicating that our design is <em>completely crossed</em>, it turns out that there are an equal number of people in each group. In other words, we have a <em>balanced</em> design. In this section I'll talk about how to analyse data from balanced designs, since this is the simplest case. The story for unbalanced designs is quite tedious, so we'll put it to one side for the moment.</p>
     <subsection xml:id="factanovahyp">
       <title>What hypotheses are we testing?</title>
@@ -24,6 +33,17 @@ xtabs( ~ drug + therapy, clin.trial )
 aggregate( mood.gain ~ drug + therapy, clin.trial, mean )
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+##       drug    therapy mood.gain
+## 1  placebo no.therapy  0.300000
+## 2 anxifree no.therapy  0.400000
+## 3 joyzepam no.therapy  1.466667
+## 4  placebo        CBT  0.600000
+## 5 anxifree        CBT  1.033333
+## 6 joyzepam        CBT  1.500000
+]]></output>
+    </console>
         <p>Now, this output shows a cross-tabulation of the group means for all possible combinations of the two factors (e.g., people who received the placebo and no therapy, people who received the placebo while getting CBT, etc). However, we can also construct tables that ignore one of the two factors. That gives us output that looks like this:</p>
         <program language="r">
           <input><![CDATA[
@@ -31,12 +51,25 @@ aggregate( mood.gain ~ drug, clin.trial, mean )
 aggregate( mood.gain ~ therapy, clin.trial, mean )
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+##       drug mood.gain
+## 1  placebo 0.4500000
+## 2 anxifree 0.7166667
+## 3 joyzepam 1.4833333
+]]></output>
+    </console>
         <p>But of course, if we can ignore one factor we can certainly ignore both. That is, we might also be interested in calculating the average  mood gain across all 18 participants, regardless of what drug or psychological therapy they were given:</p>
         <program language="r">
           <input><![CDATA[
 mean( clin.trial$mood.gain )
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+## [1] 0.8833333
+]]></output>
+    </console>
         <p>At this point we have 12 different sample means to keep track of! It is helpful to organise all these numbers into a single table, which would look like this:</p>
         <program language="r">
           <input><![CDATA[
@@ -110,6 +143,15 @@ model.1 <- aov( mood.gain ~ drug, clin.trial )
 summary( model.1 )  
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+##             Df Sum Sq Mean Sq F value   Pr(>F)    
+## drug         2  3.453  1.7267   18.61 8.65e-05 ***
+## Residuals   15  1.392  0.0928                     
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+]]></output>
+    </console>
         <p>Note that this time around I've used the name `model.1` as the label for my `aov` object, since I'm planning on creating quite a few other models too. To start with, suppose I'm also curious to find out if `therapy` has a relationship to `mood.gain`. In light of what we've seen from our discussion of multiple regression in Chapter <xref ref="regression"/>, you probably won't be surprised that all we have to do is extend the formula: in other words, if we specify `mood.gain ~ drug + therapy` as our model, we'll probably get what we're after:</p>
         <program language="r">
           <input><![CDATA[
@@ -133,6 +175,11 @@ F_{A} = \frac{\mbox{MS}_{A}}{\mbox{MS}_{R}}
 pf( q=26.15, df1=2, df2=14, lower.tail=FALSE )
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+## [1] 1.871981e-05
+]]></output>
+    </console>
         <p>And as you can see, this is indeed the <m>p</m> value reported in the ANOVA table above.</p>
         <p>At this point, I hope you can see that the ANOVA table for this more complicated analysis corresponding to `model.2` should be read in much the same way as the ANOVA table for the simpler analysis for `model.1`. In short, it's telling us that the factorial ANOVA for our <m>3 \times 2</m> design found a significant effect of drug (<m>F_{2,14} = 26.15, p &lt; .001</m>) as well as a significant effect of therapy (<m>F_{1,14} = 7.08, p = .02</m>). Or, to use the more technically correct terminology, we would say that there are two <em>main effects</em> of drug and therapy. At the moment, it probably seems a bit redundant to refer to these as "main" effects: but it actually does make sense. Later on, we're going to want to talk about the possibility of "interactions" between the two factors, and so we generally make a distinction between main effects and interaction effects.</p>
     </subsection>
@@ -169,6 +216,14 @@ therapy.means <- aggregate( mood.gain ~ therapy, clin.trial, mean )[,2]
 grand.mean <- mean( clin.trial$mood.gain )
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+##       drug mood.gain
+## 1  placebo 0.4500000
+## 2 anxifree 0.7166667
+## 3 joyzepam 1.4833333
+]]></output>
+    </console>
         <p>Okay, now let's calculate the sum of squares associated with the main effect of `drug`. There are a total of <m>N=3</m> people in each group, and <m>C=2</m> different types of therapy. Or, to put it another way, there are <m>3 \times 2 = 6</m> people who received any particular drug. So our calculations are:</p>
         <program language="r">
           <input><![CDATA[
@@ -176,6 +231,11 @@ SS.drug <- (3*2) * sum( (drug.means - grand.mean)^2 )
 SS.drug
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+## [1] 3.453333
+]]></output>
+    </console>
         <p>Not surprisingly, this is the same number that you get when you look up the SS value for the drugs factor in the ANOVA table that I presented earlier. We can repeat the same kind of calculation for the effect of therapy. Again there are <m>N=3</m> people in each group, but since there are <m>R=3</m> different drugs, this time around we note that there are <m>3 \times 3 = 9</m> people who received CBT, and an additional 9 people who received the placebo. So our calculation is now:</p>
         <program language="r">
           <input><![CDATA[
@@ -183,6 +243,11 @@ SS.therapy <- (3*3) * sum( (therapy.means - grand.mean)^2 )
 SS.therapy
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+## [1] 0.4672222
+]]></output>
+    </console>
         <p>and we are, once again, unsurprised to see that our calculations are identical to the ANOVA output.</p>
         <p>So that's how you calculate the SS values for the two main effects. These SS values are analogous to the between-group sum of squares values that we calculated when doing one-way ANOVA in Chapter <xref ref="anova"/>. However, it's not a good idea to think of them as between-groups SS values anymore, just because we have two different grouping variables and it's easy to get confused. In order to construct an <m>F</m> test, however, we also need to calculate the within-groups sum of squares. In keeping with the terminology that we used in the regression chapter (Chapter <xref ref="regression"/>) and the terminology that R uses when printing out the ANOVA table, I'll start referring to the within-groups SS value as the <em>residual</em> sum of squares SS<m>_R</m>.</p>
         <p>The easiest way to think about the residual SS values in this context, I think, is to think of it as the leftover variation in the outcome variable after you take into account the differences in the marginal means (i.e., after you remove SS<m>_A</m> and SS<m>_B</m>). What I mean by that is we can start by calculating the total sum of squares, which I'll label SS<m>_T</m>. The formula for this is pretty much the same as it was for one-way ANOVA: we take the difference between each observation <m>Y_{rci}</m> and the grand mean <m>\bar{Y}_{..}</m>, square the differences, and add them all up</p>
@@ -202,6 +267,11 @@ SS.tot <- sum( (clin.trial$mood.gain - grand.mean)^2 )
 SS.tot
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+## [1] 4.845
+]]></output>
+    </console>
         <p>and then we use it to calculate the residual sum of squares:</p>
         <program language="r">
           <input><![CDATA[
@@ -209,6 +279,11 @@ SS.res <- SS.tot - (SS.drug + SS.therapy)
 SS.res
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+## [1] 0.9244444
+]]></output>
+    </console>
         <p>Yet again, we get the same answer.</p>
     </subsection>
     <subsection>
@@ -227,24 +302,68 @@ knitr::include_graphics(file.path(projecthome, "img","factorialanova","maineffec
 
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+## 
+##  drug*therapy effect
+##           therapy
+## drug       no.therapy       CBT
+##   placebo   0.2888889 0.6111111
+##   anxifree  0.5555556 0.8777778
+##   joyzepam  1.3222222 1.6444444
+]]></output>
+    </console>
         <program language="r">
           <input><![CDATA[
 knitr::include_graphics(file.path(projecthome, "img","factorialanova","maineffectB.png"))
 
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+## 
+##  drug*therapy effect
+##           therapy
+## drug       no.therapy       CBT
+##   placebo   0.2888889 0.6111111
+##   anxifree  0.5555556 0.8777778
+##   joyzepam  1.3222222 1.6444444
+]]></output>
+    </console>
         <program language="r">
           <input><![CDATA[
 knitr::include_graphics(file.path(projecthome, "img","factorialanova","maineffectAB.png"))
 
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+## 
+##  drug*therapy effect
+##           therapy
+## drug       no.therapy       CBT
+##   placebo   0.2888889 0.6111111
+##   anxifree  0.5555556 0.8777778
+##   joyzepam  1.3222222 1.6444444
+]]></output>
+    </console>
         <program language="r">
           <input><![CDATA[
 knitr::include_graphics(file.path(projecthome, "img","factorialanova","maineffectAB.png"))
 
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+## 
+##  drug*therapy effect
+##           therapy
+## drug       no.therapy       CBT
+##   placebo   0.2888889 0.6111111
+##   anxifree  0.5555556 0.8777778
+##   joyzepam  1.3222222 1.6444444
+]]></output>
+    </console>
     </subsection>
     <subsection>
       <title>What kinds of outcomes does this analysis capture?</title>
@@ -390,6 +509,17 @@ df_{A:B} &=& (R\times C - 1) - (R - 1) - (C -1 ) \\
  summary( model.3 )
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+##              Df Sum Sq Mean Sq F value   Pr(>F)    
+## drug          2  3.453  1.7267  31.714 1.62e-05 ***
+## therapy       1  0.467  0.4672   8.582   0.0126 *  
+## drug:therapy  2  0.271  0.1356   2.490   0.1246    
+## Residuals    12  0.653  0.0544                     
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+]]></output>
+    </console>
         <p>As it turns out, while we do have a significant main effect of drug (<m>F_{2,12} = 31.7, p &lt;.001</m>) and therapy type (<m>F_{1,12} = 8.6, p=.013</m>), there is no significant interaction between the two (<m>F_{2,12} = 2.5, p = 0.125</m>).</p>
     </subsection>
     <subsection>
@@ -424,6 +554,13 @@ df_{A:B} &=& (R\times C - 1) - (R - 1) - (C -1 ) \\
  etaSquared( model.2 )
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+##            eta.sq eta.sq.part
+## drug    0.7127623   0.7888325
+## therapy 0.0964339   0.3357285
+]]></output>
+    </console>
         <p>Looking at the <m>\eta^2</m> values first, we see that `drug` accounts for 71.3\% of the variance (i.e. <m>\eta^2 = 0.713</m>) in `mood.gain`, whereas `therapy` only accounts for 9.6\%. This leaves a total of 19.1\% of the variation unaccounted for (i.e., the residuals constitute 19.1\% of the variation in the outcome). Overall, this implies that we have a very large effect<fn>Implausibly large, I would think: the artificiality of this data set is really starting to show!</fn> of `drug` and a modest effect of `therapy`.</p>
         <p>Now let's look at the partial <m>\eta^2</m> values. Because the effect of `therapy` isn't all that large, controlling for it doesn't make much of a difference, so the partial <m>\eta^2</m> for `drug` doesn't increase very much, and we obtain a value of <m>_p\eta^2 = 0.789</m>). In contrast, because the effect of `drug` was very large, controlling for it makes a big difference, and so when we calculate the partial <m>\eta^2</m> for `therapy` you can see that it rises to <m>_p\eta^2 = 0.336</m>. The question that we have to ask ourselves is, what does these partial <m>\eta^2</m> values actually <em>mean</em>? The way I generally interpret the partial <m>\eta^2</m> for the main effect of Factor A is to interpret it as a statement about a hypothetical experiment in which <em>only</em> Factor A was being varied. So, even though in <em>this</em> experiment we varied both A and B, we can easily imagine an experiment in which only Factor A was varied: the partial <m>\eta^2</m> statistic tells you how much of the variance in the outcome variable you would expect to see accounted for in that experiment. However, it should be noted that this interpretation -- like many things associated with main effects -- doesn't make a lot of sense when there is a large and significant interaction effect.</p>
         <p>Speaking of interaction effects, here's what we get when we calculate the effect sizes for the model that includes the interaction term. As you can see, the <m>\eta^2</m> values for the main effects don't change, but the partial <m>\eta^2</m> values do:</p>
@@ -432,6 +569,14 @@ df_{A:B} &=& (R\times C - 1) - (R - 1) - (C -1 ) \\
  etaSquared( model.3 )
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+##                  eta.sq eta.sq.part
+## drug         0.71276230   0.8409091
+## therapy      0.09643390   0.4169559
+## drug:therapy 0.05595689   0.2932692
+]]></output>
+    </console>
     </subsection>
     <subsection>
       <title>Estimated group means</title>
@@ -445,12 +590,48 @@ df_{A:B} &=& (R\times C - 1) - (R - 1) - (C -1 ) \\
 
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+## 
+##  drug*therapy effect
+##           therapy
+## drug       no.therapy      CBT
+##   placebo    0.300000 0.600000
+##   anxifree   0.400000 1.033333
+##   joyzepam   1.466667 1.500000
+]]></output>
+    </console>
         <p>Notice that these are actually the same numbers we got when computing the sample means earlier (i.e., the `group.means` variable that we computed using `aggregate()`). One useful thing that we can do using the effect variable `eff`, however, is extract the confidence intervals using the `summary()` function:</p>
         <program language="r">
           <input><![CDATA[
  summary(eff)
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+## 
+##  drug*therapy effect
+##           therapy
+## drug       no.therapy      CBT
+##   placebo    0.300000 0.600000
+##   anxifree   0.400000 1.033333
+##   joyzepam   1.466667 1.500000
+## 
+##  Lower 95 Percent Confidence Limits
+##           therapy
+## drug        no.therapy       CBT
+##   placebo  0.006481093 0.3064811
+##   anxifree 0.106481093 0.7398144
+##   joyzepam 1.173147759 1.2064811
+## 
+##  Upper 95 Percent Confidence Limits
+##           therapy
+## drug       no.therapy       CBT
+##   placebo   0.5935189 0.8935189
+##   anxifree  0.6935189 1.3268522
+##   joyzepam  1.7601856 1.7935189
+]]></output>
+    </console>
         <p>In this output, we see that the estimated mean mood gain for the placebo group with no therapy was 0.300, with a 95\% confidence interval from 0.006 to 0.594. Note that these are not the same confidence intervals that you would get if you calculated them separately for each group, because of the fact that the ANOVA model assumes homogeneity of variance and therefore uses a pooled estimate of the standard deviation.</p>
         <p>When the model doesn't contain the interaction term, then the estimated group means will be different from the sample means. Instead of reporting the sample mean, the `effect()` function will calculate the value of the group means that would be expected on the basis of the marginal means (i.e., assuming no interaction). Using the notation we developed earlier, the estimate reported for <m>\mu_{rc}</m>, the mean for level <m>r</m> on the (row) Factor A and level <m>c</m> on the (column) Factor B would be <m>\mu_{..} + \alpha_r + \beta_c</m>. If there are genuinely no interactions between the two factors, this is actually a better estimate of the population mean than the raw sample mean would be. The command to obtain these estimates is actually identical to the last one, except that we use `model.2`. When you do this, R will give you a warning message:</p>
         <program language="r">
@@ -458,18 +639,45 @@ df_{A:B} &=& (R\times C - 1) - (R - 1) - (C -1 ) \\
  eff <- effect( "drug*therapy", model.2 )
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+## NOTE: drug:therapy does not appear in the model
+]]></output>
+    </console>
         <p>but this isn't anything to worry about. This is R being polite, and letting you know that the estimates it is constructing are based on the assumption that no interactions exist. It kind of makes sense that it would do this: when we use `"drug*therapy"` as our input, we're telling R that we want it to output the estimated group means (rather than marginal means), but the actual input `"drug*therapy"` might mean that you want interactions included or you might not. There's no <em>actual</em> ambiguity here, because the model itself either does or doesn't have interactions, but the authors of the function thought it sensible to include a warning just to make sure that you've specified the actual model you care about. But, assuming that we genuinely don't believe that there are any interactions, `model.2` is the right model to use, so we can ignore this warning.<fn>In fact, there's a function `Effect()` within the `effects` package that has slightly different arguments, but computes the same things, and won't give you this warning message.</fn> In any case, when we inspect the output, we get the following table of estimated group means:</p>
         <program language="r">
           <input><![CDATA[
  eff
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+## 
+##  drug*therapy effect
+##           therapy
+## drug       no.therapy      CBT
+##   placebo    0.300000 0.600000
+##   anxifree   0.400000 1.033333
+##   joyzepam   1.466667 1.500000
+]]></output>
+    </console>
         <p>As before, we can obtain confidence intervals using the following command:</p>
         <program language="r">
           <input><![CDATA[
  summary( eff )
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+## 
+##  drug*therapy effect
+##           therapy
+## drug       no.therapy       CBT
+##   placebo   0.2888889 0.6111111
+##   anxifree  0.5555556 0.8777778
+##   joyzepam  1.3222222 1.6444444
+]]></output>
+    </console>
         <p>but the output looks pretty much the same as last time, and this book is already way too long, so I won't include it here.</p>
     </subsection>
   </section>
@@ -496,6 +704,14 @@ library(car)
  leveneTest( mood.gain ~ drug * therapy, clin.trial )
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+## Levene's Test for Homogeneity of Variance (center = median)
+##       Df F value Pr(>F)
+## group  5  0.0955 0.9912
+##       12
+]]></output>
+    </console>
         <p>The fact that the Levene test is non-significant means that we can safely assume that the homogeneity of variance assumption is not violated.</p>
     </subsection>
     <subsection>
@@ -510,6 +726,15 @@ library(car)
  shapiro.test( resid )          # run the Shapiro-Wilk test
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+## 
+##  Shapiro-Wilk normality test
+## 
+## data:  resid
+## W = 0.95635, p-value = 0.5329
+]]></output>
+    </console>
         <p>I haven't included the plots (you can draw them yourself if you want to see them), but you can see from the non-significance of the Shapiro-Wilk test that normality isn't violated here.</p>
     </subsection>
   </section>
@@ -577,6 +802,19 @@ F = \frac\mbox{MS}_{\Delta}\mbox{MS}_{R1}
  anova( model.1, model.3 )
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+## Analysis of Variance Table
+## 
+## Model 1: mood.gain ~ drug
+## Model 2: mood.gain ~ drug * therapy
+##   Res.Df     RSS Df Sum of Sq      F  Pr(>F)  
+## 1     15 1.39167                              
+## 2     12 0.65333  3   0.73833 4.5204 0.02424 *
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+]]></output>
+    </console>
         <p>Let's see if we can reproduce this <m>F</m>-test ourselves. Firstly, if you go back and look at the ANOVA tables that we printed out for `model.1` and `model.3` you can reassure yourself that the RSS values printed in this table really do correspond to the residual sum of squares associated with these two models. So let's type them in as variables:</p>
         <program language="r">
           <input><![CDATA[
@@ -591,6 +829,11 @@ F = \frac\mbox{MS}_{\Delta}\mbox{MS}_{R1}
  ss.diff
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+## [1] 0.739
+]]></output>
+    </console>
         <p>Right. Next, as always we need to convert these SS values into MS (mean square) values, which we do by dividing by the degrees of freedom. The degrees of freedom associated with the full-model residuals hasn't changed from our original ANOVA for `model.3`: it's the total sample size <m>N</m>, minus the total number of groups <m>G</m> that are relevant to the model. We have 18 people in the trial and 6 possible groups (i.e., 2 therapies <m>\times</m> 3 drugs), so the degrees of freedom here is 12. The degrees of freedom for the null model are calculated similarly. The only difference here is that there are only 3 relevant groups (i.e., 3 drugs), so the degrees of freedom here is 15. And, because the degrees of freedom associated with the difference is equal to the difference in the two degrees of freedom, we arrive at the conclusion that we have <m>15-12 = 3</m> degrees of freedom. Now that we know the degrees of freedom, we can calculate our MS values:</p>
         <program language="r">
           <input><![CDATA[
@@ -605,6 +848,11 @@ F = \frac\mbox{MS}_{\Delta}\mbox{MS}_{R1}
  F.stat
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+## [1] 4.526799
+]]></output>
+    </console>
         <p>... and, just as we had hoped, this turns out to be identical to the <m>F</m>-statistic that the `anova()` function produced earlier.</p>
     </subsection>
   </section>
@@ -648,24 +896,76 @@ load(file.path(projecthome, "data","rtfm.Rdata"))
 rtfm.1
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+##   grade attend reading
+## 1    90      1       1
+## 2    87      1       1
+## 3    75      0       1
+## 4    60      1       0
+## 5    35      0       0
+## 6    50      0       0
+## 7    65      1       0
+## 8    70      0       1
+]]></output>
+    </console>
         <p>Well, sort of. I suspect that a few readers are probably frowning a little at this point. Earlier on in the book I emphasised the importance of converting nominal scale variables such as `attend` and `reading` to factors, rather than encoding them as numeric variables. The `rtfm.1` data frame doesn't do this, but the `rtfm.2` data frame does, and so you might instead be expecting to see data like this:</p>
         <program language="r">
           <input><![CDATA[
  rtfm.2
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+##   grade attend reading
+## 1    90    yes     yes
+## 2    87    yes     yes
+## 3    75     no     yes
+## 4    60    yes      no
+## 5    35     no      no
+## 6    50     no      no
+## 7    65    yes      no
+## 8    70     no     yes
+]]></output>
+    </console>
         <p>However, for the purposes of this section it's important that we be able to switch back and forth between these two different ways of thinking about the data. After all, our goal in this section is to look at some of the mathematics that underpins ANOVA, and if we want to do that we need to be able to see the numerical representation of the data (in `rtfm.1`) as well as the more meaningful factor representation (in `rtfm.2`). In any case, we can use the `xtabs()` function to confirm that this data set corresponds to a balanced design</p>
         <program language="r">
           <input><![CDATA[
  xtabs( ~ attend + reading, rtfm.2 )
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+##   grade attend reading
+## 1    90    yes     yes
+## 2    87    yes     yes
+## 3    75     no     yes
+## 4    60    yes      no
+## 5    35     no      no
+## 6    50     no      no
+## 7    65    yes      no
+## 8    70     no     yes
+]]></output>
+    </console>
         <p>For each possible combination of the `attend` and `reading` variables, we have exactly two students. If we're interested in calculating the mean `grade` for each of these cells, we can use the `aggregate()` function:</p>
         <program language="r">
           <input><![CDATA[
  aggregate( grade ~ attend + reading, rtfm.2, mean )
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+##   grade attend reading
+## 1    90    yes     yes
+## 2    87    yes     yes
+## 3    75     no     yes
+## 4    60    yes      no
+## 5    35     no      no
+## 6    50     no      no
+## 7    65    yes      no
+## 8    70     no     yes
+]]></output>
+    </console>
         <p>Looking at this table, one gets the strong impression that reading the text and attending the class both matter a lot.</p>
     </subsection>
     <subsection>
@@ -682,6 +982,19 @@ Y_{p} = b_1 X_{1p} + b_2 X_{2p} + b_0 + \epsilon_p
  summary( anova.model )    
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+##   grade attend reading
+## 1    90    yes     yes
+## 2    87    yes     yes
+## 3    75     no     yes
+## 4    60    yes      no
+## 5    35     no      no
+## 6    50     no      no
+## 7    65    yes      no
+## 8    70     no     yes
+]]></output>
+    </console>
         <p>So, by reading the key numbers off the ANOVA table and the table of means that we presented earlier, we can see that the students obtained a higher grade if they attended class <m>(F_{1,5} = 26.1, p = .0056)</m> and if they read the textbook <m>(F_{1,5} = 52.3, p = .0008)</m>. Let's make a note of those <m>p</m>-values and those <m>F</m> statistics.</p>
         <program language="r">
           <input><![CDATA[
@@ -689,6 +1002,17 @@ Y_{p} = b_1 X_{1p} + b_2 X_{2p} + b_0 + \epsilon_p
  Effect( c("attend","reading"), anova.model )
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+## 
+##  drug*therapy effect
+##           therapy
+## drug       no.therapy       CBT
+##   placebo   0.2888889 0.6111111
+##   anxifree  0.5555556 0.8777778
+##   joyzepam  1.3222222 1.6444444
+]]></output>
+    </console>
         <p>Now let's think about the same analysis from a linear regression perspective. In the `rtfm.1` data set, we have encoded `attend` and `reading` as if they were numeric predictors. In this case, this is perfectly acceptable. There really is a sense in which a student who turns up to class (i.e. `attend = 1`) has in fact done "more attendance" than a student who does not (i.e. `attend = 0`). So it's not at all unreasonable to include it as a predictor in a regression model. It's a little unusual, because the predictor only takes on two possible values, but it doesn't violate any of the assumptions of linear regression. And it's easy to interpret. If the regression coefficient for `attend` is greater than 0, it means that students that attend lectures get higher grades; if it's less than zero, then students attending lectures get lower grades. The same is true for our `reading` variable.</p>
         <p>Wait a second... <em>why</em> is this true? It's something that is intuitively obvious to everyone who has taken a few stats classes and is comfortable with the maths, but it <em>isn't</em> clear to everyone else at first pass. To see why this is true, it helps to look closely at a few specific students. Let's start by considering the 6th and 7th students in our data set (i.e. <m>p=6</m> and <m>p=7</m>). Neither one has read the textbook, so in both cases we can set `reading = 0`. Or, to say the same thing in our mathematical notation, we observe <m>X_{2,6} = 0</m> and <m>X_{2,7} = 0</m>. However, student number 7 did turn up to lectures (i.e., `attend = 1`, <m>X_{1,7} = 1</m>) whereas student number 6 did not (i.e., `attend = 0`, <m>X_{1,6} = 0</m>). Now let's look at what happens when we insert these numbers into the general formula for our regression line. For student number 6, the regression predicts that</p>
         <me><![CDATA[
@@ -734,6 +1058,29 @@ knitr::kable(tibble::tribble(
  summary( regression.model )
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+## 
+## Call:
+## lm(formula = grade ~ attend + reading, data = rtfm.1)
+## 
+## Residuals:
+##    1    2    3    4    5    6    7    8 
+##  0.5 -2.5  3.5 -1.5 -8.5  6.5  3.5 -1.5 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)   43.500      3.354  12.969 4.86e-05 ***
+## attend        18.000      3.873   4.648  0.00559 ** 
+## reading       28.000      3.873   7.230  0.00079 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 5.477 on 5 degrees of freedom
+## Multiple R-squared:  0.9366, Adjusted R-squared:  0.9112 
+## F-statistic: 36.93 on 2 and 5 DF,  p-value: 0.001012
+]]></output>
+    </console>
         <p>There's a few interesting things to note here. Firstly, notice that the intercept term is 43.5, which is close to the "group" mean of 42.5 observed for those two students who didn't read the text or attend class. Moreover, it's <em>identical</em> to the predicted group mean that we pulled out of our ANOVA using the `Effects()` function! Secondly, notice that we have the regression coefficient of <m>b_1 = 18.0</m> for the attendance variable, suggesting that those students that attended class scored 18\% higher than those who didn't. So our expectation would be that those students who turned up to class but didn't read the textbook would obtain a grade of <m>b_0 + b_1</m>, which is equal to <m>43.5 + 18.0 = 61.5</m>. Again, this is similar to the observed group mean of 62.5, and identical to the expected group mean that we pulled from our ANOVA. You can verify for yourself that the same thing happens when we look at the students that read the textbook.</p>
         <p>Actually, we can push a little further in establishing the equivalence of our ANOVA and our regression. Look at the <m>p</m>-values associated with the `attend` variable and the `reading` variable in the regression output. They're identical to the ones we encountered earlier when running the ANOVA. This might seem a little surprising, since the test used when running our regression model calculates a <m>t</m>-statistic and the ANOVA calculates an <m>F</m>-statistic. However, if you can remember all the way back to Chapter <xref ref="probability"/>, I mentioned that there's a relationship between the <m>t</m>-distribution and the <m>F</m>-distribution: if you have some quantity that is distributed according to a <m>t</m>-distribution with <m>k</m> degrees of freedom and you square it, then this new squared quantity follows an <m>F</m>-distribution whose degrees of freedom are 1 and <m>k</m>. We can check this with respect to the <m>t</m> statistics in our regression model. For the `attend` variable we get a <m>t</m> value of 4.648. If we square this number we end up with 21.604, which is identical to the corresponding <m>F</m> statistic in our ANOVA.</p>
         <p>Finally, one last thing you should know. Because R understands the fact that ANOVA and regression are both examples of linear models, it lets you extract the classic ANOVA table from your regression model using the `anova()` function. All you have to do is this:</p>
@@ -742,6 +1089,19 @@ knitr::kable(tibble::tribble(
  anova( regression.model )
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+## Analysis of Variance Table
+## 
+## Response: grade
+##           Df Sum Sq Mean Sq F value    Pr(>F)    
+## attend     1    648     648  21.600 0.0055943 ** 
+## reading    1   1568    1568  52.267 0.0007899 ***
+## Residuals  5    150      30                      
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+]]></output>
+    </console>
     </subsection>
     <subsection xml:id="changingbaseline">
       <title>Changing the baseline category</title>
@@ -753,18 +1113,57 @@ knitr::kable(tibble::tribble(
  summary( regression.model.2 )
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+##   grade attend reading
+## 1    90    yes     yes
+## 2    87    yes     yes
+## 3    75     no     yes
+## 4    60    yes      no
+## 5    35     no      no
+## 6    50     no      no
+## 7    65    yes      no
+## 8    70     no     yes
+]]></output>
+    </console>
         <p>The only thing that is different is that R labels the two variables differently: the output now refers to `attendyes` and `readingyes`. You can probably guess what this means. When R refers to `readingyes` it's trying to indicate that it is assuming that "yes = 1" and "no = 0". This is important. Suppose we wanted to say that "yes = 0" and "no = 1". We could still run this as a regression model, but now all of our coefficients will go in the opposite direction, because the effect of `readingno` would be referring to the consequences of <em>not</em> reading the textbook. To show you how this works, we can use the `relevel()` function in R to change which level of the `reading` variable is set to "0". Here's how it works. First, let's get R to print out the `reading` factor as it currently stands:</p>
         <program language="r">
           <input><![CDATA[
  rtfm.2$reading
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+##   grade attend reading
+## 1    90    yes     yes
+## 2    87    yes     yes
+## 3    75     no     yes
+## 4    60    yes      no
+## 5    35     no      no
+## 6    50     no      no
+## 7    65    yes      no
+## 8    70     no     yes
+]]></output>
+    </console>
         <p>Notice that order in which R prints out the levels is "no" and then "yes". Now let's apply the `relevel()` function:</p>
         <program language="r">
           <input><![CDATA[
  relevel( x = rtfm.2$reading, ref = "yes" )
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+##   grade attend reading
+## 1    90    yes     yes
+## 2    87    yes     yes
+## 3    75     no     yes
+## 4    60    yes      no
+## 5    35     no      no
+## 6    50     no      no
+## 7    65    yes      no
+## 8    70     no     yes
+]]></output>
+    </console>
         <p>R now lists "yes" before "no". This means that R will now treat "yes" as the "reference" level (sometimes called the baseline level) when you include it in an ANOVA. So let's now create a new data frame with our factors recoded...</p>
         <program language="r">
           <input><![CDATA[
@@ -773,6 +1172,19 @@ knitr::kable(tibble::tribble(
  rtfm.3$attend <- relevel( rtfm.2$attend, ref="yes" )    # re-level the attend factor
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+##   grade attend reading
+## 1    90    yes     yes
+## 2    87    yes     yes
+## 3    75     no     yes
+## 4    60    yes      no
+## 5    35     no      no
+## 6    50     no      no
+## 7    65    yes      no
+## 8    70     no     yes
+]]></output>
+    </console>
         <p>Finally, let's re-run our regression, this time using the re-coded data:</p>
         <program language="r">
           <input><![CDATA[
@@ -780,6 +1192,29 @@ knitr::kable(tibble::tribble(
  summary( regression.model.3 )
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+## 
+## Call:
+## lm(formula = grade ~ attend + reading, data = rtfm.3)
+## 
+## Residuals:
+##    1    2    3    4    5    6    7    8 
+##  0.5 -2.5  3.5 -1.5 -8.5  6.5  3.5 -1.5 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)   89.500      3.354  26.684 1.38e-06 ***
+## attendno     -18.000      3.873  -4.648  0.00559 ** 
+## readingno    -28.000      3.873  -7.230  0.00079 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 5.477 on 5 degrees of freedom
+## Multiple R-squared:  0.9366, Adjusted R-squared:  0.9112 
+## F-statistic: 36.93 on 2 and 5 DF,  p-value: 0.001012
+]]></output>
+    </console>
         <p>As you can see, there are now a few changes. Most obviously, the `attendno` and `readingno` effects are both negative, though they're the same magnitude as before: if you <em>don't</em> read the textbook, for instance, you should expect your grade to drop by 28\% relative to someone who did. The <m>t</m>-statistics have reversed sign too. The <m>p</m>-values remain the same, of course. The intercept has changed too. In our original regression, the baseline corresponded to a student who didn't attend class and didn't read the textbook, so we got a value of 43.5 as the expected baseline grade. However, now that we've recoded our variables, the baseline corresponds to a student who has read the textbook and did attend class, and for that student we would expect a grade of 89.5.</p>
     </subsection>
     <subsection>
@@ -805,6 +1240,11 @@ knitr::kable(tibble::tribble(
  druganxifree
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+##  [1] 0 0 0 1 1 1 0 0 0 0 0 0 1 1 1 0 0 0
+]]></output>
+    </console>
         <p>The `clin.trial$drug == "anxifree"` part of the command returns a logical vector that has a value of `TRUE` if the drug is Anxifree, and a value of `FALSE` if the drug is Joyzepam or the placebo. The `as.numeric()` function just converts `TRUE` to 1 and `FALSE` to 0. Obviously, this command creates the `druganxifree` variable inside the workspace. If you wanted to add it to the `clin.trial` data frame, you'd use a commmand like this instead:</p>
         <program language="r">
           <input><![CDATA[
@@ -818,6 +1258,37 @@ knitr::kable(tibble::tribble(
  clin.trial.2
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+##    (Intercept) druganxifree drugjoyzepam therapyCBT mood.gain druganxifree
+## 1            1            0            0          0       0.5            0
+## 2            1            0            0          0       0.3            0
+## 3            1            0            0          0       0.1            0
+## 4            1            1            0          0       0.6            1
+## 5            1            1            0          0       0.4            1
+## 6            1            1            0          0       0.2            1
+## 7            1            0            1          0       1.4            0
+## 8            1            0            1          0       1.7            0
+## 9            1            0            1          0       1.3            0
+## 10           1            0            0          1       0.6            0
+## 11           1            0            0          1       0.9            0
+## 12           1            0            0          1       0.3            0
+## 13           1            1            0          1       1.1            1
+## 14           1            1            0          1       0.8            1
+## 15           1            1            0          1       1.2            1
+## 16           1            0            1          1       1.8            0
+## 17           1            0            1          1       1.3            0
+## 18           1            0            1          1       1.4            0
+## attr(,"assign")
+## [1] 0 1 1 2 3 4
+## attr(,"contrasts")
+## attr(,"contrasts")$drug
+## [1] "contr.treatment"
+## 
+## attr(,"contrasts")$therapy
+## [1] "contr.treatment"
+]]></output>
+    </console>
         <p>It's not as pretty as the original `clin.trial` data, but it's definitely saying the same thing. We have now recoded our three-level factor in terms of two binary variables, and we've already seen that ANOVA and regression behave the same way for binary variables. However, there are some additional complexities that arise in this case, which we'll discuss in the next section.</p>
     </subsection>
     <subsection>
@@ -830,6 +1301,16 @@ knitr::kable(tibble::tribble(
  summary( drug.anova )
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+##             Df Sum Sq Mean Sq F value   Pr(>F)    
+## drug         2  3.453  1.7267  26.149 1.87e-05 ***
+## therapy      1  0.467  0.4672   7.076   0.0187 *  
+## Residuals   14  0.924  0.0660                     
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+]]></output>
+    </console>
         <p>Obviously, there's no surprises here. That's the exact same ANOVA that we ran earlier, except for the fact that I've arbitrarily decided to rename the output variable as `drug.anova` for some stupid reason.<fn>Future versions of this book will try to be a bit more consistent with the naming scheme for variables. One of the many problems with having to write a lengthy text very quickly to meet a teaching deadline is that you lose some internal consistency.</fn> Next, let's run a regression, using `druganxifree`, `drugjoyzepam` and `therapyCBT` as the predictors. Here's what we get:</p>
         <program language="r">
           <input><![CDATA[
@@ -837,6 +1318,29 @@ knitr::kable(tibble::tribble(
  summary( drug.regression )
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+##    druganxifree drugjoyzepam therapyCBT mood.gain druganxifree
+## 1             0            0          0       0.5            0
+## 2             0            0          0       0.3            0
+## 3             0            0          0       0.1            0
+## 4             1            0          0       0.6            1
+## 5             1            0          0       0.4            1
+## 6             1            0          0       0.2            1
+## 7             0            1          0       1.4            0
+## 8             0            1          0       1.7            0
+## 9             0            1          0       1.3            0
+## 10            0            0          1       0.6            0
+## 11            0            0          1       0.9            0
+## 12            0            0          1       0.3            0
+## 13            1            0          1       1.1            1
+## 14            1            0          1       0.8            1
+## 15            1            0          1       1.2            1
+## 16            0            1          1       1.8            0
+## 17            0            1          1       1.3            0
+## 18            0            1          1       1.4            0
+]]></output>
+    </console>
         <p>Hm. This isn't the same output that we got last time. Not surprisingly, the regression output prints out the results for each of the three predictors separately, just like it did every other time we used `lm()`. On the one hand, we can see that the <m>p</m>-value for the `therapyCBT` variable is exactly the same as the one for the `therapy` factor in our original ANOVA, so we can be reassured that the regression model is doing the same thing as the ANOVA did. On the other hand, this regression model is testing the `druganxifree` contrast and the `drugjoyzepam` contrast <em>separately</em>, as if they were two completely unrelated variables. It's not surprising of course, because the poor `lm()` function has no way of knowing that `drugjoyzepam` and `druganxifree` are actually the two different contrasts that we used to encode our three-level `drug` factor. As far as it knows, `drugjoyzepam` and `druganxifree` are no more related to one another than `drugjoyzepam` and `therapyCBT`. However, you and I know better. At this stage we're not at all interested in determining whether these two contrasts are individually significant. We just want to know if there's an "overall" effect of drug. That is, what <em>we</em> want R to do is to run some kind of "omnibus" test, one in which the two "drug-related" contrasts are lumped together for the purpose of the test. Sound familiar? This is <em>exactly</em> the situation that we discussed in Section <xref ref="omnibusF"/>, and it is precisely this situation that the <m>F</m>-test is built to handle. All we need to do is specify our null model, which in this case would include the `therapyCBT` predictor, and omit both of the drug-related variables, and then run it through the `anova()` function:</p>
         <program language="r">
           <input><![CDATA[
@@ -844,6 +1348,29 @@ knitr::kable(tibble::tribble(
  anova( nodrug.regression, drug.regression )
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+##    druganxifree drugjoyzepam therapyCBT mood.gain druganxifree
+## 1             0            0          0       0.5            0
+## 2             0            0          0       0.3            0
+## 3             0            0          0       0.1            0
+## 4             1            0          0       0.6            1
+## 5             1            0          0       0.4            1
+## 6             1            0          0       0.2            1
+## 7             0            1          0       1.4            0
+## 8             0            1          0       1.7            0
+## 9             0            1          0       1.3            0
+## 10            0            0          1       0.6            0
+## 11            0            0          1       0.9            0
+## 12            0            0          1       0.3            0
+## 13            1            0          1       1.1            1
+## 14            1            0          1       0.8            1
+## 15            1            0          1       1.2            1
+## 16            0            1          1       1.8            0
+## 17            0            1          1       1.3            0
+## 18            0            1          1       1.4            0
+]]></output>
+    </console>
         <p>Ah, that's better. Our <m>F</m>-statistic is 26.1, the degrees of freedom are 2 and 14, and the <m>p</m>-value is <m>0.000019</m>. The numbers are identical to the ones we obtained for the main effect of `drug` in our original ANOVA. Once again, we see that ANOVA and regression are essentially the same: they are both linear models, and the underlying statistical machinery for ANOVA is identical to the machinery used in regression. The importance of this fact should not be understated. Throughout the rest of this chapter we're going to rely heavily on this idea.</p>
     </subsection>
     <subsection>
@@ -869,12 +1396,49 @@ knitr::kable(tibble::tribble(
  summary( drug.lm )
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+## 
+## Call:
+## lm(formula = mood.gain ~ drug + therapy, data = clin.trial)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -0.3556 -0.1806  0.0000  0.1972  0.3778 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)    0.2889     0.1211   2.385   0.0318 *  
+## druganxifree   0.2667     0.1484   1.797   0.0939 .  
+## drugjoyzepam   1.0333     0.1484   6.965  6.6e-06 ***
+## therapyCBT     0.3222     0.1211   2.660   0.0187 *  
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.257 on 14 degrees of freedom
+## Multiple R-squared:  0.8092, Adjusted R-squared:  0.7683 
+## F-statistic: 19.79 on 3 and 14 DF,  p-value: 2.64e-05
+]]></output>
+    </console>
         <p>However, because the `drug` and `therapy` variables were both factors, the `anova()` function actually knows which contrasts to group together for the purposes of running the <m>F</m>-tests, so you can extract the classic ANOVA table. Again, I won't reproduce the output here since it's identical to the ANOVA table I showed at the start of the section, but it's worth trying the following command</p>
         <program language="r">
           <input><![CDATA[
  anova( drug.lm )
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+## Analysis of Variance Table
+## 
+## Response: mood.gain
+##           Df Sum Sq Mean Sq F value    Pr(>F)    
+## drug       2 3.4533 1.72667 26.1490 1.872e-05 ***
+## therapy    1 0.4672 0.46722  7.0757   0.01866 *  
+## Residuals 14 0.9244 0.06603                      
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+]]></output>
+    </console>
         <p>just to see for yourself. However, this behaviour of the `anova()` function only occurs when the predictor variables are factors. If we try a command like `anova( drug.regression )`, the output will continue to treate `druganxifree` and `drugjoyzepam` as if they were two distinct binary factors. This is because in the `drug.regression` model we included all the contrasts as "raw" variables, so R had no idea which ones belonged together. However, when we ran the `drug.lm` model, we gave R the original factor variables, so it does know which contrasts go together. The behaviour of the `anova()` function reflects that.</p>
     </subsection>
   </section>
@@ -904,12 +1468,32 @@ knitr::kable(tibble::tribble(
  contr.treatment( n=5 )
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+##   2 3 4 5
+## 1 0 0 0 0
+## 2 1 0 0 0
+## 3 0 1 0 0
+## 4 0 0 1 0
+## 5 0 0 0 1
+]]></output>
+    </console>
         <p>Notice that, by default, the <em>first</em> level of the factor is always treated as the baseline category (i.e., it's the one that has all zeros, and doesn't have an explicit contrast associated with it). In Section <xref ref="changingbaseline"/> I mentioned that you can use the `relevel()` function to change which category is the first level of the factor.<fn>The `lsr` package contains a more general function called `permuteLevels()` that can shuffle them in any way you like.</fn> There's also a special function in R called `contr.SAS()` that generates a treatment contrast	 matrix in which the <em>last</em> category is treated as the baseline:</p>
         <program language="r">
           <input><![CDATA[
  contr.SAS( n=5 )
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+##   1 2 3 4
+## 1 1 0 0 0
+## 2 0 1 0 0
+## 3 0 0 1 0
+## 4 0 0 0 1
+## 5 0 0 0 0
+]]></output>
+    </console>
         <p>However, you can actually select any category you like as the baseline within the `contr.treatment()` function, by specifying the `base` argument in that function. See the help documentation for more details.</p>
     </subsection>
     <subsection>
@@ -921,6 +1505,16 @@ knitr::kable(tibble::tribble(
  contr.helmert( n=5 )
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+##   [,1] [,2] [,3] [,4]
+## 1   -1   -1   -1   -1
+## 2    1   -1   -1   -1
+## 3    0    2   -1   -1
+## 4    0    0    3   -1
+## 5    0    0    0    4
+]]></output>
+    </console>
         <p>One useful thing about Helmert contrasts is that every contrast sums to zero (i.e., all the columns sum to zero). This has the consequence that, when we interpret the ANOVA as a regression, the intercept term corresponds to the grand mean <m>\mu_{..})</m> if we are using Helmert contrasts. Compare this to treatment contrasts, in which the intercept term corresponds to the group mean for the baseline category. This property can be very useful in some situations. It doesn't matter very much if you have a balanced design, which we've been assuming so far, but it will turn out to be important later when we consider unbalanced designs in Section <xref ref="unbalancedanova"/>. In fact, the main reason why I've even bothered to include this section on specifying is that contrasts become important if you want to understand unbalanced ANOVA.</p>
     </subsection>
     <subsection>
@@ -932,6 +1526,16 @@ knitr::kable(tibble::tribble(
  contr.sum( n=5 )
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+##   [,1] [,2] [,3] [,4]
+## 1    1    0    0    0
+## 2    0    1    0    0
+## 3    0    0    1    0
+## 4    0    0    0    1
+## 5   -1   -1   -1   -1
+]]></output>
+    </console>
         <p>Much like Helmert contrasts, we see that each column sums to zero, which means that the intercept term corresponds to the grand mean when ANOVA is treated as a regression model. When interpreting these contrasts, the thing to recognise is that each of these contrasts is a pairwise comparison between group 5 and one of the other four groups. Specifically, contrast 1 corresponds to a "group 1 minus group 5" comparison, contrast 2 corresponds to a "group 2 minus group 5" comparison, and so on.</p>
     </subsection>
     <subsection>
@@ -943,18 +1547,37 @@ knitr::kable(tibble::tribble(
  attr( clin.trial$drug, "contrasts" )
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+## NULL
+]]></output>
+    </console>
         <p>The `NULL` output here means that R is telling you that the `drug` factor doesn't have any attribute called "contrasts"  for which it has any data. There is no contrast matrix stored anywhere explicitly for this factor. However, if we now ask R to tell us what contrasts are set up for this factor, it give us this:</p>
         <program language="r">
           <input><![CDATA[
  contrasts( clin.trial$drug )
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+##          anxifree joyzepam
+## placebo         0        0
+## anxifree        1        0
+## joyzepam        0        1
+]]></output>
+    </console>
         <p>These are the same treatment contrast that we set up manually in Section <xref ref="anovalm"/>. How did R know to set up treatment contrasts, even though I never actually told it anything about what contrasts I wanted? The answer is that R has a hidden list of default "options" that it looks up to resolve situations like this. You can print out all of the options by typing `options()` at the command prompt, but it's not a very enlightening read. There are a lot of options, and we're only interested in contrasts right now. Instead of printing out all of the options, we can ask for just one, like this:</p>
         <program language="r">
           <input><![CDATA[
  options( "contrasts" )
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+## $contrasts
+## [1] "contr.treatment" "contr.poly"
+]]></output>
+    </console>
         <p>What this is telling us is that the default contrasts for unordered factors (i.e., nominal scale variables) are treatment contrasts, and the default for ordered factors (i.e., interval scale variables) are "polynomial" contrasts. I don't discuss ordered factors much in this book, and so I won't go into what polynomial contrasts are all about. The key thing is that the `options()` function also allows you to reset these defaults (though only for the current session: they'll revert to the original settings once you close R). Here's the command:</p>
         <program language="r">
           <input><![CDATA[
@@ -967,12 +1590,26 @@ knitr::kable(tibble::tribble(
  options("contrasts") 
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+## $contrasts
+## [1] "contr.helmert" "contr.poly"
+]]></output>
+    </console>
         <p>Now we see that the default contrasts for unordered factors have changed. So if I now ask R to tell me what contrasts are associated with the `drug` factor, it gives a different answer because I changed the default:</p>
         <program language="r">
           <input><![CDATA[
  contrasts( clin.trial$drug )
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+##          anxifree joyzepam
+## placebo         0        0
+## anxifree        1        0
+## joyzepam        0        1
+]]></output>
+    </console>
         <p>Those are Helmert contrasts. In general, if you're changing the default settings for something in R, it's a good idea to reset them to their original values once you're done. So let's do that:</p>
         <program language="r">
           <input><![CDATA[
@@ -989,18 +1626,42 @@ knitr::kable(tibble::tribble(
  contrasts( clin.trial$drug ) <- contr.sum(3)
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+##          anxifree joyzepam
+## placebo         0        0
+## anxifree        1        0
+## joyzepam        0        1
+]]></output>
+    </console>
         <p>And if I now inspect the contrasts, I get the following</p>
         <program language="r">
           <input><![CDATA[
  contrasts( clin.trial$drug)
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+##          [,1] [,2]
+## placebo     1    0
+## anxifree    0    1
+## joyzepam   -1   -1
+]]></output>
+    </console>
         <p>However, the contrasts for everything else will still be the defaults. You can check that we have actually made a specific change to the factor itself by checking to see if it now has an attribute, using the command `attr( clin.trial$drug, "contrasts" )`. This will print out the same output shown above, because the contrast has in fact been attached to the `drug` factor, and does not rely on the defaults. If you want to wipe the attribute and revert the defaults, use a command like this:</p>
         <program language="r">
           <input><![CDATA[
  contrasts( clin.trial$drug ) <- NULL
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+##          anxifree joyzepam
+## placebo         0        0
+## anxifree        1        0
+## joyzepam        0        1
+]]></output>
+    </console>
     </subsection>
     <subsection>
       <title>Setting the contrasts for a single analysis</title>
@@ -1023,6 +1684,20 @@ knitr::kable(tibble::tribble(
  mod$contrasts
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+## $drug
+##          [,1] [,2]
+## placebo    -1   -1
+## anxifree    1   -1
+## joyzepam    0    2
+## 
+## $therapy
+##            [,1]
+## no.therapy   -1
+## CBT           1
+]]></output>
+    </console>
         <p>As you can see, for the purposes of this one particular ANOVA, R has used Helmert contrasts for both variables. If I had omitted the part of the command that specified the `contrasts` argument, you'd be looking at treatment contrasts here because it would have reverted to whatever values the `contrasts()` function prints out for each of the factors.</p>
     </subsection>
   </section>
@@ -1044,6 +1719,24 @@ knitr::kable(tibble::tribble(
  TukeyHSD( model.2 )
         ]]></input>
       </program>
+    <console>
+      <output><![CDATA[
+##   Tukey multiple comparisons of means
+##     95% family-wise confidence level
+## 
+## Fit: aov(formula = mood.gain ~ drug + therapy, data = clin.trial)
+## 
+## $drug
+##                        diff        lwr       upr     p adj
+## anxifree-placebo  0.2666667 -0.1216321 0.6549655 0.2062942
+## joyzepam-placebo  1.0333333  0.6450345 1.4216321 0.0000186
+## joyzepam-anxifree 0.7666667  0.3783679 1.1549655 0.0003934
+## 
+## $therapy
+##                     diff       lwr       upr     p adj
+## CBT-no.therapy 0.3222222 0.0624132 0.5820312 0.0186602
+]]></output>
+    </console>
       <p>The output here is (I hope) pretty straightforward. The first comparison, for example, is the Anxifree versus placebo difference, and the first part of the output indicates that the observed difference in group means is <m>.27</m>. The next two numbers indicate that the 95\% (simultaneous) confidence interval for this comparison runs from <m>-.12</m> to <m>.65</m>. Because the confidence interval for the difference includes 0, we cannot reject the null hypothesis that the two group means are identical, and so we're not all that surprised to see that the adjusted <m>p</m>-value is <m>.21</m>. In contrast, if you look at the next line, we see that the observed difference between Joyzepam and the placebo is 1.03, and the 95\% confidence interval runs from <m>.64</m> to <m>1.42</m>. Because the interval excludes 0, we see that the result is significant <m>(p&lt;.001)</m>.</p>
       <p>So far, so good. What about the situation where your model includes interaction terms? For instance, in `model.3` we allowed for the possibility that there is an interaction between drug and therapy. If that's the case, the number of pairwise comparisons that we need to consider starts to increase. As before, we need to consider the three comparisons that are relevant to the main effect of `drug` and the one comparison that is relevant to the main effect of `therapy`. But, if we want to consider the possibility of a significant interaction (and try to find the group differences that underpin that significant interaction), we need to include comparisons such as the following:</p>
       <ul>
@@ -1057,6 +1750,58 @@ knitr::kable(tibble::tribble(
  TukeyHSD( model.3 )
         ]]></input>
       </program>
+    <console>
+      <output><![CDATA[
+##   Tukey multiple comparisons of means
+##     95% family-wise confidence level
+## 
+## Fit: aov(formula = mood.gain ~ drug * therapy, data = clin.trial)
+## 
+## $drug
+##                        diff         lwr       upr     p adj
+## anxifree-placebo  0.2666667 -0.09273475 0.6260681 0.1597148
+## joyzepam-placebo  1.0333333  0.67393191 1.3927348 0.0000160
+## joyzepam-anxifree 0.7666667  0.40726525 1.1260681 0.0002740
+## 
+## $therapy
+##                     diff        lwr       upr    p adj
+## CBT-no.therapy 0.3222222 0.08256504 0.5618794 0.012617
+## 
+## $`drug:therapy`
+##                                                diff          lwr
+## anxifree:no.therapy-placebo:no.therapy   0.10000000 -0.539927728
+## joyzepam:no.therapy-placebo:no.therapy   1.16666667  0.526738939
+## placebo:CBT-placebo:no.therapy           0.30000000 -0.339927728
+## anxifree:CBT-placebo:no.therapy          0.73333333  0.093405606
+## joyzepam:CBT-placebo:no.therapy          1.20000000  0.560072272
+## joyzepam:no.therapy-anxifree:no.therapy  1.06666667  0.426738939
+## placebo:CBT-anxifree:no.therapy          0.20000000 -0.439927728
+## anxifree:CBT-anxifree:no.therapy         0.63333333 -0.006594394
+## joyzepam:CBT-anxifree:no.therapy         1.10000000  0.460072272
+## placebo:CBT-joyzepam:no.therapy         -0.86666667 -1.506594394
+## anxifree:CBT-joyzepam:no.therapy        -0.43333333 -1.073261061
+## joyzepam:CBT-joyzepam:no.therapy         0.03333333 -0.606594394
+## anxifree:CBT-placebo:CBT                 0.43333333 -0.206594394
+## joyzepam:CBT-placebo:CBT                 0.90000000  0.260072272
+## joyzepam:CBT-anxifree:CBT                0.46666667 -0.173261061
+##                                                upr     p adj
+## anxifree:no.therapy-placebo:no.therapy   0.7399277 0.9940083
+## joyzepam:no.therapy-placebo:no.therapy   1.8065944 0.0005667
+## placebo:CBT-placebo:no.therapy           0.9399277 0.6280049
+## anxifree:CBT-placebo:no.therapy          1.3732611 0.0218746
+## joyzepam:CBT-placebo:no.therapy          1.8399277 0.0004380
+## joyzepam:no.therapy-anxifree:no.therapy  1.7065944 0.0012553
+## placebo:CBT-anxifree:no.therapy          0.8399277 0.8917157
+## anxifree:CBT-anxifree:no.therapy         1.2732611 0.0529812
+## joyzepam:CBT-anxifree:no.therapy         1.7399277 0.0009595
+## placebo:CBT-joyzepam:no.therapy         -0.2267389 0.0067639
+## anxifree:CBT-joyzepam:no.therapy         0.2065944 0.2750590
+## joyzepam:CBT-joyzepam:no.therapy         0.6732611 0.9999703
+## anxifree:CBT-placebo:CBT                 1.0732611 0.2750590
+## joyzepam:CBT-placebo:CBT                 1.5399277 0.0050693
+## joyzepam:CBT-anxifree:CBT                1.1065944 0.2139229
+]]></output>
+    </console>
       <p>It looks pretty similar to before, but with a lot more comparisons made.</p>
   </section>
   <section xml:id="plannedcomparisons">
@@ -1080,18 +1825,52 @@ load(file.path(projecthome, "data","coffee.Rdata"))
  some( coffee )
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+##    milk sugar babble
+## 1   yes  real    4.6
+## 2    no  fake    4.4
+## 3    no  fake    3.9
+## 6    no  real    5.5
+## 7   yes  none    3.9
+## 8   yes  none    3.5
+## 9   yes  none    3.7
+## 10   no  fake    5.6
+## 17   no  none    5.3
+## 18  yes  fake    5.7
+]]></output>
+    </console>
         <p>If we use the `aggregate()` function to quickly produce a table of means, we get a strong impression that there are differences between the groups:</p>
         <program language="r">
           <input><![CDATA[
  aggregate( babble ~ milk + sugar, coffee, mean )
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+##   milk sugar babble
+## 1  yes  none  3.700
+## 2   no  none  5.550
+## 3  yes  fake  5.800
+## 4   no  fake  4.650
+## 5  yes  real  5.100
+## 6   no  real  5.875
+]]></output>
+    </console>
         <p>This is especially true when we compare these means to the standard deviations for the `babble` variable, which you can calculate using `aggregate()` in much the same way. Across groups, this standard deviation varies from .14 to .71, which is fairly small relative to the differences in group means.<fn>This discrepancy in standard deviations might (and should) make you wonder if we have a violation of the homogeneity of variance assumption. I'll leave it as an exercise for the reader to check this using the `leveneTest()` function.</fn> So far, it's looking like a straightforward factorial ANOVA, just like we did earlier. The problem arises when we check to see how many observations we have in each group:</p>
         <program language="r">
           <input><![CDATA[
  xtabs( ~ milk + sugar, coffee )
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+##      sugar
+## milk  none fake real
+##   yes    3    2    3
+##   no     2    4    4
+]]></output>
+    </console>
         <p>This violates one of our original assumptions, namely that the number of people in each group is the same. We haven't really discussed how to handle this situation.</p>
     </subsection>
     <subsection>
@@ -1141,6 +1920,20 @@ knitr::kable(tibble::tribble(
  anova( mod )
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+## Analysis of Variance Table
+## 
+## Response: babble
+##            Df Sum Sq Mean Sq F value   Pr(>F)   
+## sugar       2 3.5575 1.77876  6.7495 0.010863 * 
+## milk        1 0.9561 0.95611  3.6279 0.081061 . 
+## sugar:milk  2 5.9439 2.97193 11.2769 0.001754 **
+## Residuals  12 3.1625 0.26354                    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+]]></output>
+    </console>
         <p>Leaving aside for one moment the question of how this result should be interpreted, let's take note of the fact that our three <m>p</m>-values are <m>.0109</m>, <m>.0811</m> and <m>.0018</m> respectively. Next, let's see if we can replicate the analysis using tools that we're a little more familiar with. First, let's fit all four models:</p>
         <program language="r">
           <input><![CDATA[
@@ -1156,6 +1949,23 @@ knitr::kable(tibble::tribble(
  anova( mod.1, mod.2, mod.3, mod.4 )
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+## Analysis of Variance Table
+## 
+## Model 1: babble ~ 1
+## Model 2: babble ~ sugar
+## Model 3: babble ~ sugar + milk
+## Model 4: babble ~ sugar + milk + sugar:milk
+##   Res.Df     RSS Df Sum of Sq       F   Pr(>F)   
+## 1     17 13.6200                                 
+## 2     15 10.0625  2    3.5575  6.7495 0.010863 * 
+## 3     14  9.1064  1    0.9561  3.6279 0.081061 . 
+## 4     12  3.1625  2    5.9439 11.2769 0.001754 **
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+]]></output>
+    </console>
         <p>This output is rather more verbose than the last one, but it's telling essentially  the same story.<fn>The one thing that might seem a little opaque to some people is why the residual degrees of freedom in this output look different from one another (i.e., ranging from 12 to 17) whereas in the original one the residual degrees of freedom is fixed at 12. It's actually the case that R uses a residual df of 12 in all cases (that's why the <m>p</m> values are the same in the two outputs, and it's enough to verify that `pf(6.7495, 2,12, lower.tail=FALSE))` gives the correct answer of <m>p=.010863</m>, for instance, whereas `pf(6.7495, 2,15, lower.tail=FALSE))` would have given a <m>p</m>-value of about <m>.00812</m>. It's the residual degrees of freedom in the full model (i.e., the last one) that matters here.</fn></p>
         <p>The big problem with using Type I sum of squares is the fact that it really does depend on the order in which you enter the variables. Yet, in many situations the researcher has no reason to prefer one ordering over another. This is presumably the case for our milk and sugar problem. Should we add milk first, or sugar first? It feels exactly as arbitrary as a data analysis question as it does as a coffee-making question. There may in fact be some people with firm opinions about ordering, but it's hard to imagine a principled answer to the question. Yet, look what happens when we change the ordering:</p>
         <program language="r">
@@ -1164,6 +1974,20 @@ knitr::kable(tibble::tribble(
  anova( mod )
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+## Analysis of Variance Table
+## 
+## Response: babble
+##            Df Sum Sq Mean Sq F value   Pr(>F)   
+## milk        1 1.4440 1.44400  5.4792 0.037333 * 
+## sugar       2 3.0696 1.53482  5.8238 0.017075 * 
+## milk:sugar  2 5.9439 2.97193 11.2769 0.001754 **
+## Residuals  12 3.1625 0.26354                    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+]]></output>
+    </console>
         <p>The <m>p</m>-values for both main effect terms have changed, and fairly dramatically. Among other things, the effect of `milk` has become significant (though one should avoid drawing any strong conclusions about this, as I've mentioned previously). Which of these two ANOVAs should one report? It's not immediately obvious.</p>
         <p>When you look at the hypothesis tests that are used to define the "first" main effect and the "second" one, it's clear that they're qualitatively different from one another. In our initial example, we saw that the test for the main effect of `sugar` completely ignores `milk`, whereas the test of the main effect of `milk` does take `sugar` into account. As such, the Type I testing strategy really does treat the first main effect as if it had a kind of theoretical primacy over the second one. In my experience there is very rarely if ever any theoretically primacy of this kind that would justify treating any two main effects asymmetrically.</p>
         <p>The consequence of all this is that Type I tests are very rarely of much interest, and so we should move on to discuss Type II tests and Type III tests. However, for the sake of completeness -- on the off chance that you ever find yourself needing to run Type I tests -- I'll comment briefly on how R determines the ordering of terms in a Type I test. The key principle in Type I sum of squares is that the hypothesis testing be sequential, with terms added one at a time. However, it does also imply that main effects be added first (e.g., factors `A`, `B`, `C` etc), followed by first order interaction terms (e.g., terms like `A:B` and `B:C`), then second order interactions (e.g., `A:B:C`) and so on. Within each "block" you can specify whatever order you like. So, for instance, if we specified our model using a command like this,</p>
@@ -1238,6 +2062,21 @@ knitr::kable(tibble::tribble(
  Anova( mod, type=3 )
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+## Anova Table (Type III tests)
+## 
+## Response: babble
+##             Sum Sq Df F value   Pr(>F)    
+## (Intercept) 41.070  1 155.839 3.11e-08 ***
+## sugar        5.880  2  11.156 0.001830 ** 
+## milk         4.107  1  15.584 0.001936 ** 
+## sugar:milk   5.944  2  11.277 0.001754 ** 
+## Residuals    3.162 12                     
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+]]></output>
+    </console>
         <p>As you can see, I got lazy this time and used `sugar * milk` as a shorthand way of referring to `sugar + milk + sugar:milk`. The important point here is that this is just a regular ANOVA table, and we can see that our Type III tests are significant for all terms, even the intercept.</p>
         <p>Except, as usual, it's not that simple. One of the perverse features of the Type III testing strategy is that the results turn out to depend on the <em>contrasts</em> that you use to encode your factors (see Section <xref ref="contrasts"/> if you've forgotten what the different types of contrasts are). The results that I presented in the ANOVA table above are based on the R default, which is treatment contrasts; and as we'll see later, this is usually a very poor choice if you want to run Type III tests. So let's see what happens if switch to Helmert contrasts:</p>
         <program language="r">
@@ -1247,6 +2086,21 @@ knitr::kable(tibble::tribble(
  Anova( mod.H, type=3 )
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+## Anova Table (Type III tests)
+## 
+## Response: babble
+##             Sum Sq Df   F value    Pr(>F)    
+## (Intercept) 434.29  1 1647.8882 3.231e-14 ***
+## sugar         2.13  2    4.0446  0.045426 *  
+## milk          1.00  1    3.8102  0.074672 .  
+## sugar:milk    5.94  2   11.2769  0.001754 ** 
+## Residuals     3.16 12                        
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+]]></output>
+    </console>
         <p>Oh, that's not good at all. In the case of `milk` in particular, the <m>p</m>-value has changed from .002 to .07. This is a pretty substantial difference, and hopefully it gives you a sense of how important it is that you take care when using Type III tests.</p>
         <p>Okay, so if the <m>p</m>-values that come out of Type III analyses are so sensitive to the choice of contrasts, does that mean that Type III tests are essentially arbitrary and not to be trusted? To some extent that's true, and when we turn to a discussion of Type II tests we'll see that Type II analyses avoid this arbitrariness entirely, but I think that's too strong a conclusion. Firstly, it's important to recognise that some choices of contrasts will always produce the same answers. Of particular importance is the fact that if the columns of our contrast matrix are all constrained to sum to zero, then the Type III analysis will always give the same answers. This means that you'll get the same answers if you use `contr.Helmert` or `contr.sum` or `contr.poly`, but different answers for `contr.treatment` or `contr.SAS`.</p>
         <program language="r">
@@ -1257,6 +2111,14 @@ knitr::kable(tibble::tribble(
  random.contrasts  # print it to check that we really have an arbitrary contrast matrix...
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+##            [,1]       [,2]
+## [1,]  0.2421359 -0.8168047
+## [2,]  0.5476197  0.9503084
+## [3,] -0.7897556 -0.1335037
+]]></output>
+    </console>
         <program language="r">
           <input><![CDATA[
  contrasts( coffee$sugar ) <- random.contrasts # random contrasts for sugar
@@ -1265,6 +2127,21 @@ knitr::kable(tibble::tribble(
  Anova( mod.R, type = 3 )                   
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+## Anova Table (Type III tests)
+## 
+## Response: babble
+##             Sum Sq Df   F value    Pr(>F)    
+## (Intercept) 434.29  1 1647.8882 3.231e-14 ***
+## sugar         2.13  2    4.0446  0.045426 *  
+## milk          1.00  1    3.8102  0.074672 .  
+## sugar:milk    5.94  2   11.2769  0.001754 ** 
+## Residuals     3.16 12                        
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+]]></output>
+    </console>
         <p>Yep, same answers.</p>
     </subsection>
     <subsection>
@@ -1344,6 +2221,20 @@ knitr::kable(tibble::tribble(
  Anova( mod, type = 2 )
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+## Anova Table (Type II tests)
+## 
+## Response: babble
+##            Sum Sq Df F value   Pr(>F)   
+## sugar      3.0696  2  5.8238 0.017075 * 
+## milk       0.9561  1  3.6279 0.081061 . 
+## sugar:milk 5.9439  2 11.2769 0.001754 **
+## Residuals  3.1625 12                    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+]]></output>
+    </console>
         <p>Type II tests have some clear advantages over Type I and Type III tests. They don't depend on the order in which you specify factors (unlike Type I), and they don't depend on the contrasts that you use to specify your factors (unlike Type III). And although opinions may differ on this last point, and it will definitely depend on what you're trying to do with your data, I do think that the hypothesis tests that they specify are more likely to correspond to something that you actually care about. As a consequence, I find that it's usually easier to interpret the results of a Type II test than the results of a Type I or Type III test. For this reason, my tentative advice is that, if you can't think of any obvious model comparisons that directly map onto your research questions but you still want to run an ANOVA in an unbalanced design, Type II tests are probably a better choice than Type I or Type III.<fn>I find it amusing to note that the default in R is Type I and the default in SPSS is Type III (with Helmert contrasts). Neither of these appeals to me all that much. Relatedly, I find it depressing that almost nobody in the psychological literature ever bothers to report which Type of tests they ran, much less the order of variables (for Type I) or the contrasts used (for Type III). Often they don't report what software they used either. The only way I can ever make any sense of what people typically report is to try to guess from auxiliary cues which software they were using, and to assume that they never changed the default settings. Please don't do this... now that you know about these issues, make sure you indicate what software you used, and if you're reporting ANOVA results for unbalanced data, then specify what Type of tests you ran, specify order information if you've done Type I tests and specify contrasts if you've done Type III tests. Or, even better, do hypotheses tests that correspond to things you really care about, and then report those!</fn></p>
     </subsection>
     <subsection>
@@ -1355,6 +2246,14 @@ knitr::kable(tibble::tribble(
  etaSquared( mod, type=2 )
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+##                eta.sq eta.sq.part
+## sugar      0.22537682   0.4925493
+## milk       0.07019886   0.2321436
+## sugar:milk 0.43640732   0.6527155
+]]></output>
+    </console>
         <p>and out pops the <m>\eta^2</m> and partial <m>\eta^2</m> values, as requested. However, when you've got an unbalanced design, there's a bit of extra complexity involved. To see why, let's expand the output from the `etaSquared()` function so that it displays the full ANOVA table:</p>
         <program language="r">
           <input><![CDATA[
@@ -1362,6 +2261,20 @@ knitr::kable(tibble::tribble(
  es
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+##                eta.sq eta.sq.part        SS df        MS         F
+## sugar      0.22537682   0.4925493 3.0696323  2 1.5348161  5.823808
+## milk       0.07019886   0.2321436 0.9561085  1 0.9561085  3.627921
+## sugar:milk 0.43640732   0.6527155 5.9438677  2 2.9719339 11.276903
+## Residuals  0.23219530          NA 3.1625000 12 0.2635417        NA
+##                      p
+## sugar      0.017075099
+## milk       0.081060698
+## sugar:milk 0.001754333
+## Residuals           NA
+]]></output>
+    </console>
         <p>Okay, if you remember back to our very early discussions of ANOVA, one of the key ideas behind the sums of squares calculations is that if we add up all the SS terms associated with the effects in the model, and add that to the residual SS, they're supposed to add up to the total sum of squares. And, on top of that, the whole idea behind <m>\eta^2</m> is that -- because you're dividing one of the SS terms by the total SS value -- is that an <m>\eta^2</m> value can be interpreted as the proportion of variance accounted for by a particular term.</p>
         <p>Now take a look at the output above. Because I've included the <m>\eta^2</m> value associated with the residuals (i.e., proportion of variance in the outcome attributed to the residuals, rather than to one of the effects), you'd expect all the <m>\eta^2</m> values to sum to 1. Because, the whole idea here was that the variance in the outcome variable can be divided up into the variability attributable to the model, and the variability in the residuals. Right? Right? And yet when we add up the <m>\eta^2</m> values for our model...</p>
         <program language="r">
@@ -1369,6 +2282,11 @@ knitr::kable(tibble::tribble(
  sum( es[,"eta.sq"] )
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+## [1] 0.9641783
+]]></output>
+    </console>
         <p>... we discover that for Type II and Type III tests they generally don't sum to 1. Some of the variability has gone "missing". It's not being attributed to the model, and it's not being attributed to the residuals either. What's going on here?</p>
         <p>Before giving you the answer, I want to push this idea a little further. From a mathematical perspective, it's easy enough to see that the missing variance is a consequence of the fact that in Types II and III, the individual SS values are not obliged to the total sum of squares, and will only do so if you have balanced data. I'll explain why this happens and what it means in a second, but first let's verify that this is the case using the ANOVA table. First, we can calculate the total sum of squares directly from the raw data:</p>
         <program language="r">
@@ -1377,6 +2295,11 @@ knitr::kable(tibble::tribble(
  ss.tot
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+## [1] 13.62
+]]></output>
+    </console>
         <p>Next, we can read off all the SS values from one of our Type I ANOVA tables, and add them up. As you can see, this gives us the same answer, just like it's supposed to:</p>
         <program language="r">
           <input><![CDATA[
@@ -1384,6 +2307,11 @@ knitr::kable(tibble::tribble(
  type.I.sum
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+## [1] 13.62
+]]></output>
+    </console>
         <p>However, when we do the same thing for the Type II ANOVA table, it turns out that the SS values in the table add up to slightly less than the total SS value:</p>
         <program language="r">
           <input><![CDATA[
@@ -1391,6 +2319,11 @@ knitr::kable(tibble::tribble(
  type.II.sum
           ]]></input>
         </program>
+    <console>
+      <output><![CDATA[
+## [1] 13.1321
+]]></output>
+    </console>
         <p>So, once again, we can see that there's a little bit of variance that has "disappeared" somewhere.</p>
         <p>Okay, time to explain what's happened. The reason why this happens is that, when you have unbalanced designs, your factors become correlated with one another, and it becomes difficult to tell the difference between the effect of Factor A and the effect of Factor B. In the extreme case, suppose that we'd run a <m>2 \times 2</m> design in which the number of participants in each group had been as follows:</p>
         <program language="r">
