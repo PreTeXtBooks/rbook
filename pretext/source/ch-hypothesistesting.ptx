@@ -257,6 +257,22 @@ colour <- TRUE
 <program language="r">
 <input><![CDATA[binom.test( x=62, n=100, p=.5 )]]></input>
 </program>
+    <console>
+      <output><![CDATA[
+## 
+##  Exact binomial test
+## 
+## data:  62 and 100
+## number of successes = 62, number of trials = 100, p-value =
+## 0.02098
+## alternative hypothesis: true probability of success is not equal to 0.5
+## 95 percent confidence interval:
+##  0.5174607 0.7152325
+## sample estimates:
+## probability of success 
+##                   0.62
+]]></output>
+    </console>
 <p>Right now, this output looks pretty unfamiliar to you, but you can see that it's telling you more or less the right things. Specifically, the <m>p</m>-value of 0.02 is less than the usual choice of <m>\alpha = .05</m>, so you can reject the null. We'll talk a lot more about how to read this sort of output as we go along; and after a while you'll hopefully find it quite easy to read and understand. For now, however, I just wanted to make the point that R contains a whole lot of functions corresponding to different kinds of hypothesis test. And while I'll usually spend quite a lot of time explaining the logic behind how the tests are built, every time I discuss a hypothesis test the discussion will end with me showing you a fairly simple R command that you can use to run the test in practice.</p>
 </section>
 <section xml:id="effectsize">
@@ -331,6 +347,13 @@ NAsmall.effect.size = c("difference is real, but might not be interesting",
 ), col.names=c("", "big effect size", "small effect size"))
 ]]></input>
 </program>
+    <console>
+      <output><![CDATA[
+## 
+##    clubs diamonds   hearts   spades 
+##       35       51       64       50
+]]></output>
+    </console>
 <p>Why calculate effect size? Let's assume that you've run your experiment, collected the data, and gotten a significant effect when you ran your hypothesis test. Isn't it enough just to say that you've gotten a significant effect? Surely that's the <em>point</em> of hypothesis testing? Well, sort of. Yes, the point of doing a hypothesis test is to try to demonstrate that the null hypothesis is wrong, but that's hardly the only thing we're interested in. If the null hypothesis claimed that <m>\theta = .5</m>, and we show that it's wrong, we've only really told half of the story. Rejecting the null hypothesis implies that we believe that <m>\theta \neq .5</m>, but there's a big difference between <m>\theta = .51</m> and <m>\theta = .8</m>. If we find that <m>\theta = .8</m>, then not only have we found that the null hypothesis is wrong, it appears to be <em>very</em> wrong. On the other hand, suppose we've successfully rejected the null hypothesis, but it looks like the true value of <m>\theta</m> is only .51 (this would only be possible with a large study). Sure, the null hypothesis is wrong, but it's not at all clear that we actually <em>care</em>, because the effect size is so small. In the context of my ESP study we might still care, since any demonstration of real psychic powers would actually be pretty cool<fn>Although in practice a very small effect size is worrying, because even very minor methodological flaws might be responsible for the effect; and in practice no experiment is perfect, so there are always methodological issues to worry about.</fn>, but in other contexts a 1\% difference isn't very interesting, even if it is a real difference. For instance, suppose we're looking at differences in high school exam scores between males and females, and it turns out that the female scores are 1\% higher on average than the males. If I've got data from thousands of students, then this difference will almost certainly be <em>statistically significant</em>, but regardless of how small the <m>p</m> value is it's just not very interesting. You'd hardly want to go around proclaiming a crisis in boys education on the basis of such a tiny difference would you? It's for this reason that it is becoming more standard (slowly, but surely) to report some kind of standard measure of effect size along with the the results of the hypothesis test. The hypothesis test itself tells you whether you should believe that the effect you have observed is real (i.e., not just due to chance); the effect size tells you whether or not you should care.</p>
 </subsection>
 <subsection>

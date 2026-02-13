@@ -113,22 +113,49 @@ def add_outputs_to_ptx(ptx_file, outputs):
 
 def main():
     import sys
+    import os
     
     if len(sys.argv) < 3:
         print("Usage: python3 add_r_outputs.py <html_file> <ptx_file>")
         print("\nOr run with no arguments to process all chapters:")
+        
+        # Map HTML files to PTX files
         chapters = [
-            ('bayes.html', 'ch6-bayesian-statistics.ptx'),
+            ('anova.html', 'ch-anova.ptx'),
             ('anova2.html', 'ch5-factorial-anova.ptx'),
+            ('bayes.html', 'ch6-bayesian-statistics.ptx'),
+            ('chisquare.html', 'ch-hypothesistesting.ptx'),
+            ('datahandling.html', 'ch_intro_r.ptx'),
+            ('descriptives.html', 'ch5-descriptive-statistics.ptx'),
+            ('estimation.html', 'ch-estimation.ptx'),
+            ('graphics.html', 'ch_intro_r.ptx'),
+            ('hypothesistesting.html', 'ch-hypothesistesting.ptx'),
+            ('introR.html', 'ch_intro_r.ptx'),
+            ('probability.html', 'ch-probability.ptx'),
             ('regression.html', 'ch-regression.ptx'),
+            ('ttest.html', 'ch-hypothesistesting.ptx'),
         ]
+        
         for html_name, ptx_name in chapters:
             html_file = f'/home/runner/work/rbook/rbook/docs/book/{html_name}'
             ptx_file = f'/home/runner/work/rbook/rbook/pretext/source/{ptx_name}'
             
-            print(f"\nProcessing {html_name}...")
+            # Check if both files exist
+            if not os.path.exists(html_file):
+                print(f"Skipping {html_name}: HTML file not found")
+                continue
+            if not os.path.exists(ptx_file):
+                print(f"Skipping {html_name}: PTX file {ptx_name} not found")
+                continue
+            
+            print(f"\nProcessing {html_name} -> {ptx_name}...")
             print(f"Extracting R outputs from {html_file}...")
             outputs = extract_r_outputs_from_html(html_file)
+            
+            if len(outputs) == 0:
+                print(f"No R outputs found, skipping...")
+                continue
+                
             print(f"Found {len(outputs)} R code outputs")
             
             print(f"Adding outputs to {ptx_file}...")

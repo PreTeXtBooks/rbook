@@ -19,16 +19,54 @@ library(lsr)]]></input>
 load(file.path(projecthome, "data", "clinicaltrial.Rdata")) # load data
 str(clin.trial)]]></input>
 </program>
+    <console>
+      <output><![CDATA[
+## 'data.frame':    18 obs. of  3 variables:
+##  $ drug     : Factor w/ 3 levels "placebo","anxifree",..: 1 1 1 2 2 2 3 3 3 1 ...
+##  $ therapy  : Factor w/ 2 levels "no.therapy","CBT": 1 1 1 1 1 1 1 1 1 2 ...
+##  $ mood.gain: num  0.5 0.3 0.1 0.6 0.4 0.2 1.4 1.7 1.3 0.6 ...
+]]></output>
+    </console>
     <p>So we have a single data frame called <c>clin.trial</c>, containing three variables; <c>drug</c>, <c>therapy</c> and <c>mood.gain</c>. Next, let's print the data frame to get a sense of what the data actually look like.</p>
     <program language="r">
   <input><![CDATA[
 print( clin.trial )]]></input>
 </program>
+    <console>
+      <output><![CDATA[
+##        drug    therapy mood.gain
+## 1   placebo no.therapy       0.5
+## 2   placebo no.therapy       0.3
+## 3   placebo no.therapy       0.1
+## 4  anxifree no.therapy       0.6
+## 5  anxifree no.therapy       0.4
+## 6  anxifree no.therapy       0.2
+## 7  joyzepam no.therapy       1.4
+## 8  joyzepam no.therapy       1.7
+## 9  joyzepam no.therapy       1.3
+## 10  placebo        CBT       0.6
+## 11  placebo        CBT       0.9
+## 12  placebo        CBT       0.3
+## 13 anxifree        CBT       1.1
+## 14 anxifree        CBT       0.8
+## 15 anxifree        CBT       1.2
+## 16 joyzepam        CBT       1.8
+## 17 joyzepam        CBT       1.3
+## 18 joyzepam        CBT       1.4
+]]></output>
+    </console>
     <p>For the purposes of this chapter, what we're really interested in is the effect of <c>drug</c> on <c>mood.gain</c>. The first thing to do is calculate some descriptive statistics and draw some graphs. In Chapter <xref ref="descriptives"/> we discussed a variety of different functions that can be used for this purpose. For instance, we can use the <c>xtabs()</c> function to see how many people we have in each group:</p>
     <program language="r">
   <input><![CDATA[
 xtabs( ~drug, clin.trial )]]></input>
 </program>
+    <console>
+      <output><![CDATA[
+## drug
+##  placebo anxifree joyzepam 
+##        6        6        6
+]]></output>
+    </console>
     <p>Similarly, we can use the <c>aggregate()</c> function to calculate means and standard deviations for the <c>mood.gain</c> variable broken down by which <c>drug</c> was administered:</p>
     <program language="r">
   <input><![CDATA[
@@ -36,6 +74,14 @@ aggregate( mood.gain ~ drug, clin.trial, mean )
 
 aggregate( mood.gain ~ drug, clin.trial, sd )]]></input>
 </program>
+    <console>
+      <output><![CDATA[
+##       drug mood.gain
+## 1  placebo 0.4500000
+## 2 anxifree 0.7166667
+## 3 joyzepam 1.4833333
+]]></output>
+    </console>
     <p>Finally, we can use <c>plotmeans()</c> from the <c>gplots</c> package to produce a pretty picture.</p>
     <program language="r">
   <input><![CDATA[
@@ -338,12 +384,40 @@ Y <- data.frame( group, outcome, gp.means,
                   dev.from.gp.means, squared.devs )
 print(Y, digits = 2)]]></input>
 </program>
+    <console>
+      <output><![CDATA[
+##       group outcome gp.means dev.from.gp.means squared.devs
+## 1   placebo     0.5     0.45             0.050       0.0025
+## 2   placebo     0.3     0.45            -0.150       0.0225
+## 3   placebo     0.1     0.45            -0.350       0.1225
+## 4  anxifree     0.6     0.72            -0.117       0.0136
+## 5  anxifree     0.4     0.72            -0.317       0.1003
+## 6  anxifree     0.2     0.72            -0.517       0.2669
+## 7  joyzepam     1.4     1.48            -0.083       0.0069
+## 8  joyzepam     1.7     1.48             0.217       0.0469
+## 9  joyzepam     1.3     1.48            -0.183       0.0336
+## 10  placebo     0.6     0.45             0.150       0.0225
+## 11  placebo     0.9     0.45             0.450       0.2025
+## 12  placebo     0.3     0.45            -0.150       0.0225
+## 13 anxifree     1.1     0.72             0.383       0.1469
+## 14 anxifree     0.8     0.72             0.083       0.0069
+## 15 anxifree     1.2     0.72             0.483       0.2336
+## 16 joyzepam     1.8     1.48             0.317       0.1003
+## 17 joyzepam     1.3     1.48            -0.183       0.0336
+## 18 joyzepam     1.4     1.48            -0.083       0.0069
+]]></output>
+    </console>
     <p>If you compare this output to the contents of the table I've been constructing by hand, you can see that R has done exactly the same calculations that I was doing, and much faster too. So, if we want to finish the calculations of the within-group sum of squares in R, we just ask for the <c>sum()</c> of the <c>squared.devs</c> variable:</p>
     <program language="r">
   <input><![CDATA[
 SSw <- sum( squared.devs )
 print( SSw )]]></input>
 </program>
+    <console>
+      <output><![CDATA[
+## [1] 1.391667
+]]></output>
+    </console>
     <p>Obviously, this isn't the same as what I calculated, because R used all 18 observations. But if I'd typed <c>sum( squared.devs[1:5] )</c> instead, it would have given the same answer that I got earlier.</p>
     <p>Okay. Now that we've calculated the within groups variation, <m><![CDATA[\mbox{SS}_w]]></m>, it's time to turn our attention to the between-group sum of squares, <m><![CDATA[\mbox{SS}_b]]></m>. The calculations for this case are very similar. The main difference is that, instead of calculating the differences between an observation <m><![CDATA[Y_{ik}]]></m> and a group mean <m><![CDATA[\bar{Y}_k]]></m> for all of the observations, we calculate the differences between the group means <m><![CDATA[\bar{Y}_k]]></m> and the grand mean <m><![CDATA[\bar{Y}]]></m> (in this case 0.88) for all of the groups...</p>
     <program language="r">
@@ -387,12 +461,29 @@ Y <- data.frame( gp.means, grand.mean, dev.from.grand.mean,
                   squared.devs, gp.sizes, wt.squared.devs )
 print(Y, digits = 2)]]></input>
 </program>
+    <console>
+      <output><![CDATA[
+##          gp.means grand.mean dev.from.grand.mean squared.devs gp.sizes
+## placebo      0.45       0.88               -0.43        0.188        6
+## anxifree     0.72       0.88               -0.17        0.028        6
+## joyzepam     1.48       0.88                0.60        0.360        6
+##          wt.squared.devs
+## placebo             1.13
+## anxifree            0.17
+## joyzepam            2.16
+]]></output>
+    </console>
     <p>Clearly, these are basically the same numbers that we got before. There are a few tiny differences, but that's only because the hand-calculated versions have some small errors caused by the fact that I rounded all my numbers to 2 decimal places at each step in the calculations, whereas R only does it at the end (obviously, R s version is more accurate). Anyway, here's the R command showing the final step:</p>
     <program language="r">
   <input><![CDATA[
 SSb <- sum( wt.squared.devs )
 print( SSb )]]></input>
 </program>
+    <console>
+      <output><![CDATA[
+## [1] 3.453333
+]]></output>
+    </console>
     <p>which is (ignoring the slight differences due to rounding error) the same answer that I got when doing things by hand.</p>
     <p>Now that we've calculated our sums of squares values, <m><![CDATA[\mbox{SS}_b]]></m> and <m><![CDATA[\mbox{SS}_w]]></m>, the rest of the ANOVA is pretty painless. The next step is to calculate the degrees of freedom. Since we have <m><![CDATA[G = 3]]></m> groups and <m><![CDATA[N = 18]]></m> observations in total, our degrees of freedom can be calculated by simple subtraction:</p>
     <me><![CDATA[\begin{array}{lclcl}
@@ -413,6 +504,11 @@ print( SSb )]]></input>
   <input><![CDATA[
 pf( 18.6, df1 = 2, df2 = 15, lower.tail = FALSE)]]></input>
 </program>
+    <console>
+      <output><![CDATA[
+## [1] 8.672727e-05
+]]></output>
+    </console>
     <p>Therefore, our <m><![CDATA[p]]></m>-value comes to 0.0000867, or <m><![CDATA[8.67 \times 10^{-5}]]></m> in scientific notation. So, unless we're being <em>extremely</em> conservative about our Type I error rate, we're pretty much guaranteed to reject the null hypothesis.</p>
     <p>At this point, we're basically done. Having completed our calculations, it's traditional to organise all these numbers into an ANOVA table like the one in Table@reftab:anovatable. For our clinical trial data, the ANOVA table would look like this:</p>
     <program language="r">
@@ -467,17 +563,44 @@ my.anova <- aov( mood.gain ~ drug, clin.trial )]]></input>
   <input><![CDATA[
 class( my.anova )]]></input>
 </program>
+    <console>
+      <output><![CDATA[
+## [1] "aov" "lm"
+]]></output>
+    </console>
     <p>... we discover that <c>my.anova</c> actually has <em>two</em> classes! The first class tells us that it's an <c>aov</c> (analysis of variance) object, but the second tells us that it's <em>also</em> an <c>lm</c> (linear model) object. Later on, we'll see that this reflects a pretty deep statistical relationship between ANOVA and regression (Chapter <xref ref="regression"/> and it means that any function that exists in R for dealing with regressions can also be applied to <c>aov</c> objects, which is neat; but I'm getting ahead of myself. For now, I want to note that what we've created is an <c>aov</c> object, and to also make the point that <c>aov</c> objects are actually rather complicated beasts. I <em>won't</em> be trying to explain everything about them, since it's way beyond the scope of an introductory statistics subject, but to give you a tiny hint of some of the stuff that R stores inside an <c>aov</c> object, let's ask it to print out the <c>names()</c> of all the stored quantities...</p>
     <program language="r">
   <input><![CDATA[
 names( my.anova )]]></input>
 </program>
+    <console>
+      <output><![CDATA[
+##  [1] "coefficients"  "residuals"     "effects"       "rank"         
+##  [5] "fitted.values" "assign"        "qr"            "df.residual"  
+##  [9] "contrasts"     "xlevels"       "call"          "terms"        
+## [13] "model"
+]]></output>
+    </console>
     <p>As we go through the rest of the book, I hope that a few of these will become a little more obvious to you, but right now that's going to look pretty damned opaque. That's okay. You don't need to know any of the details about it right now, and most of it you don't need at all... what you <em>do</em> need to understand is that the <c>aov()</c> function does a lot of calculations for you, not just the basic ones that I outlined in the previous sections. What this means is that it's generally a good idea to create a variable like <c>my.anova</c> that stores the output of the <c>aov()</c> function... because later on, you can use <c>my.anova</c> as an input to lots of other functions:  those other functions can pull out bits and pieces from the <c>aov</c> object, and calculate various other things that you might need.</p>
     <p>Right then. The simplest thing you can do with an <c>aov</c> object is to <c>print()</c> it out. When we do that, it shows us a few of the key quantities of interest:</p>
     <program language="r">
   <input><![CDATA[
 print( my.anova )]]></input>
 </program>
+    <console>
+      <output><![CDATA[
+## Call:
+##    aov(formula = mood.gain ~ drug, data = clin.trial)
+## 
+## Terms:
+##                     drug Residuals
+## Sum of Squares  3.453333  1.391667
+## Deg. of Freedom        2        15
+## 
+## Residual standard error: 0.3045944
+## Estimated effects may be unbalanced
+]]></output>
+    </console>
     <p>Specificially, it prints out a reminder of the command that you used when you called <c>aov()</c> in the first place, shows you the sums of squares values, the degrees of freedom, and a couple of other quantities that we're not really interested in right now. Notice, however, that R doesn't use the names "between-group" and "within-group". Instead, it tries to assign more meaningful names: in our particular example, the <em>between groups</em> variance corresponds to the effect that the <c>drug</c> has on the outcome variable; and the <em>within groups</em> variance is corresponds to the "leftover" variability, so it calls that the <em>residuals</em>. If we compare these numbers to the numbers that I calculated by hand in Section <xref ref="anovacalc"/>, you can see that they're identical... the between groups sums of squares is <m><![CDATA[\mbox{SS}_b = 3.45]]></m>, the within groups sums of squares is <m><![CDATA[\mbox{SS}_w = 1.39]]></m>, and the degrees of freedom are 2 and 15 repectively.</p>
     </subsection>
   <subsection>
@@ -488,6 +611,15 @@ print( my.anova )]]></input>
   <input><![CDATA[
 summary( my.anova )]]></input>
 </program>
+    <console>
+      <output><![CDATA[
+##             Df Sum Sq Mean Sq F value   Pr(>F)    
+## drug         2  3.453  1.7267   18.61 8.65e-05 ***
+## Residuals   15  1.392  0.0928                     
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+]]></output>
+    </console>
     <p>... we get all of the key numbers that we calculated earlier. We get the sums of squares, the degrees of freedom, the mean squares, the <m><![CDATA[F]]></m>-statistic, and the <m><![CDATA[p]]></m>-value itself. These are all identical to the numbers that we calculated ourselves when doing it the long and tedious way, and it's even organised into the same kind of ANOVA table that I showed in Table <xref ref="tab:anovatable"/>, and then filled out by hand in Section <xref ref="anovacalc"/>. The only things that are even slightly different is that some of the row and column names are a bit different.</p>
     </subsection>
   </section>
@@ -508,11 +640,22 @@ SStot <- SSb + SSw          # total sums of squares
 eta.squared <- SSb / SStot  # eta-squared value
 print( eta.squared )]]></input>
 </program>
+    <console>
+      <output><![CDATA[
+## [1] 0.7127623
+]]></output>
+    </console>
     <p>However, since it can be tedious to do this the long way (especially when we start running more complicated ANOVAs, such as those in Chapter <xref ref="anova2"/> I've included an <c>etaSquared()</c> function in the <c>lsr</c> package which will do it for you. For now, the only argument you need to care about is <c>x</c>, which should be the <c>aov</c> object corresponding to your ANOVA. When we do this, what we get as output is this:</p>
     <program language="r">
   <input><![CDATA[
 etaSquared( x = my.anova )]]></input>
 </program>
+    <console>
+      <output><![CDATA[
+##         eta.sq eta.sq.part
+## drug 0.7127623   0.7127623
+]]></output>
+    </console>
     <p>The output here shows two different numbers. The first one corresponds to the <m><![CDATA[\eta^2]]></m> statistic, precisely as described above. The second one refers to "partial <m><![CDATA[\eta^2]]></m>", which is a somewhat different measure of effect size that I'll describe later. For the simple ANOVA that we've just run, they're the same number. But this won't always be true once we start running more complicated ANOVAs.<fn>A potentially important footnote -- I wrote the <c>etaSquared()</c> function for the <c>lsr</c> package as a teaching exercise, but like all the other functions in the <c>lsr</c> package it hasn't been exhaustively tested. As of this writing -- <c>lsr</c> package version 0.5 -- there is at least one known bug in the code. In some cases at least, it doesn't work (and can give very silly answers) when you set the <c>weights</c> on the observations to something other than uniform. That doesn't matter at all for this book, since those kinds of analyses are well beyond the scope, but I haven't had a chance to revisit the package in a long time; it would probably be wise to be very cautious with the use of this function in any context other than very simple introductory analyses. Thanks to Emil Kirkegaard for finding the bug! (Oh, and while I'm here, there's an interesting blog post by Daniel Lakens suggesting that eta-squared itself is perhaps not the best measure of effect size in real world data analysis: http://daniellakens.blogspot.com.au/2015/06/why-you-should-use-omega-squared.html</fn></p>
   </section>
   <section xml:id="posthoc">
@@ -571,16 +714,58 @@ t.test( formula = mood.gain ~ drug,
                   p.adjust.method = "none"    # which correction to use?
  )]]></input>
 </program>
+    <console>
+      <output><![CDATA[
+## 
+##  Pairwise comparisons using t tests with pooled SD 
+## 
+## data:  clin.trial$mood.gain and clin.trial$drug 
+## 
+##          placebo anxifree
+## anxifree 0.15021 -       
+## joyzepam 3e-05   0.00056 
+## 
+## P value adjustment method: none
+]]></output>
+    </console>
     <p>One thing that bugs me slightly about the <c>pairwise.t.test()</c> function is that you can't just give it an <c>aov</c> object, and have it produce this output. After all, I went to all that trouble earlier of getting R to create the <c>my.anova</c> variable and -- as we saw in Section <xref ref="aovobjects"/> -- R has actually stored enough information inside it that I should just be able to get it to run all the pairwise tests using <c>my.anova</c> as an input. To that end, I've included a <c>posthocPairwiseT()</c> function in the <c>lsr</c> package that lets you do this. The idea behind this function is that you can just input the <c>aov</c> object itself,<fn>I should point out that there are other functions in R for running multiple comparisons, and at least one of them works this way: the <c>TukeyHSD()</c> function takes an <c>aov</c> object as its input, and outputs Tukey's "honestly significant difference" tests. I talk about Tukey's HSD in Chapter <xref ref="anova2"/>.</fn> and then get the pairwise tests as an output. As of the current writing, <c>posthocPairwiseT()</c> is actually just a simple way of calling <c>pairwise.t.test()</c> function, but you should be aware that I intend to make some changes to it later on. Here's an example:</p>
     <program language="r">
   <input><![CDATA[
 posthocPairwiseT( x = my.anova, p.adjust.method = "none" )]]></input>
 </program>
+    <console>
+      <output><![CDATA[
+## 
+##  Pairwise comparisons using t tests with pooled SD 
+## 
+## data:  mood.gain and drug 
+## 
+##          placebo anxifree
+## anxifree 0.15021 -       
+## joyzepam 3e-05   0.00056 
+## 
+## P value adjustment method: none
+]]></output>
+    </console>
     <p>In later versions, I plan to add more functionality (e.g., adjusted  confidence intervals), but for now I think it's at least kind of useful. To see why, let's suppose you've run your ANOVA and stored the results in <c>my.anova</c>, and you're happy using the Holm correction (the default method in <c>pairwise.t.test()</c>, which I'll explain this in a moment). In that case, all you have to do is type this:</p>
     <program language="r">
   <input><![CDATA[
 posthocPairwiseT( my.anova )]]></input>
 </program>
+    <console>
+      <output><![CDATA[
+## 
+##  Pairwise comparisons using t tests with pooled SD 
+## 
+## data:  mood.gain and drug 
+## 
+##          placebo anxifree
+## anxifree 0.1502  -       
+## joyzepam 9.1e-05 0.0011  
+## 
+## P value adjustment method: holm
+]]></output>
+    </console>
     <p>and R will output the test results. Much more convenient, I think.</p>
     </subsection>
   <subsection>
@@ -604,6 +789,20 @@ posthocPairwiseT( my.anova )]]></input>
   <input><![CDATA[
 posthocPairwiseT( my.anova, p.adjust.method = "bonferroni")]]></input>
 </program>
+    <console>
+      <output><![CDATA[
+## 
+##  Pairwise comparisons using t tests with pooled SD 
+## 
+## data:  mood.gain and drug 
+## 
+##          placebo anxifree
+## anxifree 0.4506  -       
+## joyzepam 9.1e-05 0.0017  
+## 
+## P value adjustment method: bonferroni
+]]></output>
+    </console>
     <p>If we compare these three <m><![CDATA[p]]></m>-values to those that we saw in the previous section when we made no adjustment at all, it is clear that the only thing that R has done is multiply them by 3.</p>
     </subsection>
   <subsection>
@@ -632,6 +831,20 @@ knitr::kable(tibble::tribble(
   <input><![CDATA[
 posthocPairwiseT( my.anova )]]></input>
 </program>
+    <console>
+      <output><![CDATA[
+## 
+##  Pairwise comparisons using t tests with pooled SD 
+## 
+## data:  mood.gain and drug 
+## 
+##          placebo anxifree
+## anxifree 0.1502  -       
+## joyzepam 9.1e-05 0.0011  
+## 
+## P value adjustment method: holm
+]]></output>
+    </console>
     <p>As you can see, the biggest <m><![CDATA[p]]></m>-value (corresponding to the comparison between Anxifree and the placebo) is unaltered: at a value of <m><![CDATA[.15]]></m>, it is exactly the same as the value we got originally when we applied no correction at all. In contrast, the smallest <m><![CDATA[p]]></m>-value (Joyzepam versus placebo) has been multiplied by three.</p>
     </subsection>
   <subsection>
@@ -690,11 +903,27 @@ library( car )]]></input>
   <input><![CDATA[
 leveneTest( my.anova )]]></input>
 </program>
+    <console>
+      <output><![CDATA[
+## Levene's Test for Homogeneity of Variance (center = median)
+##       Df F value Pr(>F)
+## group  2  1.4672 0.2618
+##       15
+]]></output>
+    </console>
     <p>If we look at the output, we see that the test is non-significant <m><![CDATA[(F_{2,15} = 1.47, p = .26)]]></m>, so it looks like the homogeneity of variance assumption is fine. Remember, although R reports the test statistic as an <m><![CDATA[F]]></m>-value, it could equally be called <m><![CDATA[W]]></m>, in which case you'd just write <m><![CDATA[W_{2,15} = 1.47]]></m>. Also, note the part of the output that says <c>center = median</c>. That's telling you that, by default, the <c>leveneTest()</c> function actually does the Brown-Forsythe test. If you want to use the mean instead, then you need to explicitly set the <c>center</c> argument, like this:</p>
     <program language="r">
   <input><![CDATA[
 leveneTest( y = my.anova, center = mean )]]></input>
 </program>
+    <console>
+      <output><![CDATA[
+## Levene's Test for Homogeneity of Variance (center = mean)
+##       Df F value Pr(>F)
+## group  2  1.4497 0.2657
+##       15
+]]></output>
+    </console>
     <p>That being said, in most cases it's probably best to stick to the default value, since the Brown-Forsythe test is a bit more robust than the original Levene test.</p>
     </subsection>
   <subsection>
@@ -716,6 +945,13 @@ Ybar <- gp.mean[G]             # group mean associated with each obs
 Z <- abs(Y - Ybar)             # the transformed variable, Z
 summary( aov(Z ~ G) )          # run the ANOVA]]></input>
 </program>
+    <console>
+      <output><![CDATA[
+##             Df Sum Sq Mean Sq F value Pr(>F)
+## G            2 0.0616 0.03080    1.45  0.266
+## Residuals   15 0.3187 0.02125
+]]></output>
+    </console>
     <p>That said, I don't imagine that many people will care about this. Nevertheless, it's nice to know that you could do it this way if you wanted to. And for those of you who do try it, I think it helps to demystify the test a little bit when you can see -- with your own eyes -- the way in which Levene's test relates to ANOVA.</p>
     </subsection>
   </section>
@@ -733,11 +969,29 @@ summary( aov(Z ~ G) )          # run the ANOVA]]></input>
   <input><![CDATA[
 oneway.test(mood.gain ~ drug, data = clin.trial)]]></input>
 </program>
+    <console>
+      <output><![CDATA[
+## 
+##  One-way analysis of means (not assuming equal variances)
+## 
+## data:  mood.gain and drug
+## F = 26.322, num df = 2.0000, denom df = 9.4932, p-value = 0.000134
+]]></output>
+    </console>
     <p>To understand what's happening here, let's compare these numbers to what we got earlier in Section <xref ref="introduceaov"/> when we ran our original ANOVA. To save you the trouble of flicking back, here are those numbers again, this time calculated by setting <c>var.equal = TRUE</c> for the <c>oneway.test()</c> function:</p>
     <program language="r">
   <input><![CDATA[
 oneway.test(mood.gain ~ drug, data = clin.trial, var.equal = TRUE)]]></input>
 </program>
+    <console>
+      <output><![CDATA[
+## 
+##  One-way analysis of means
+## 
+## data:  mood.gain and drug
+## F = 18.611, num df = 2, denom df = 15, p-value = 8.646e-05
+]]></output>
+    </console>
     <p>Okay, so originally our ANOVA gave us the result <m><![CDATA[F(2,15) = 18.6]]></m>, whereas the Welch one-way test gave us <m><![CDATA[F(2,9.49) = 26.32]]></m>. In other words, the Welch test has reduced the within-groups degrees of freedom from 15 to 9.49, and the <m><![CDATA[F]]></m>-value has increased from 18.6 to 26.32.</p>
   </section>
   <section xml:id="anovanormality">
@@ -755,6 +1009,15 @@ hist( x = my.anova.residuals )           # plot a histogram (similar to Figure @
 qqnorm( y = my.anova.residuals )         # draw a QQ plot (similar to Figure @ref{fig:normalityanova}b)
 shapiro.test( x = my.anova.residuals )   # run Shapiro-Wilk test]]></input>
 </program>
+    <console>
+      <output><![CDATA[
+## 
+##  Shapiro-Wilk normality test
+## 
+## data:  my.anova.residuals
+## W = 0.96019, p-value = 0.6053
+]]></output>
+    </console>
     <p>The histogram and QQ plot are both look pretty normal to me.<fn>Note that neither of these figures has been tidied up at all: if you want to create nicer looking graphs it's always a good idea to use the tools from Chapter <xref ref="graphics"/> to help you draw cleaner looking images.</fn> This is supported by the results of our Shapiro-Wilk test (<m><![CDATA[W = .96]]></m>, <m><![CDATA[p = .61]]></m>) which finds no indication that normality is violated.</p>
   </section>
   <section xml:id="kruskalwallis">
@@ -791,6 +1054,13 @@ shapiro.test( x = my.anova.residuals )   # run Shapiro-Wilk test]]></input>
 f <- table( clin.trial$mood.gain )   # frequency table for mood gain
 print(f)   # we have some ties]]></input>
 </program>
+    <console>
+      <output><![CDATA[
+## 
+## 0.1 0.2 0.3 0.4 0.5 0.6 0.8 0.9 1.1 1.2 1.3 1.4 1.7 1.8 
+##   1   1   2   1   1   2   1   1   1   1   2   2   1   1
+]]></output>
+    </console>
     <p>Looking at this table, notice that the third entry in the frequency table has a value of <m><![CDATA[2]]></m>. Since this corresponds to a <c>mood.gain</c> of 0.3, this table is telling us that two people's mood increased by 0.3. More to the point, note that we can say that <c>f[3]</c> has a value of <c>2</c>. Or, in the mathematical notation I introduced above, this is telling us that <m><![CDATA[f_3 = 2]]></m>. Yay. So, now that we know this, the tie correction factor (TCF) is:</p>
     <me><![CDATA[\mbox{TCF} = 1 - \frac{\sum_j {f_j}^3 - f_j}{N^3 - N}]]></me>
     <p>The tie-corrected value of the Kruskal-Wallis statistic obtained by dividing the value of <m><![CDATA[K]]></m> by this quantity: it is this tie-corrected version that R calculates. And at long last, we're actually finished with the theory of the Kruskal-Wallis test. I'm sure you're all terribly relieved that I've cured you of the existential anxiety that naturally arises when you realise that you <em>don't</em> know how to calculate the tie-correction factor for the Kruskal-Wallis test. Right?</p>
@@ -803,11 +1073,29 @@ print(f)   # we have some ties]]></input>
   <input><![CDATA[
 kruskal.test(mood.gain ~ drug, data = clin.trial)]]></input>
 </program>
+    <console>
+      <output><![CDATA[
+## 
+##  Kruskal-Wallis rank sum test
+## 
+## data:  mood.gain by drug
+## Kruskal-Wallis chi-squared = 12.076, df = 2, p-value = 0.002386
+]]></output>
+    </console>
     <p>A second way of using the <c>kruskal.test()</c> function, which you probably won't have much reason to use, is to directly specify the outcome variable and the grouping variable as separate input arguments, <c>x</c> and <c>g</c>:</p>
     <program language="r">
   <input><![CDATA[
 kruskal.test(x = clin.trial$mood.gain, g = clin.trial$drug)]]></input>
 </program>
+    <console>
+      <output><![CDATA[
+## 
+##  Kruskal-Wallis rank sum test
+## 
+## data:  clin.trial$mood.gain and clin.trial$drug
+## Kruskal-Wallis chi-squared = 12.076, df = 2, p-value = 0.002386
+]]></output>
+    </console>
     <p>This isn't very interesting, since it's just plain easier to specify a formula. However, sometimes it can be useful to specify <c>x</c> as a list. What I mean is this. Suppose you actually had data as three separate variables, <c>placebo</c>, <c>anxifree</c> and <c>joyzepam</c>. If that's the format that your data are in, then it's convenient to know that you can bundle all three together as a list:</p>
     <program language="r">
   <input><![CDATA[
@@ -825,16 +1113,43 @@ kruskal.test( x = mood.gain )]]></input>
   <input><![CDATA[
 summary( aov( mood.gain ~ therapy, data = clin.trial ))]]></input>
 </program>
+    <console>
+      <output><![CDATA[
+##             Df Sum Sq Mean Sq F value Pr(>F)
+## therapy      1  0.467  0.4672   1.708   0.21
+## Residuals   16  4.378  0.2736
+]]></output>
+    </console>
     <p>Overall, it looks like there's no significant effect here at all but, as we'll see in Chapter <xref ref="anova2"/>, this is actually a misleading  answer! In any case, it's irrelevant to our current goals: our interest here is in the <m><![CDATA[F]]></m>-statistic, which is <m><![CDATA[F(1,16) = 1.71]]></m>, and the <m><![CDATA[p]]></m>-value, which is .21. Since we only have two groups, I didn't actually need to resort to an ANOVA, I could have just decided to run a Student <m><![CDATA[t]]></m>-test. So let's see what happens when I do that:</p>
     <program language="r">
   <input><![CDATA[
 t.test( mood.gain ~ therapy, data = clin.trial, var.equal = TRUE )]]></input>
 </program>
+    <console>
+      <output><![CDATA[
+## 
+##  Two Sample t-test
+## 
+## data:  mood.gain by therapy
+## t = -1.3068, df = 16, p-value = 0.2098
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -0.8449518  0.2005073
+## sample estimates:
+## mean in group no.therapy        mean in group CBT 
+##                0.7222222                1.0444444
+]]></output>
+    </console>
     <p>Curiously, the <m><![CDATA[p]]></m>-values are identical: once again we obtain a value of <m><![CDATA[p = .21]]></m>. But what about the test statistic? Having run a <m><![CDATA[t]]></m>-test instead of an ANOVA, we get a somewhat different answer, namely <m><![CDATA[t(16) = -1.3068]]></m>. However, there is a fairly straightforward relationship here. If we square the <m><![CDATA[t]]></m>-statistic</p>
     <program language="r">
   <input><![CDATA[
 1.3068 ^ 2]]></input>
 </program>
+    <console>
+      <output><![CDATA[
+## [1] 1.707726
+]]></output>
+    </console>
     <p>we get the <m><![CDATA[F]]></m>-statistic from before.</p>
   </section>
   <section>
