@@ -170,10 +170,12 @@ class RmdToPreTeXt:
             code_content = '\n'.join(self.code_block_lines)
             
             if is_output:
-                # Output blocks are just displayed as pre/code
-                self.output.append('    <pre>')
+                # Output blocks should use console element
+                self.output.append('    <console>')
+                self.output.append('      <output><![CDATA[')
                 self.output.append(code_content)
-                self.output.append('    </pre>')
+                self.output.append(']]></output>')
+                self.output.append('    </console>')
             else:
                 # Use CDATA to avoid issues with < and & in code
                 self.output.append('    <program language="r">')
