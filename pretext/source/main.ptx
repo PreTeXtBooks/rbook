@@ -30,6 +30,17 @@
     <!-- Chapter 4: Additional R concepts -->
     <xi:include href="./ch4-additional-r-concepts.ptx" />
 
+    <!-- Part III: Working with data -->
+    <part xml:id="part-iii-working-with-data">
+      <title>Working with data</title>
+
+      <!-- Chapter 5: Descriptive statistics -->
+      <xi:include href="./ch5-descriptive-statistics.ptx" />
+
+      <!-- Chapter 7: Data handling (Pragmatic matters) -->
+      <xi:include href="./ch7-data-handling.ptx" />
+    </part>
+
     <!-- Part IV: Statistical theory -->
     <part xml:id="part-iv-statistical-theory">
       <title>Statistical theory</title>
