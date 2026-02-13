@@ -112,16 +112,39 @@ def add_outputs_to_ptx(ptx_file, outputs):
         f.write('\n'.join(new_lines))
 
 def main():
-    html_file = '/home/runner/work/rbook/rbook/docs/book/bayes.html'
-    ptx_file = '/home/runner/work/rbook/rbook/pretext/source/ch6-bayesian-statistics.ptx'
+    import sys
     
-    print(f"Extracting R outputs from {html_file}...")
-    outputs = extract_r_outputs_from_html(html_file)
-    print(f"Found {len(outputs)} R code outputs")
-    
-    print(f"Adding outputs to {ptx_file}...")
-    add_outputs_to_ptx(ptx_file, outputs)
-    print("Done!")
+    if len(sys.argv) < 3:
+        print("Usage: python3 add_r_outputs.py <html_file> <ptx_file>")
+        print("\nOr run with no arguments to process all chapters:")
+        chapters = [
+            ('bayes.html', 'ch6-bayesian-statistics.ptx'),
+            ('anova2.html', 'ch5-factorial-anova.ptx'),
+            ('regression.html', 'ch-regression.ptx'),
+        ]
+        for html_name, ptx_name in chapters:
+            html_file = f'/home/runner/work/rbook/rbook/docs/book/{html_name}'
+            ptx_file = f'/home/runner/work/rbook/rbook/pretext/source/{ptx_name}'
+            
+            print(f"\nProcessing {html_name}...")
+            print(f"Extracting R outputs from {html_file}...")
+            outputs = extract_r_outputs_from_html(html_file)
+            print(f"Found {len(outputs)} R code outputs")
+            
+            print(f"Adding outputs to {ptx_file}...")
+            add_outputs_to_ptx(ptx_file, outputs)
+            print("Done!")
+    else:
+        html_file = sys.argv[1]
+        ptx_file = sys.argv[2]
+        
+        print(f"Extracting R outputs from {html_file}...")
+        outputs = extract_r_outputs_from_html(html_file)
+        print(f"Found {len(outputs)} R code outputs")
+        
+        print(f"Adding outputs to {ptx_file}...")
+        add_outputs_to_ptx(ptx_file, outputs)
+        print("Done!")
 
 if __name__ == '__main__':
     main()
