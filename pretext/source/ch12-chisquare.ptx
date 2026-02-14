@@ -231,7 +231,7 @@
         <image source="generated/plot.png"/>
       </figure>
       <p>
-        The final step in the process of constructing our hypothesis test is to figure out what the rejection region is. That is, what values of <m>X^2</m> would lead is to reject the null hypothesis. As we saw earlier, large values of <m>X^2</m> imply that the null hypothesis has done a poor job of predicting the data from our experiment, whereas small values of <m>X^2</m> imply that it's actually done pretty well. Therefore, a pretty sensible strategy would be to say there is some critical value, such that if <m>X^2</m> is bigger than the critical value we reject the null; but if <m>X^2</m> is smaller than this value we retain the null. In other words, to use the language we introduced in <xref ref="hypothesistesting the chi-squared goodness of fit test is always a <term>one-sided test</term>. Right" />, then we have to choose our critical value so that there is only a 5\% chance that <m>X^2</m> could get to be that big if the null hypothesis is true. That is to say, we want the 95th percentile of the sampling distribution. This is illustrated in <xref ref="fig-goftest" />.
+        The final step in the process of constructing our hypothesis test is to figure out what the rejection region is. That is, what values of <m>X^2</m> would lead is to reject the null hypothesis. As we saw earlier, large values of <m>X^2</m> imply that the null hypothesis has done a poor job of predicting the data from our experiment, whereas small values of <m>X^2</m> imply that it's actually done pretty well. Therefore, a pretty sensible strategy would be to say there is some critical value, such that if <m>X^2</m> is bigger than the critical value we reject the null; but if <m>X^2</m> is smaller than this value we retain the null. In other words, to use the language we introduced in <xref ref="hypothesistesting" />, the chi-squared goodness of fit test is always a <term>one-sided test</term>. Right, then we have to choose our critical value so that there is only a 5\% chance that <m>X^2</m> could get to be that big if the null hypothesis is true. That is to say, we want the 95th percentile of the sampling distribution. This is illustrated in <xref ref="fig-goftest" />.
       </p>
       <p>
         Ah, but <mdash /> I hear you ask <mdash /> how do I calculate the 95th percentile of a chi-squared distribution with <m>k-1</m> degrees of freedom? If only R had some function, called... oh, I don't know, <c>qchisq()</c> ... that would let you calculate this percentile (see <xref ref="probability" /> if you've forgotten). Like this...
@@ -258,7 +258,7 @@
         </input>
       </program>
       <p>
-        So, in this case we would reject the null hypothesis, since <m>p < .05</m>.  And that's it, basically. You now know "Pearson's <m>\chi^2</m> test for the goodness of fit". Lucky you.
+        So, in this case we would reject the null hypothesis, since <m>p &lt; .05</m>.  And that's it, basically. You now know "Pearson's <m>\chi^2</m> test for the goodness of fit". Lucky you.
       </p>
     </subsection>
     <subsection xml:id="gofTestInR">
@@ -508,7 +508,7 @@
     <subsection xml:id="AssocTestInR">
       <title>Doing the test in R</title>
       <p>
-        Okay, now that we know how the test works, let's have a look at how it's done in R. As tempting as it is to lead you through the tedious calculations so that you're forced to learn it the long way, I figure there's no point. I already showed you how to do it the long way for the goodness of fit test in the last section, and since the test of independence isn't conceptually any different, you won't learn anything new by doing it the long way. So instead, I'll go straight to showing you the easy way. As always, R lets you do it multiple ways. There's the <c>chisq.test()</c> function, which I'll talk about in <xref ref="chisq.test" /></c> function in the <c>lsr</c> package, which I think is easier on beginners. It works in the exact same way as the <c>xtabs()</c> function. Recall that, in order to produce the contingency table, we used this command:
+        Okay, now that we know how the test works, let's have a look at how it's done in R. As tempting as it is to lead you through the tedious calculations so that you're forced to learn it the long way, I figure there's no point. I already showed you how to do it the long way for the goodness of fit test in the last section, and since the test of independence isn't conceptually any different, you won't learn anything new by doing it the long way. So instead, I'll go straight to showing you the easy way. As always, R lets you do it multiple ways. There's the <c>chisq.test()</c> function, which I'll talk about in <xref ref="chisq.test" />, but first I want to use the <c>associationTest()</c> function in the <c>lsr</c> package, which I think is easier on beginners. It works in the exact same way as the <c>xtabs()</c> function. Recall that, in order to produce the contingency table, we used this command:
       </p>
       <program language="r">
         <input>
