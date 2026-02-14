@@ -38,7 +38,10 @@
     <part xml:id="part-ii-an-introduction-to-r">
       <title>An Introduction to R</title>
 
-      <!-- Additional R concepts -->
+      <!-- Chapter 3: Getting started with R -->
+      <xi:include href="./ch3-intro-r.ptx" />
+
+      <!-- Chapter 4: Additional R concepts -->
       <xi:include href="./ch4-additional-r-concepts.ptx" />
     </part>
 
