@@ -287,6 +287,17 @@ load(file.path(projecthome, "data","chapek9.Rdata"))
 head(chapek9)
 ]]></input>
     </program>
+    <console>
+      <output><![CDATA[
+##   species choice
+## 1   robot flower
+## 2   human   data
+## 3   human   data
+## 4   human   data
+## 5   robot   data
+## 6   human flower
+]]></output>
+    </console>
     <p>In this data set, we supposedly sampled 180 beings and measured two things. First, we checked whether they were humans or robots, as captured by the <c>species</c> variable. Second, we asked them to nominate whether they most preferred flowers, puppies, or data. When we produce the cross-tabulation, we get this as the results:</p>
     <program language="r">
       <input><![CDATA[
@@ -294,11 +305,19 @@ crosstab <- xtabs( ~ species + choice, chapek9 )
 crosstab
 ]]></input>
     </program>
+    <console>
+      <output><![CDATA[
+##        choice
+## species puppy flower data
+##   robot    13     30   44
+##   human    15     13   65
+]]></output>
+    </console>
     <p>Surprisingly, the humans seemed to show a much stronger preference for data than the robots did. At the time we speculated that this might have been because the questioner was a large robot carrying a gun, and the humans might have been scared.</p>
     <subsection>
       <title>The orthodox text</title>
 
-    <p>Just to refresh your memory, here's how we analysed these data back in Chapter <xref ref="chisquare"/>. Because we want to determine if there is some <em>association</em> between <c>species</c> and <c>choice</c>, we used the <c>associationTest()</c> function in the <c>lsr</c> package to run a chi-square test of association. The results looked like this:</p>
+    <p>Just to refresh your memory, here's how we analysed these data back in Chapter@refch:chisquare. Because we want to determine if there is some <em>association</em> between <c>species</c> and <c>choice</c>, we used the <c>associationTest()</c> function in the <c>lsr</c> package to run a chi-square test of association. The results looked like this:</p>
     <program language="r">
       <input><![CDATA[
 library(lsr)
@@ -306,6 +325,38 @@ associationTest( ~species + choice, chapek9 )
 
 ]]></input>
     </program>
+    <console>
+      <output><![CDATA[
+## 
+##      Chi-square test of categorical association
+## 
+## Variables:   species, choice 
+## 
+## Hypotheses: 
+##    null:        variables are independent of one another
+##    alternative: some contingency exists between variables
+## 
+## Observed contingency table:
+##        choice
+## species puppy flower data
+##   robot    13     30   44
+##   human    15     13   65
+## 
+## Expected contingency table under the null hypothesis:
+##        choice
+## species puppy flower data
+##   robot  13.5   20.8 52.7
+##   human  14.5   22.2 56.3
+## 
+## Test results: 
+##    X-squared statistic:  10.722 
+##    degrees of freedom:  2 
+##    p-value:  0.005 
+## 
+## Other information: 
+##    estimated effect size (Cramer's v):  0.244
+]]></output>
+    </console>
     <p>Because we found a small <m>p</m> value (in this case <m><![CDATA[p<.01]]></m>), we concluded that the data are inconsistent with the null hypothesis of no association, and we rejected it.</p>
     </subsection>
     <subsection>
@@ -333,17 +384,33 @@ library( BayesFactor )
 contingencyTableBF( crosstab, sampleType = "jointMulti" )
 ]]></input>
     </program>
+    <console>
+      <output><![CDATA[
+## Bayes factor analysis
+## --------------
+## [1] Non-indep. (a=1) : 15.92684 ±0%
+## 
+## Against denominator:
+##   Null, independence, a = 1 
+## ---
+## Bayes factor type: BFcontingencyTable, joint multinomial
+]]></output>
+    </console>
     <p>As with most R commands, the output initially looks suspiciously similar to utter gibberish. Fortunately, it's actually pretty simple once you get past the initial impression. Firstly, note that the stuff at the top and bottom are irrelevant fluff. You already know that you're doing a Bayes factor analysis. You already know that you're analysing a contingency table, and you already know that you specified a joint multinomial sampling plan. So let's strip that out and take a look at what's left over:</p>
-    <pre>
-[1] Non-indep. (a=1) : 15.92684 ±0%
+    <console>
+      <output><![CDATA[
+[1] Non-indep. (a=1) : 15.92684 @plusorminus0%
 
 Against denominator:
   Null, independence, a = 1 
-    </pre>
+]]></output>
+    </console>
     <p>Let's also ignore those two <c>a=1</c> bits, since they're technical details that you don't need to know about at this stage.<fn>If you're desperate to know, you can find all the gory details in Gunel and Dickey (1974). However, that's a pretty technical paper. The help documentation to the <c>contingencyTableBF()</c> gives this explanation: "the argument <c>priorConcentration</c> indexes the expected deviation from the null hypothesis under the alternative, and corresponds to Gunel and Dickey's (1974) <m>a</m> parameter." As I write this I'm about halfway through the Gunel and Dickey paper, and I agree that setting <m>a=1</m> is a pretty sensible default choice, since it corresponds to an assumption that you have very little <em>a priori</em> knowledge about  the contingency table.</fn> The rest of the output is actually pretty straightforward. At the bottom, the output defines the null hypothesis for you: in this case, the null hypothesis is that there is no relationship between <c>species</c> and <c>choice</c>. Or, to put it another way, the null hypothesis is that these two variables are <em>independent</em>. Now if you look at the line above it, you might (correctly) guess that the <c>Non-indep.</c> part refers to the <em>alternative</em> hypothesis. In this case, the alternative is that there <em>is</em> a relationship between <c>species</c> and <c>choice</c>: that is, they are not independent. So the only thing left in the output is the bit that reads</p>
-    <pre>
-15.92684 ±0%
-    </pre>
+    <console>
+      <output><![CDATA[
+15.92684 @plusorminus0%
+]]></output>
+    </console>
     <p>The 15.9 part is the Bayes factor, and it's telling you that the odds for the alternative hypothesis against the null are about 16:1. The <m>\pm0\%</m> part is not very interesting: essentially, all it's telling you is that R has calculated an exact Bayes factor, so the uncertainty about the Bayes factor is 0\%.<fn>In some of the later examples, you'll see that this number is not always 0\%. This is because the <c>BayesFactor</c> package often has to run some simulations to compute approximate Bayes factors. So the answers you get won't always be identical when you run the command a second time. That's why the output of these functions tells you what the margin for error is.</fn> In any case, the data are telling us that we have moderate evidence for the alternative hypothesis.</p>
     </subsection>
     <subsection>
@@ -378,6 +445,18 @@ Against denominator:
 contingencyTableBF(crosstab, sampleType = "poisson" )
 ]]></input>
     </program>
+    <console>
+      <output><![CDATA[
+## Bayes factor analysis
+## --------------
+## [1] Non-indep. (a=1) : 28.20757 ±0%
+## 
+## Against denominator:
+##   Null, independence, a = 1 
+## ---
+## Bayes factor type: BFcontingencyTable, poisson
+]]></output>
+    </console>
     <p>Notice that the Bayes factor of 28:1 here is <em>not</em> the identical to the Bayes factor of 16:1 that we obtained from the last test. The sampling plan actually does matter.</p>
     <p>What about the design in which the row columns (or column totals) are fixed? As I mentioned earlier, this corresponds to the "independent multinomial" sampling plan. Again, you need to specify the <c>sampleType</c> argument, but this time you need to specify whether you fixed the rows or the columns. For example, suppose I deliberately sampled 87 humans and 93 robots, then I would need to indicate that the <c>fixedMargin</c> of the contingency table is the <c>"rows"</c>. So the command I would use is:</p>
     <program language="r">
@@ -385,6 +464,18 @@ contingencyTableBF(crosstab, sampleType = "poisson" )
 contingencyTableBF(crosstab, sampleType = "indepMulti", fixedMargin="rows")
 ]]></input>
     </program>
+    <console>
+      <output><![CDATA[
+## Bayes factor analysis
+## --------------
+## [1] Non-indep. (a=1) : 8.605897 ±0%
+## 
+## Against denominator:
+##   Null, independence, a = 1 
+## ---
+## Bayes factor type: BFcontingencyTable, independent multinomial
+]]></output>
+    </console>
     <p>Again, the Bayes factor is different, with the evidence for the alternative dropping to a mere 9:1. As you might expect, the answers would be diffrent again if it were the columns of the contingency table that the experimental design fixed.</p>
     <p>Finally, if we turn to hypergeometric sampling in which everything is fixed, we get...</p>
     <program language="r">
@@ -412,7 +503,7 @@ contingencyTableBF(toys, sampleType = "hypergeom")
 
 #Bayes factor analysis
 #--------------
-#[1] Non-indep. (a=1) : 8.294321 ±0%
+#[1] Non-indep. (a=1) : 8.294321 @plusorminus0%
 #
 #Against denominator:
 #  Null, independence, a = 1 
@@ -438,7 +529,18 @@ load(file.path(projecthome, "data","harpo.Rdata"))
 head(harpo)
 ]]></input>
     </program>
-    <p>In this data set, we have two groups of students, those who received lessons from Anastasia and those who took their classes with Bernadette. The question we want to answer is whether there's any difference in the grades received by these two groups of student. Back in Chapter <xref ref="ttest"/> I suggested you could analyse this kind of data using the <c>independentSamplesTTest()</c> function in the <c>lsr</c> package. For example, if you want to run a Student's <m>t</m>-test, you'd use a command like this:</p>
+    <console>
+      <output><![CDATA[
+##   grade      tutor
+## 1    65  Anastasia
+## 2    72 Bernadette
+## 3    66 Bernadette
+## 4    74  Anastasia
+## 5    73  Anastasia
+## 6    71 Bernadette
+]]></output>
+    </console>
+    <p>In this data set, we have two groups of students, those who received lessons from Anastasia and those who took their classes with Bernadette. The question we want to answer is whether there's any difference in the grades received by these two groups of student. Back in Chapter@refch:ttest I suggested you could analyse this kind of data using the <c>independentSamplesTTest()</c> function in the <c>lsr</c> package. For example, if you want to run a Student's <m>t</m>-test, you'd use a command like this:</p>
     <program language="r">
       <input><![CDATA[
 independentSamplesTTest(
@@ -448,6 +550,33 @@ independentSamplesTTest(
  )
 ]]></input>
     </program>
+    <console>
+      <output><![CDATA[
+## 
+##    Student's independent samples t-test 
+## 
+## Outcome variable:   grade 
+## Grouping variable:  tutor 
+## 
+## Descriptive statistics: 
+##             Anastasia Bernadette
+##    mean        74.533     69.056
+##    std dev.     8.999      5.775
+## 
+## Hypotheses: 
+##    null:        population means equal for both groups
+##    alternative: different population means in each group
+## 
+## Test results: 
+##    t-statistic:  2.115 
+##    degrees of freedom:  31 
+##    p-value:  0.043 
+## 
+## Other information: 
+##    two-sided 95% confidence interval:  [0.197, 10.759] 
+##    estimated effect size (Cohen's d):  0.74
+]]></output>
+    </console>
     <p>Like most of the functions that I wrote for this book, the <c>independentSamplesTTest()</c> is very wordy. It prints out a bunch of descriptive statistics and a reminder of what the null and alternative hypotheses are, before finally getting to the test results. I wrote it that way deliberately, in order to help make things a little clearer for people who are new to statistics.</p>
     <p>Again, we obtain a <m>p</m>-value less than 0.05, so we reject the null hypothesis.</p>
     <p>What does the Bayesian version of the <m>t</m>-test look like? Using the <c>ttestBF()</c> function, we can obtain a Bayesian analog of Student's independent samples <m>t</m>-test using the following command:</p>
@@ -456,11 +585,25 @@ independentSamplesTTest(
 ttestBF( formula = grade ~ tutor, data = harpo )
 ]]></input>
     </program>
+    <console>
+      <output><![CDATA[
+## Bayes factor analysis
+## --------------
+## [1] Alt., r=0.707 : 1.754927 ±0%
+## 
+## Against denominator:
+##   Null, mu1-mu2 = 0 
+## ---
+## Bayes factor type: BFindepSample, JZS
+]]></output>
+    </console>
     <p>Notice that format of this command is pretty standard. As usual we have a <c>formula</c> argument in which we specify the outcome variable on the left hand side and the grouping variable on the right. The <c>data</c> argument is used to specify the data frame containing the variables. However, notice that there's no analog of the <c>var.equal</c> argument. This is because the <c>BayesFactor</c> package does not include an analog of the Welch test, only the Student test.<fn>Apparently this omission is deliberate. I have this vague recollection that I spoke to Jeff Rouder about this once, and his opinion was that when homogeneity of variance is violated the results of a <m>t</m>-test are uninterpretable. I can see the argument for this, but I've never really held a strong opinion myself. (Jeff, if you never said that, I'm sorry)</fn> In any case, when you run this command you get this as the output:</p>
     <p>So what does all this mean? Just as we saw with the <c>contingencyTableBF()</c> function, the output is pretty dense. But, just like last time, there's not a lot of information here that you actually need to process. Firstly, let's examine the bottom line. The <c>BFindepSample</c> part just tells you that you ran an independent samples <m>t</m>-test, and the <c>JZS</c> part is technical information that is a little beyond the scope of this book.<fn>Just in case you're interested: the "JZS" part of the output relates to how the Bayesian test expresses the prior uncertainty about the variance <m>\sigma^2</m>, and it's short for the names of three people: "Jeffreys Zellner Siow". See @Rouder2009 for details.</fn> Clearly, there's nothing to worry about in that part. In the line above, the text <c>Null, mu1-mu2 = 0</c> is just telling you that the null hypothesis is that there are no differences between means. But you already knew that. So the only part that really matters is this line here:</p>
-    <pre>
-[1] Alt., r=0.707 : 1.754927 ±0%
-    </pre>
+    <console>
+      <output><![CDATA[
+[1] Alt., r=0.707 : 1.754927 @plusorminus0%
+]]></output>
+    </console>
     <p>Ignore the <c>r=0.707</c> part: it refers to a technical detail that we won't worry about in this chapter.<fn>Again, in case you care ... the null hypothesis here specifies an effect size of 0, since the two means are identical. The alternative hypothesis states that there <em>is</em> an effect, but it doesn't specify exactly how big the effect will be. The <m>r</m> value here relates to how big the effect is expected to be according to the alternative. You can type <c>?ttestBF</c> to get more details.</fn> Instead, you should focus on the part that reads <c>1.754927</c>. This is the Bayes factor: the evidence provided by these data are about 1.8:1 in favour of the alternative.</p>
     <p>Before moving on, it's worth highlighting the difference between the orthodox test results and the Bayesian one. According to the orthodox test, we obtained a significant result, though only barely. Nevertheless, many people would happily accept <m>p=.043</m> as reasonably strong evidence for an effect. In contrast, notice that the Bayesian test doesn't even reach 2:1 odds in favour of an effect, and would be considered very weak evidence at best. In my experience that's a pretty typical outcome. Bayesian methods usually require more evidence before rejecting the null.</p>
     </subsection>
@@ -474,6 +617,17 @@ load(file.path(projecthome, "data","chico.Rdata"))
 head(chico)
 ]]></input>
     </program>
+    <console>
+      <output><![CDATA[
+##         id grade_test1 grade_test2
+## 1 student1        42.9        44.6
+## 2 student2        51.8        54.0
+## 3 student3        71.7        72.3
+## 4 student4        51.6        53.4
+## 5 student5        63.5        63.8
+## 6 student6        58.0        59.3
+]]></output>
+    </console>
     <p>We originally analysed the data using the <c>pairedSamplesTTest()</c> function in the <c>lsr</c> package, but this time we'll use the <c>ttestBF()</c> function from the <c>BayesFactor</c> package to do the same thing. The easiest way to do it with this data set is to use the <c>x</c> argument to specify one variable and the <c>y</c> argument to specify the other. All we need to do then is specify <c>paired=TRUE</c> to tell R that this is a paired samples test. So here's our command:</p>
     <program language="r">
       <input><![CDATA[
@@ -484,6 +638,18 @@ ttestBF(
  )
 ]]></input>
     </program>
+    <console>
+      <output><![CDATA[
+## Bayes factor analysis
+## --------------
+## [1] Alt., r=0.707 : 5992.05 ±0%
+## 
+## Against denominator:
+##   Null, mu = 0 
+## ---
+## Bayes factor type: BFoneSample, JZS
+]]></output>
+    </console>
     <p>At this point, I hope you can read this output without any difficulty. The data provide evidence of about 6000:1 in favour of the alternative. We could probably reject the null with some confidence!</p>
     </subsection>
   </section>
@@ -501,6 +667,17 @@ load(file.path(projecthome, "data","parenthood.Rdata"))
 head(parenthood)
 ]]></input>
     </program>
+    <console>
+      <output><![CDATA[
+##   dan.sleep baby.sleep dan.grump day
+## 1      7.59      10.18        56   1
+## 2      7.91      11.66        60   2
+## 3      5.14       7.92        82   3
+## 4      7.71       9.61        55   4
+## 5      6.68       9.75        67   5
+## 6      5.99       5.04        72   6
+]]></output>
+    </console>
     <p>Back in Chapter <xref ref="regression"/> I proposed a theory in which my grumpiness (<c>dan.grump</c>) on any given day is related to the amount of sleep I got the night before (<c>dan.sleep</c>), and possibly to the amount of sleep our baby got (<c>baby.sleep</c>), though probably not to the <c>day</c> on which we took the measurement. We tested this using a regression model. In order to estimate the regression model we used the <c>lm()</c> function, like so:</p>
     <program language="r">
       <input><![CDATA[
@@ -516,6 +693,30 @@ model <- lm(
 summary(model)
 ]]></input>
     </program>
+    <console>
+      <output><![CDATA[
+## 
+## Call:
+## lm(formula = dan.grump ~ dan.sleep + day + baby.sleep, data = parenthood)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -10.906  -2.284  -0.295   2.652  11.880 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(>|t|)    
+## (Intercept) 126.278707   3.242492  38.945   <2e-16 ***
+## dan.sleep    -8.969319   0.560007 -16.016   <2e-16 ***
+## day          -0.004403   0.015262  -0.288    0.774    
+## baby.sleep    0.015747   0.272955   0.058    0.954    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 4.375 on 96 degrees of freedom
+## Multiple R-squared:  0.8163, Adjusted R-squared:  0.8105 
+## F-statistic: 142.2 on 3 and 96 DF,  p-value: < 2.2e-16
+]]></output>
+    </console>
     <p>When interpreting the results, each row in this table corresponds to one of the possible predictors. The <c>(Intercept)</c> term isn't usually interesting, though it is highly significant. The important thing for our purposes is the fact that <c>dan.sleep</c> is significant at <m><![CDATA[p<.001]]></m> and neither of the other variables are.</p>
     </subsection>
     <subsection>
@@ -530,6 +731,27 @@ regressionBF(
 )
 ]]></input>
     </program>
+    <console>
+      <output><![CDATA[
+## 
+  |                                                                       
+  |                                                                 |   0%
+  |                                                                       
+  |=========                                                        |  14%
+  |                                                                       
+  |===================                                              |  29%
+  |                                                                       
+  |============================                                     |  43%
+  |                                                                       
+  |=====================================                            |  57%
+  |                                                                       
+  |==============================================                   |  71%
+  |                                                                       
+  |========================================================         |  86%
+  |                                                                       
+  |=================================================================| 100%
+]]></output>
+    </console>
     <p>So that's pretty straightforward: it's exactly what we've been doing throughout the book. The output, however, is a little different from what you get from <c>lm()</c>. The format of this is pretty familiar. At the bottom we have some techical rubbish, and at the top we have some information about the Bayes factors. What's new is the fact that we seem to have <em>lots</em> of Bayes factors here. What's all this about?</p>
     <p>The trick to understanding this output is to recognise that if we're interested in working out which of the 3 predictor variables are related to <c>dan.grump</c>, there are actually 8 possible regression models that could be considered. One possibility is the <em>intercept only model</em>, in which none of the three variables have an effect. At the other end of the spectrum is the <em>full model</em> in which all three variables matter. So what <c>regressionBF()</c> does is treat the <em>intercept only</em> model as the null hypothesis, and print out the Bayes factors for all other models when compared against that null. For example, if we look at line 4 in the table, we see that the evidence is about <m>10^{33}</m> to 1 in favour of the claim that a model that includes both <c>dan.sleep</c> and <c>day</c> is better than the intercept only model. Or if we look at line 1, we can see that the odds are about <m>1.6 \times 10^{34}</m> that a model containing the <c>dan.sleep</c> variable (but no others) is better than the intercept only model.</p>
     </subsection>
@@ -545,30 +767,118 @@ models <- regressionBF(
 )
 ]]></input>
     </program>
+    <console>
+      <output><![CDATA[
+## 
+  |                                                                       
+  |                                                                 |   0%
+  |                                                                       
+  |=========                                                        |  14%
+  |                                                                       
+  |===================                                              |  29%
+  |                                                                       
+  |============================                                     |  43%
+  |                                                                       
+  |=====================================                            |  57%
+  |                                                                       
+  |==============================================                   |  71%
+  |                                                                       
+  |========================================================         |  86%
+  |                                                                       
+  |=================================================================| 100%
+]]></output>
+    </console>
     <p>Let's say I want to see the best three models. To do this, I use the <c>head()</c> function specifying <c>n=3</c>, and here's what I get as the result:</p>
     <program language="r">
       <input><![CDATA[
 head( models, n = 3)
 ]]></input>
     </program>
+    <console>
+      <output><![CDATA[
+## Bayes factor analysis
+## --------------
+## [1] dan.sleep              : 1.622545e+34 ±0.01%
+## [2] dan.sleep + day        : 1.016576e+33 ±0%
+## [3] dan.sleep + baby.sleep : 9.77022e+32  ±0%
+## 
+## Against denominator:
+##   Intercept only 
+## ---
+## Bayes factor type: BFlinearModel, JZS
+]]></output>
+    </console>
     <p>This is telling us that the model in line 1 (i.e., <c>dan.grump ~ dan.sleep</c>) is the best one. That's <em>almost</em> what I'm looking for, but it's still comparing all the models against the intercept only model. That seems silly. What I'd like to know is how big the difference is between the best model and the other good models. For that, there's this trick:</p>
     <program language="r">
       <input><![CDATA[
 head( models/max(models), n = 3)
 ]]></input>
     </program>
+    <console>
+      <output><![CDATA[
+## Bayes factor analysis
+## --------------
+## [1] dan.sleep              : 1         ±0%
+## [2] dan.sleep + day        : 0.0626532 ±0.01%
+## [3] dan.sleep + baby.sleep : 0.0602154 ±0.01%
+## 
+## Against denominator:
+##   dan.grump ~ dan.sleep 
+## ---
+## Bayes factor type: BFlinearModel, JZS
+]]></output>
+    </console>
     <p>Notice the bit at the bottom showing that the "denominator" has changed. What that means is that the Bayes factors are now comparing each of those 3 models listed against the <c>dan.grump ~ dan.sleep</c> model. Obviously, the Bayes factor in the first line is exactly 1, since that's just comparing the best model to itself. More to the point, the other two Bayes factors are both less than 1, indicating that they're all worse than that model. The Bayes factors of 0.06 to 1 imply that the odds for the best model over the second best model are about 16:1. You can work this out by simple arithmetic (i.e., <m>0.06 / 1 \approx 16</m>), but the other way to do it is to directly compare the models. To see what I mean, here's the original output:</p>
     <program language="r">
       <input><![CDATA[
 models
 ]]></input>
     </program>
+    <console>
+      <output><![CDATA[
+## 
+  |                                                                       
+  |                                                                 |   0%
+  |                                                                       
+  |=========                                                        |  14%
+  |                                                                       
+  |===================                                              |  29%
+  |                                                                       
+  |============================                                     |  43%
+  |                                                                       
+  |=====================================                            |  57%
+  |                                                                       
+  |==============================================                   |  71%
+  |                                                                       
+  |========================================================         |  86%
+  |                                                                       
+  |=================================================================| 100%
+]]></output>
+    </console>
     <p>The best model corresponds to row 1 in this table, and the second best model corresponds to row 4. All you have to do to compare these two models is this:</p>
     <program language="r">
       <input><![CDATA[
 models[1] / models[4]
 ]]></input>
     </program>
+    <console>
+      <output><![CDATA[
+## Bayes factor analysis
+## --------------
+## [1] dan.sleep                    : 1.622545e+34 ±0.01%
+## [2] day                          : 0.2724027    ±0%
+## [3] baby.sleep                   : 10018411     ±0%
+## [4] dan.sleep + day              : 1.016576e+33 ±0%
+## [5] dan.sleep + baby.sleep       : 9.77022e+32  ±0%
+## [6] day + baby.sleep             : 2340755      ±0%
+## [7] dan.sleep + day + baby.sleep : 7.835625e+31 ±0%
+## 
+## Against denominator:
+##   Intercept only 
+## ---
+## Bayes factor type: BFlinearModel, JZS
+]]></output>
+    </console>
     <p>And there you have it. You've found the regression model with the highest Bayes factor (i.e., <c>dan.grump ~ dan.sleep</c>), and you know that the evidence for that model over the next best alternative (i.e., <c>dan.grump ~ dan.sleep + day</c>) is about 16:1.</p>
     </subsection>
     <subsection>
@@ -585,6 +895,19 @@ regressionBF(
 )
 ]]></input>
     </program>
+    <console>
+      <output><![CDATA[
+## 
+  |                                                                       
+  |                                                                 |   0%
+  |                                                                       
+  |======================                                           |  33%
+  |                                                                       
+  |===========================================                      |  67%
+  |                                                                       
+  |=================================================================| 100%
+]]></output>
+    </console>
     <p>Okay, so now you can see the results a bit more clearly. The Bayes factor when you try to drop the <c>dan.sleep</c> predictor is about <m>10^{-26}</m>, which is very strong evidence that you <em>shouldn't</em> drop it. On the other hand, the Bayes factor actually goes up to 17 if you drop <c>baby.sleep</c>, so you'd usually say that's pretty strong evidence for dropping that one.</p>
     </subsection>
   </section>
@@ -602,6 +925,17 @@ load(file.path(projecthome, "data","clinicaltrial.Rdata"))
 head(clin.trial)
 ]]></input>
     </program>
+    <console>
+      <output><![CDATA[
+##       drug    therapy mood.gain
+## 1  placebo no.therapy       0.5
+## 2  placebo no.therapy       0.3
+## 3  placebo no.therapy       0.1
+## 4 anxifree no.therapy       0.6
+## 5 anxifree no.therapy       0.4
+## 6 anxifree no.therapy       0.2
+]]></output>
+    </console>
     <p>To run our orthodox analysis in earlier chapters we used the <c>aov()</c> function to do all the heavy lifting. In Chapter <xref ref="anova2"/> I recommended using the <c>Anova()</c> function from the <c>car</c> package to produce the ANOVA table, because it uses Type II tests by default. If you've forgotten what "Type II tests" are, it might be a good idea to re-read Section <xref ref="unbalancedanova"/>, because it will become relevant again in a moment. In any case, here's what our analysis looked like:</p>
     <program language="r">
       <input><![CDATA[
@@ -610,6 +944,20 @@ model <- aov( mood.gain ~ drug * therapy, data = clin.trial )
 Anova(model)            
 ]]></input>
     </program>
+    <console>
+      <output><![CDATA[
+## Anova Table (Type II tests)
+## 
+## Response: mood.gain
+##              Sum Sq Df F value    Pr(>F)    
+## drug         3.4533  2 31.7143 1.621e-05 ***
+## therapy      0.4672  1  8.5816   0.01262 *  
+## drug:therapy 0.2711  2  2.4898   0.12460    
+## Residuals    0.6533 12                      
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+]]></output>
+    </console>
     <p>That's pretty clearly showing us evidence for a main effect of <c>drug</c> at <m><![CDATA[p<.001]]></m>, an effect of <c>therapy</c> at <m><![CDATA[p<.05]]></m> and no interaction.</p>
     </subsection>
     <subsection>
@@ -624,16 +972,50 @@ models <- anovaBF(
 )
 ]]></input>
     </program>
+    <console>
+      <output><![CDATA[
+## Bayes factor analysis
+## --------------
+## [1] dan.sleep                    : 1.622545e+34 ±0.01%
+## [2] day                          : 0.2724027    ±0%
+## [3] baby.sleep                   : 10018411     ±0%
+## [4] dan.sleep + day              : 1.016576e+33 ±0%
+## [5] dan.sleep + baby.sleep       : 9.77022e+32  ±0%
+## [6] day + baby.sleep             : 2340755      ±0%
+## [7] dan.sleep + day + baby.sleep : 7.835625e+31 ±0%
+## 
+## Against denominator:
+##   Intercept only 
+## ---
+## Bayes factor type: BFlinearModel, JZS
+]]></output>
+    </console>
     <p>The output is quite different to the traditional ANOVA, but it's not too bad once you understand what you're looking for. Let's take a look:</p>
-    <pre>
+    <console>
+      <output><![CDATA[
 models
-    </pre>
+]]></output>
+    </console>
     <p>This looks very similar to the output we obtained from the <c>regressionBF()</c> function, and with good reason. Remember what I said back in Section <xref ref="anovalm"/>: under the hood, ANOVA is no different to regression, and both are just different examples of a linear model. Becasue of this, the  <c>anovaBF()</c> reports the output in much the same way. For instance, if we want to identify the best model we could use the same commands that we used in the last section. One variant that I find quite useful is this:</p>
     <program language="r">
       <input><![CDATA[
 models/max(models)
 ]]></input>
     </program>
+    <console>
+      <output><![CDATA[
+## Bayes factor analysis
+## --------------
+## [1] dan.sleep              : 1         ±0%
+## [2] dan.sleep + day        : 0.0626532 ±0.01%
+## [3] dan.sleep + baby.sleep : 0.0602154 ±0.01%
+## 
+## Against denominator:
+##   dan.grump ~ dan.sleep 
+## ---
+## Bayes factor type: BFlinearModel, JZS
+]]></output>
+    </console>
     <p>By "dividing" the <c>models</c> output by the best model (i.e., <c>max(models)</c>), what R is doing is using the best model (which in this case is <c>drugs + therapy</c>) as the denominator, which gives you a pretty good sense of how close the competitors are. For instance, the model that contains the interaction term is almost as good as the model without the interaction, since the Bayes factor is 0.98. In other words, the data do not clearly indicate whether there is or is not an interaction.</p>
     </subsection>
     <subsection>
@@ -670,6 +1052,24 @@ knitr::kable(tibble::tribble(
 max(models)/models
 ]]></input>
     </program>
+    <console>
+      <output><![CDATA[
+## Bayes factor analysis
+## --------------
+## [1] dan.sleep                    : 1.622545e+34 ±0.01%
+## [2] day                          : 0.2724027    ±0%
+## [3] baby.sleep                   : 10018411     ±0%
+## [4] dan.sleep + day              : 1.016576e+33 ±0%
+## [5] dan.sleep + baby.sleep       : 9.77022e+32  ±0%
+## [6] day + baby.sleep             : 2340755      ±0%
+## [7] dan.sleep + day + baby.sleep : 7.835625e+31 ±0%
+## 
+## Against denominator:
+##   Intercept only 
+## ---
+## Bayes factor type: BFlinearModel, JZS
+]]></output>
+    </console>
     <p>The output isn't quite so pretty as the last one, but the nice thing is that you can read off everything you need. The best model is <c>drug + therapy</c>, so all the other models are being compared to that. What's the Bayes factor <em>for</em> the main effect of <c>drug</c>? The relevant null hypothesis is the one that contains only <c>therapy</c>, and the Bayes factor in question is 954:1. The main effect of <c>therapy</c> is weaker, and the evidence here is only 2.8:1. Finally, the evidence <em>against</em> an interaction is very weak, at 1.01:1.</p>
     <p>Reading the results off this table is sort of counterintuitive, because you have to read off the answers from the "wrong" part of the table. For instance, the evidence for an effect of <c>drug</c> can be read from the column labelled <c>therapy</c>, which is pretty damned weird. To be fair to the authors of the package, I don't think they ever intended for the <c>anovaBF()</c> function to be used this way. My understanding<fn>Again, guys, sorry if I've misread you.</fn> is that their view is simply that you should find the best model and report that model: there's no inherent reason why a Bayesian ANOVA should try to follow the exact same design as an orthodox ANOVA.<fn>I don't even disagree with them: it's <em>not</em> at all obvious why a Bayesian ANOVA should reproduce (say) the same set of model comparisons that the Type II testing strategy uses. It's precisely because of the fact that I haven't really come to any strong conclusions that I haven't added anything to the <c>lsr</c> package to make Bayesian Type II tests easier to produce.</fn></p>
     <p>In any case, if you know what you're looking for, you can look at this table and then report the results of the Bayesian analysis in a way that is pretty closely analogous to how you'd report a regular Type II ANOVA. As I mentioned earlier, there's still no convention on how to do that, but I usually go for something like this:</p>

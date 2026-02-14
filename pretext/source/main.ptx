@@ -23,12 +23,24 @@
     <!-- out for now and write this when the book is more complete -->
     <xi:include href="./meta_frontmatter.ptx" />
 
-    <!-- First two chapters -->
-    <xi:include href="./ch1-why-statistics.ptx" />
-    <xi:include href="./ch2-research-statistics.ptx" />
-    
-    <!-- Chapter 4: Additional R concepts -->
-    <xi:include href="./ch4-additional-r-concepts.ptx" />
+    <!-- Part I: Background -->
+    <part xml:id="part-i-background">
+      <title>Background</title>
+
+      <!-- Why do we learn statistics? -->
+      <xi:include href="./ch1-why-statistics.ptx" />
+
+      <!-- A brief introduction to research design -->
+      <xi:include href="./ch2-research-statistics.ptx" />
+    </part>
+
+    <!-- Part II: An Introduction to R -->
+    <part xml:id="part-ii-an-introduction-to-r">
+      <title>An Introduction to R</title>
+
+      <!-- Additional R concepts -->
+      <xi:include href="./ch4-additional-r-concepts.ptx" />
+    </part>
 
     <!-- Part III: Working with data -->
     <part xml:id="part-iii-working-with-data">

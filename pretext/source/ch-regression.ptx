@@ -118,6 +118,17 @@ regression.1 <- lm( formula = dan.grump ~ dan.sleep,
 print( regression.1 )
 ]]></input>
     </program>
+    <console>
+      <output><![CDATA[
+## 
+## Call:
+## lm(formula = dan.grump ~ dan.sleep, data = parenthood)
+## 
+## Coefficients:
+## (Intercept)    dan.sleep  
+##     125.956       -8.937
+]]></output>
+    </console>
     <p>This looks promising. There's two separate pieces of information here. Firstly, R is politely reminding us what the command was that we used to specify the model in the first place, which can be helpful. More importantly from our perspective, however, is the second part, in which R gives us the intercept <m>\hat{b}_0 = 125.96</m> and the slope <m>\hat{b}_1 = -8.94</m>. In other words, the best-fitting regression line that I plotted in Figure <xref ref="fig:regression1a"/> has this formula: <me>\hat{Y}_i = -8.94 \ X_i + 125.96</me></p>
     </subsection>
     <subsection>
@@ -157,6 +168,17 @@ regression.2 <- lm( formula = dan.grump ~ dan.sleep + baby.sleep,
 print( regression.2 )
 ]]></input>
     </program>
+    <console>
+      <output><![CDATA[
+## 
+## Call:
+## lm(formula = dan.grump ~ dan.sleep + baby.sleep, data = parenthood)
+## 
+## Coefficients:
+## (Intercept)    dan.sleep   baby.sleep  
+##   125.96557     -8.95025      0.01052
+]]></output>
+    </console>
     <p>The coefficient associated with <c>dan.sleep</c> is quite large, suggesting that every hour of sleep I lose makes me a lot grumpier. However, the coefficient for <c>baby.sleep</c> is very small, suggesting that it doesn't really matter how much sleep my son gets; not really. What matters as far as my grumpiness goes is how much sleep <em>I</em> get. To get a sense of what this multiple regression model looks like, Figure <xref ref="fig:multipleregression"/> shows a 3D plot that plots all three variables, along with the regression model itself.</p>
     </subsection>
     <subsection>
@@ -192,6 +214,11 @@ SS.resid <- sum( (Y - Y.pred)^2 )
 print( SS.resid )
 ]]></input>
     </program>
+    <console>
+      <output><![CDATA[
+## [1] 1838.722
+]]></output>
+    </console>
     <p>Wonderful. A big number that doesn't mean very much. Still, let's forge boldly onwards anyway, and calculate the total sum of squares as well. That's also pretty simple:</p>
     <program language="r">
       <input><![CDATA[
@@ -199,6 +226,11 @@ SS.tot <- sum( (Y - mean(Y))^2 )
 print( SS.tot )
 ]]></input>
     </program>
+    <console>
+      <output><![CDATA[
+## [1] 9998.59
+]]></output>
+    </console>
     <p>Hm. Well, it's a much bigger number than the last one, so this does suggest that our regression model was making good predictions. But it's not very interpretable.</p>
     <p>Perhaps we can fix this. What we'd like to do is to convert these two fairly meaningless numbers into one number. A nice, interpretable number, which for no particular reason we'll call <m>R^2</m>. What we would like is for the value of <m>R^2</m> to be equal to 1 if the regression model makes no errors in predicting the data. In other words, if it turns out that the residual errors are zero -- that is, if <m>\mbox{SS}_{res} = 0</m> -- then we expect <m>R^2 = 1</m>. Similarly, if the model is completely useless, we would like <m>R^2</m> to be equal to 0. What do I mean by "useless"? Tempting as it is demand that the regression model move out of the house, cut its hair and get a real job, I'm probably going to have to pick a more practical definition: in this case, all I mean is that the residual sum of squares is no smaller than the total sum of squares, <m>\mbox{SS}_{res} = \mbox{SS}_{tot}</m>. Wait, why don't we do exactly that? The formula that provides us with out <m>R^2</m> value is pretty simple to write down, <me>R^2 = 1 - \frac{\mbox{SS}_{res}}{\mbox{SS}_{tot}}</me> and equally simple to calculate in R:</p>
     <program language="r">
@@ -207,6 +239,11 @@ R.squared <- 1 - (SS.resid / SS.tot)
 print( R.squared )
 ]]></input>
     </program>
+    <console>
+      <output><![CDATA[
+## [1] 0.8161018
+]]></output>
+    </console>
     <p>The <m>R^2</m> value, sometimes called the <em>coefficient of determination</em><fn>And by "sometimes" I mean "almost never". In practice everyone just calls it "<m>R</m>-squared".</fn> has a simple interpretation: it is the <em>proportion</em> of the variance in the outcome variable that can be accounted for by the predictor. So in this case, the fact that we have obtained <m>R^2 = .816</m> means that the predictor (<c>my.sleep</c>) explains 81.6\% of the variance in the outcome (<c>my.grump</c>).</p>
     <p>Naturally, you don't actually need to type in all these commands yourself if you want to obtain the <m>R^2</m> value for your regression model. As we'll see later on in Section <xref ref="regressionsummary"/>, all you need to do is use the <c>summary()</c> function. However, let's put that to one side for the moment. There's another property of <m>R^2</m> that I want to point out.</p>
     </subsection>
@@ -220,6 +257,11 @@ r <- cor(X, Y)  # calculate the correlation
 print( r^2 )    # print the squared correlation
 ]]></input>
     </program>
+    <console>
+      <output><![CDATA[
+## [1] 0.8161027
+]]></output>
+    </console>
     <p>Yep, same number. In other words, running a Pearson correlation is more or less equivalent to running a linear regression model that uses only one predictor variable.</p>
     </subsection>
     <subsection>
@@ -251,6 +293,17 @@ print( r^2 )    # print the squared correlation
 print( regression.2 ) 
 ]]></input>
     </program>
+    <console>
+      <output><![CDATA[
+## 
+## Call:
+## lm(formula = dan.grump ~ dan.sleep + baby.sleep, data = parenthood)
+## 
+## Coefficients:
+## (Intercept)    dan.sleep   baby.sleep  
+##   125.96557     -8.95025      0.01052
+]]></output>
+    </console>
     <p>I can't help but notice that the estimated regression coefficient for the <c>baby.sleep</c> variable is tiny (0.01), relative to the value that we get for <c>dan.sleep</c> (-8.95). Given that these two variables are absolutely on the same scale (they're both measured in "hours slept"), I find this suspicious. In fact, I'm beginning to suspect that it's really only the amount of sleep that <em>I</em> get that matters in order to predict my grumpiness.</p>
     <p>Once again, we can reuse a hypothesis test that we discussed earlier, this time the <m>t</m>-test. The test that we're interested has a null hypothesis that the true regression coefficient is zero (<m>b = 0</m>), which is to be tested against the alternative hypothesis that it isn't (<m>b \neq 0</m>). That is: <me><![CDATA[\begin{array}{rl} H_0: & b = 0 \\ H_1: & b \neq 0 \end{array}]]></me> How can we test this? Well, if the central limit theorem is kind to us, we might be able to guess that the sampling distribution of <m>\hat{b}</m>, the estimated regression coefficient, is a normal distribution with mean centred on <m>b</m>. What that would mean is that if the null hypothesis were true, then the sampling distribution of <m>\hat{b}</m> has mean zero and unknown standard deviation. Assuming that we can come up with a good estimate for the standard error of the regression coefficient, <m>\mbox{SE}({\hat{b}})</m>, then we're in luck. That's <em>exactly</em> the situation for which we introduced the one-sample <m>t</m> way back in Chapter <xref ref="ttest"/>. So let's define a <m>t</m>-statistic like this, <me>t = \frac{\hat{b}}{\mbox{SE}({\hat{b})}}</me> I'll skip over the reasons why, but our degrees of freedom in this case are <m>df = N- K- 1</m>. Irritatingly, the estimate of the standard error of the regression coefficient, <m>\mbox{SE}({\hat{b}})</m>, is not as easy to calculate as the standard error of the mean that we used for the simpler <m>t</m>-tests in Chapter <xref ref="ttest"/>. In fact, the formula is somewhat ugly, and not terribly helpful to look at. For our purposes it's sufficient to point out that the standard error of the  estimated regression coefficient depends on both the predictor and outcome variables, and is somewhat sensitive to violations of the homogeneity of variance assumption (discussed shortly).</p>
     <p>In any case, this <m>t</m>-statistic can be interpreted in the same way as the <m>t</m>-statistics that we discussed in Chapter <xref ref="ttest"/>. Assuming that you have a two-sided alternative (i.e., you don't really care if <m><![CDATA[b >0]]></m> or <m><![CDATA[b < 0]]></m>), then it's the extreme values of <m>t</m> (i.e., a lot less than zero or a lot greater than zero) that suggest that you should reject the null hypothesis.</p>
@@ -264,6 +317,29 @@ print( regression.2 )
 summary( regression.2 )
 ]]></input>
     </program>
+    <console>
+      <output><![CDATA[
+## 
+## Call:
+## lm(formula = dan.grump ~ dan.sleep + baby.sleep, data = parenthood)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -11.0345  -2.2198  -0.4016   2.6775  11.7496 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(>|t|)    
+## (Intercept) 125.96557    3.04095  41.423   <2e-16 ***
+## dan.sleep    -8.95025    0.55346 -16.172   <2e-16 ***
+## baby.sleep    0.01052    0.27106   0.039    0.969    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 4.354 on 97 degrees of freedom
+## Multiple R-squared:  0.8161, Adjusted R-squared:  0.8123 
+## F-statistic: 215.2 on 2 and 97 DF,  p-value: < 2.2e-16
+]]></output>
+    </console>
     <p>The output that this command produces is pretty dense, but we've already discussed everything of interest in it, so what I'll do is go through it line by line. The first line reminds us of what the actual regression model is:</p>
     <pre><![CDATA[
 Call:
@@ -310,12 +386,49 @@ F-statistic: 215.2 on 2 and 97 DF,  p-value: < 2.2e-16
 summary( regression.1 )
 ]]></input>
     </program>
+    <console>
+      <output><![CDATA[
+## 
+## Call:
+## lm(formula = dan.grump ~ dan.sleep, data = parenthood)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -11.025  -2.213  -0.399   2.681  11.750 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(>|t|)    
+## (Intercept) 125.9563     3.0161   41.76   <2e-16 ***
+## dan.sleep    -8.9368     0.4285  -20.85   <2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 4.332 on 98 degrees of freedom
+## Multiple R-squared:  0.8161, Adjusted R-squared:  0.8142 
+## F-statistic: 434.9 on 1 and 98 DF,  p-value: < 2.2e-16
+]]></output>
+    </console>
     <p>The important thing to note here is the <m>t</m> test associated with the predictor, in which we get a result of <m>t(98) = -20.85</m>, <m><![CDATA[p<.001]]></m>. Now let's compare this to the output of a different function, which goes by the name of <c>cor.test()</c>. As you might expect, this function runs a hypothesis test to see if the observed correlation between two variables is significantly different from 0. Let's have a look:</p>
     <program language="r">
       <input><![CDATA[
 cor.test( x = parenthood$dan.sleep, y = parenthood$dan.grump )
 ]]></input>
     </program>
+    <console>
+      <output><![CDATA[
+## 
+##  Pearson's product-moment correlation
+## 
+## data:  parenthood$dan.sleep and parenthood$dan.grump
+## t = -20.854, df = 98, p-value < 2.2e-16
+## alternative hypothesis: true correlation is not equal to 0
+## 95 percent confidence interval:
+##  -0.9340614 -0.8594714
+## sample estimates:
+##       cor 
+## -0.903384
+]]></output>
+    </console>
     <p>Again, the key thing to note is the line that reports the hypothesis test itself, which seems to be saying that <m>t(98) = -20.85</m>, <m><![CDATA[p<.001]]></m>. Hm. Looks like it's exactly the same test, doesn't it? And that's exactly what it is. The test for the significance of a correlation is identical to the <m>t</m> test that we run on a coefficient in a regression model.</p>
     </subsection>
     <subsection xml:id="corrhyp2">
@@ -331,6 +444,46 @@ correlate(parenthood, test=TRUE)
 
 ]]></input>
     </program>
+    <console>
+      <output><![CDATA[
+## 
+## CORRELATIONS
+## ============
+## - correlation type:  pearson 
+## - correlations shown only when both variables are numeric
+## 
+##            dan.sleep    baby.sleep    dan.grump       day   
+## dan.sleep          .         0.628***    -0.903*** -0.098   
+## baby.sleep     0.628***          .       -0.566*** -0.010   
+## dan.grump     -0.903***     -0.566***         .     0.076   
+## day           -0.098        -0.010        0.076         .   
+## 
+## ---
+## Signif. codes: . = p < .1, * = p<.05, ** = p<.01, *** = p<.001
+## 
+## 
+## p-VALUES
+## ========
+## - total number of tests run:  6 
+## - correction for multiple testing:  holm 
+## 
+##            dan.sleep baby.sleep dan.grump   day
+## dan.sleep          .      0.000     0.000 0.990
+## baby.sleep     0.000          .     0.000 0.990
+## dan.grump      0.000      0.000         . 0.990
+## day            0.990      0.990     0.990     .
+## 
+## 
+## SAMPLE SIZES
+## ============
+## 
+##            dan.sleep baby.sleep dan.grump day
+## dan.sleep        100        100       100 100
+## baby.sleep       100        100       100 100
+## dan.grump        100        100       100 100
+## day              100        100       100 100
+]]></output>
+    </console>
     <p>The output here contains three matrices. First it prints out the correlation matrix. Second it prints out a matrix of <m>p</m>-values, using the Holm method<fn>You can change the kind of correction it applies by specifying the <c>p.adjust.method</c> argument.</fn> to correct for multiple comparisons. Finally, it prints out a matrix indicating the sample size (number of pairwise complete cases) that contributed to each correlation.</p>
     <p>So there you have it. If you really desperately want to do pairwise hypothesis tests on your correlations, the <c>correlate()</c> function will let you do it. But please, <em>please</em> be careful. I can't count the number of times I've had a student panicking in my office because they've run these pairwise correlation tests, and they get one or two significant results that don't make any sense. For some reason, the moment people see those little significance stars appear, they feel compelled to throw away all common sense and assume that the results must correspond to something real that requires an explanation. In most such cases, my experience has been that the right answer is "it's a Type I error".</p>
     </subsection>
@@ -355,6 +508,14 @@ confint( object = regression.2,
         level = .99)
 ]]></input>
     </program>
+    <console>
+      <output><![CDATA[
+##                   0.5 %      99.5 %
+## (Intercept) 117.9755724 133.9555593
+## dan.sleep   -10.4044419  -7.4960575
+## baby.sleep   -0.7016868   0.7227357
+]]></output>
+    </console>
     <p>Simple enough.</p>
     </subsection>
     <subsection>
@@ -368,6 +529,13 @@ confint( object = regression.2,
 standardCoefs( regression.2 )
 ]]></input>
     </program>
+    <console>
+      <output><![CDATA[
+##                      b        beta
+## dan.sleep  -8.95024973 -0.90474809
+## baby.sleep  0.01052447  0.00217223
+]]></output>
+    </console>
     <p>This clearly shows that the <c>dan.sleep</c> variable has a much stronger effect than the <c>baby.sleep</c> variable. However, this is a perfect example of a situation where it would probably make sense to use the original coefficients <m>b</m> rather than the standardised coefficients <m>\beta</m>. After all, my sleep and the baby's sleep are <em>already</em> on the same scale: number of hours slept. Why complicate matters by converting these to <m>z</m>-scores?</p>
     </subsection>
   </section>
@@ -399,12 +567,88 @@ standardCoefs( regression.2 )
 residuals( object = regression.2 )
 ]]></input>
     </program>
+    <console>
+      <output><![CDATA[
+##           1           2           3           4           5           6 
+##  -2.1403095   4.7081942   1.9553640  -2.0602806   0.7194888  -0.4066133 
+##           7           8           9          10          11          12 
+##   0.2269987  -1.7003077   0.2025039   3.8524589   3.9986291  -4.9120150 
+##          13          14          15          16          17          18 
+##   1.2060134   0.4946578  -2.6579276  -0.3966805   3.3538613   1.7261225 
+##          19          20          21          22          23          24 
+##  -0.4922551  -5.6405941  -0.4660764   2.7238389   9.3653697   0.2841513 
+##          25          26          27          28          29          30 
+##  -0.5037668  -1.4941146   8.1328623   1.9787316  -1.5126726   3.5171148 
+##          31          32          33          34          35          36 
+##  -8.9256951  -2.8282946   6.1030349  -7.5460717   4.5572128 -10.6510836 
+##          37          38          39          40          41          42 
+##  -5.6931846   6.3096506  -2.1082466  -0.5044253   0.1875576   4.8094841 
+##          43          44          45          46          47          48 
+##  -5.4135163  -6.2292842  -4.5725232  -5.3354601   3.9950111   2.1718745 
+##          49          50          51          52          53          54 
+##  -3.4766440   0.4834367   6.2839790   2.0109396  -1.5846631  -2.2166613 
+##          55          56          57          58          59          60 
+##   2.2033140   1.9328736  -1.8301204  -1.5401430   2.5298509  -3.3705782 
+##          61          62          63          64          65          66 
+##  -2.9380806   0.6590736  -0.5917559  -8.6131971   5.9781035   5.9332979 
+##          67          68          69          70          71          72 
+##  -1.2341956   3.0047669  -1.0802468   6.5174672  -3.0155469   2.1176720 
+##          73          74          75          76          77          78 
+##   0.6058757  -2.7237421  -2.2291472  -1.4053822   4.7461491  11.7495569 
+##          79          80          81          82          83          84 
+##   4.7634141   2.6620908 -11.0345292  -0.7588667   1.4558227  -0.4745727 
+##          85          86          87          88          89          90 
+##   8.9091201  -1.1409777   0.7555223  -0.4107130   0.8797237  -1.4095586 
+##          91          92          93          94          95          96 
+##   3.1571385  -3.4205757  -5.7228699  -2.2033958  -3.8647891   0.4982711 
+##          97          98          99         100 
+##  -5.5249495   4.1134221  -8.2038533   5.6800859
+]]></output>
+    </console>
     <p>One drawback to using ordinary residuals is that they're always on a different scale, depending on what the outcome variable is and how good the regression model is. That is, Unless you've decided to run a regression model without an intercept term, the ordinary residuals will have mean 0; but the variance is different for every regression. In a lot of contexts, especially where you're only interested in the <em>pattern</em> of the residuals and not their actual values, it's convenient to estimate the <em>standardised residuals</em>, which are normalised in such a way as to have standard deviation 1. The way we calculate these is to divide the ordinary residual by an estimate of the (population) standard deviation of these residuals. For technical reasons, mumble mumble, the formula for this is: <me>\epsilon_{i}^\prime = \frac{\epsilon_i}{\hat{\sigma} \sqrt{1-h_i}}</me> where <m>\hat\sigma</m> in this context is the estimated population standard deviation of the ordinary residuals, and <m>h_i</m> is the "hat value" of the <m>i</m>th observation. I haven't explained hat values to you yet (but have no fear,<fn>Or have no hope, as the case may be.</fn> it's coming shortly), so this won't make a lot of sense. For now, it's enough to interpret the standardised residuals as if we'd converted the ordinary residuals to <m>z</m>-scores. In fact, that is more or less the truth, it's just that we're being a bit fancier. To get the standardised residuals, the command you want is this:</p>
     <program language="r">
       <input><![CDATA[
 rstandard( model = regression.2 )
 ]]></input>
     </program>
+    <console>
+      <output><![CDATA[
+##           1           2           3           4           5           6 
+## -0.49675845  1.10430571  0.46361264 -0.47725357  0.16756281 -0.09488969 
+##           7           8           9          10          11          12 
+##  0.05286626 -0.39260381  0.04739691  0.89033990  0.95851248 -1.13898701 
+##          13          14          15          16          17          18 
+##  0.28047841  0.11519184 -0.61657092 -0.09191865  0.77692937  0.40403495 
+##          19          20          21          22          23          24 
+## -0.11552373 -1.31540412 -0.10819238  0.62951824  2.17129803  0.06586227 
+##          25          26          27          28          29          30 
+## -0.11980449 -0.34704024  1.91121833  0.45686516 -0.34986350  0.81233165 
+##          31          32          33          34          35          36 
+## -2.08659993 -0.66317843  1.42930082 -1.77763064  1.07452436 -2.47385780 
+##          37          38          39          40          41          42 
+## -1.32715114  1.49419658 -0.49115639 -0.11674947  0.04401233  1.11881912 
+##          43          44          45          46          47          48 
+## -1.27081641 -1.46422595 -1.06943700 -1.24659673  0.94152881  0.51069809 
+##          49          50          51          52          53          54 
+## -0.81373349  0.11412178  1.47938594  0.46437962 -0.37157009 -0.51609949 
+##          55          56          57          58          59          60 
+##  0.51800753  0.44813204 -0.42662358 -0.35575611  0.58403297 -0.78022677 
+##          61          62          63          64          65          66 
+## -0.67833325  0.15484699 -0.13760574 -2.05662232  1.40238029  1.37505125 
+##          67          68          69          70          71          72 
+## -0.28964989  0.69497632 -0.24945316  1.50709623 -0.69864682  0.49071427 
+##          73          74          75          76          77          78 
+##  0.14267297 -0.63246560 -0.51972828 -0.32509811  1.10842574  2.72171671 
+##          79          80          81          82          83          84 
+##  1.09975101  0.62057080 -2.55172097 -0.17584803  0.34340064 -0.11158952 
+##          85          86          87          88          89          90 
+##  2.10863391 -0.26386516  0.17624445 -0.09504416  0.20450884 -0.32730740 
+##          91          92          93          94          95          96 
+##  0.73475640 -0.79400855 -1.32768248 -0.51940736 -0.91512580  0.11661226 
+##          97          98          99         100 
+## -1.28069115  0.96332849 -1.90290258  1.31368144
+]]></output>
+    </console>
     <p>Note that this function uses a different name for the input argument, but it's still just a linear regression object that the function wants to take as its input here.</p>
     <p>The third kind of residuals are <em>Studentised residuals</em> (also called "jackknifed residuals") and they're even fancier than standardised residuals. Again, the idea is to take the ordinary residual and divide it by some quantity in order to estimate some standardised notion of the residual, but the formula for doing the calculations this time is subtly different: <me>\epsilon_{i}^* = \frac{\epsilon_i}{\hat{\sigma}_{(-i)} \sqrt{1-h_i}}</me> Notice that our estimate of the standard deviation here is written <m>\hat{\sigma}_{(-i)}</m>. What this corresponds to is the estimate of the residual standard deviation that you <em>would have obtained</em>, if you just deleted the <m>i</m>th observation from the data set. This sounds like the sort of thing that would be a nightmare to calculate, since it seems to be saying that you have to run <m>N</m> new regression models (even a modern computer might grumble a bit at that, especially if you've got a large data set). Fortunately, some terribly clever person has shown that this standard deviation estimate is actually given by the following equation: <me>\hat\sigma_{(-i)} = \hat{\sigma} \ \sqrt{\frac{N-K-1 - {\epsilon_{i}^\prime}^2}{N-K-2}}</me> Isn't that a pip? Anyway, the command that you would use if you wanted to pull out the Studentised residuals for our regression model is</p>
     <program language="r">
@@ -412,6 +656,44 @@ rstandard( model = regression.2 )
 rstudent( model = regression.2 )
 ]]></input>
     </program>
+    <console>
+      <output><![CDATA[
+##           1           2           3           4           5           6 
+## -0.49482102  1.10557030  0.46172854 -0.47534555  0.16672097 -0.09440368 
+##           7           8           9          10          11          12 
+##  0.05259381 -0.39088553  0.04715251  0.88938019  0.95810710 -1.14075472 
+##          13          14          15          16          17          18 
+##  0.27914212  0.11460437 -0.61459001 -0.09144760  0.77533036  0.40228555 
+##          19          20          21          22          23          24 
+## -0.11493461 -1.32043609 -0.10763974  0.62754813  2.21456485  0.06552336 
+##          25          26          27          28          29          30 
+## -0.11919416 -0.34546127  1.93818473  0.45499388 -0.34827522  0.81089646 
+##          31          32          33          34          35          36 
+## -2.12403286 -0.66125192  1.43712830 -1.79797263  1.07539064 -2.54258876 
+##          37          38          39          40          41          42 
+## -1.33244515  1.50388257 -0.48922682 -0.11615428  0.04378531  1.12028904 
+##          43          44          45          46          47          48 
+## -1.27490649 -1.47302872 -1.07023828 -1.25020935  0.94097261  0.50874322 
+##          49          50          51          52          53          54 
+## -0.81230544  0.11353962  1.48863006  0.46249410 -0.36991317 -0.51413868 
+##          55          56          57          58          59          60 
+##  0.51604474  0.44627831 -0.42481754 -0.35414868  0.58203894 -0.77864171 
+##          61          62          63          64          65          66 
+## -0.67643392  0.15406579 -0.13690795 -2.09211556  1.40949469  1.38147541 
+##          67          68          69          70          71          72 
+## -0.28827768  0.69311245 -0.24824363  1.51717578 -0.69679156  0.48878534 
+##          73          74          75          76          77          78 
+##  0.14195054 -0.63049841 -0.51776374 -0.32359434  1.10974786  2.81736616 
+##          79          80          81          82          83          84 
+##  1.10095270  0.61859288 -2.62827967 -0.17496714  0.34183379 -0.11101996 
+##          85          86          87          88          89          90 
+##  2.14753375 -0.26259576  0.17536170 -0.09455738  0.20349582 -0.32579584 
+##          91          92          93          94          95          96 
+##  0.73300184 -0.79248469 -1.33298848 -0.51744314 -0.91435205  0.11601774 
+##          97          98          99         100 
+## -1.28498273  0.96296745 -1.92942389  1.31867548
+]]></output>
+    </console>
     <p>Before moving on, I should point out that you don't often need to manually extract these residuals yourself, even though they are at the heart of almost all regression diagnostics. That is, the <c>residuals()</c>, <c>rstandard()</c> and <c>rstudent()</c> functions are all useful to <em>know</em> about, but most of the time the various functions that run the diagnostics will take care of these calculations for you. Even so, it's always nice to know how to actually get hold of these things yourself in case you ever need to do something non-standard.</p>
     </subsection>
     <subsection xml:id="regressionoutliers">
@@ -431,6 +713,44 @@ knitr::include_graphics(file.path(projecthome, "img","regression2","unusual_outl
 hatvalues( model = regression.2 )
 ]]></input>
     </program>
+    <console>
+      <output><![CDATA[
+##          1          2          3          4          5          6 
+## 0.02067452 0.04105320 0.06155445 0.01685226 0.02734865 0.03129943 
+##          7          8          9         10         11         12 
+## 0.02735579 0.01051224 0.03698976 0.01229155 0.08189763 0.01882551 
+##         13         14         15         16         17         18 
+## 0.02462902 0.02718388 0.01964210 0.01748592 0.01691392 0.03712530 
+##         19         20         21         22         23         24 
+## 0.04213891 0.02994643 0.02099435 0.01233280 0.01853370 0.01804801 
+##         25         26         27         28         29         30 
+## 0.06722392 0.02214927 0.04472007 0.01039447 0.01381812 0.01105817 
+##         31         32         33         34         35         36 
+## 0.03468260 0.04048248 0.03814670 0.04934440 0.05107803 0.02208177 
+##         37         38         39         40         41         42 
+## 0.02919013 0.05928178 0.02799695 0.01519967 0.04195751 0.02514137 
+##         43         44         45         46         47         48 
+## 0.04267879 0.04517340 0.03558080 0.03360160 0.05019778 0.04587468 
+##         49         50         51         52         53         54 
+## 0.03701290 0.05331282 0.04814477 0.01072699 0.04047386 0.02681315 
+##         55         56         57         58         59         60 
+## 0.04556787 0.01856997 0.02919045 0.01126069 0.01012683 0.01546412 
+##         61         62         63         64         65         66 
+## 0.01029534 0.04428870 0.02438944 0.07469673 0.04135090 0.01775697 
+##         67         68         69         70         71         72 
+## 0.04217616 0.01384321 0.01069005 0.01340216 0.01716361 0.01751844 
+##         73         74         75         76         77         78 
+## 0.04863314 0.02158623 0.02951418 0.01411915 0.03276064 0.01684599 
+##         79         80         81         82         83         84 
+## 0.01028001 0.02920514 0.01348051 0.01752758 0.05184527 0.04583604 
+##         85         86         87         88         89         90 
+## 0.05825858 0.01359644 0.03054414 0.01487724 0.02381348 0.02159418 
+##         91         92         93         94         95         96 
+## 0.02598661 0.02093288 0.01982480 0.05063492 0.05907629 0.03682026 
+##         97         98         99        100 
+## 0.01817919 0.03811718 0.01945603 0.01373394
+]]></output>
+    </console>
     <program language="r">
       <input><![CDATA[
 knitr::include_graphics(file.path(projecthome, "img","regression2", "unusual_leverage.png"))
@@ -451,6 +771,50 @@ knitr::include_graphics(file.path(projecthome, "img","regression2","unusual_infl
 cooks.distance( model = regression.2 )
 ]]></input>
     </program>
+    <console>
+      <output><![CDATA[
+##            1            2            3            4            5 
+## 1.736512e-03 1.740243e-02 4.699370e-03 1.301417e-03 2.631557e-04 
+##            6            7            8            9           10 
+## 9.697585e-05 2.620181e-05 5.458491e-04 2.876269e-05 3.288277e-03 
+##           11           12           13           14           15 
+## 2.731835e-02 8.296919e-03 6.621479e-04 1.235956e-04 2.538915e-03 
+##           16           17           18           19           20 
+## 5.012283e-05 3.461742e-03 2.098055e-03 1.957050e-04 1.780519e-02 
+##           21           22           23           24           25 
+## 8.367377e-05 1.649478e-03 2.967594e-02 2.657610e-05 3.448032e-04 
+##           26           27           28           29           30 
+## 9.093379e-04 5.699951e-02 7.307943e-04 5.716998e-04 2.459564e-03 
+##           31           32           33           34           35 
+## 5.214331e-02 6.185200e-03 2.700686e-02 5.467345e-02 2.071643e-02 
+##           36           37           38           39           40 
+## 4.606378e-02 1.765312e-02 4.689817e-02 2.316122e-03 7.012530e-05 
+##           41           42           43           44           45 
+## 2.827824e-05 1.076083e-02 2.399931e-02 3.381062e-02 1.406498e-02 
+##           46           47           48           49           50 
+## 1.801086e-02 1.561699e-02 4.179986e-03 8.483514e-03 2.444787e-04 
+##           51           52           53           54           55 
+## 3.689946e-02 7.794472e-04 1.941235e-03 2.446230e-03 4.270361e-03 
+##           56           57           58           59           60 
+## 1.266609e-03 1.824212e-03 4.804705e-04 1.163181e-03 3.187235e-03 
+##           61           62           63           64           65 
+## 1.595512e-03 3.703826e-04 1.577892e-04 1.138165e-01 2.827715e-02 
+##           66           67           68           69           70 
+## 1.139374e-02 1.231422e-03 2.260006e-03 2.241322e-04 1.028479e-02 
+##           71           72           73           74           75 
+## 2.841329e-03 1.431223e-03 3.468538e-04 2.941757e-03 2.738249e-03 
+##           76           77           78           79           80 
+## 5.045357e-04 1.387108e-02 4.230966e-02 4.187440e-03 3.861831e-03 
+##           81           82           83           84           85 
+## 2.965826e-02 1.838888e-04 2.149369e-03 1.993929e-04 9.168733e-02 
+##           86           87           88           89           90 
+## 3.198994e-04 3.262192e-04 4.547383e-05 3.400893e-04 7.881487e-04 
+##           91           92           93           94           95 
+## 4.801204e-03 4.493095e-03 1.188427e-02 4.796360e-03 1.752666e-02 
+##           96           97           98           99          100 
+## 1.732793e-04 1.012302e-02 1.225818e-02 2.394964e-02 8.010508e-03
+]]></output>
+    </console>
     <p>As a rough guide, Cook's distance greater than 1 is often considered large (that's what I typically use as a quick and dirty rule), though a quick scan of the internet and a few papers suggests that <m>4/N</m> has also been suggested as a possible rule of thumb.</p>
     <p>As hinted above, you don't usually need to make use of these functions, since you can have R automatically draw the critical plots.<fn>Though special mention should be made of the <c>influenceIndexPlot()</c> and <c>influencePlot()</c> functions in the <c>car</c> package. These produce somewhat more detailed pictures than the default plots that I've shown here. There's also an <c>outlierTest()</c> function that tests to see if any of the Studentised residuals are significantly larger than would  be expected by chance.</fn> For the <c>regression.2</c> model, these are the plots showing Cook's distance (Figure <xref ref="fig:regressionplot4"/>) and the more detailed breakdown showing the scatter plot of the Studentised residual against leverage (Figure <xref ref="fig:regressionplot5"/>). To draw these, we can use the <c>plot()</c> function. When the main argument <c>x</c> to this function is a linear model object, it will draw one of six different plots, each of which is quite useful for doing regression diagnostics. You specify which one you want using the <c>which</c> argument (a number between 1 and 6). If you don't do this then R will draw all six. The two plots of interest to us in this context are generated using the following commands:</p>
     <program language="r">
@@ -473,6 +837,18 @@ lm( formula = dan.grump ~ dan.sleep + baby.sleep,  # same formula
  
 ]]></input>
     </program>
+    <console>
+      <output><![CDATA[
+## 
+## Call:
+## lm(formula = dan.grump ~ dan.sleep + baby.sleep, data = parenthood, 
+##     subset = -64)
+## 
+## Coefficients:
+## (Intercept)    dan.sleep   baby.sleep  
+##    126.3553      -8.8283      -0.1319
+]]></output>
+    </console>
     <p>As you can see, those regression coefficients have barely changed in comparison to the values we got earlier. In other words, we really don't have any problem as far as anomalous data are concerned.</p>
     </subsection>
     <subsection xml:id="regressionnormality">
@@ -578,6 +954,13 @@ plot(x = regression.2, which = 3)
 ncvTest( regression.2 )
 ]]></input>
     </program>
+    <console>
+      <output><![CDATA[
+## Non-constant Variance Score Test 
+## Variance formula: ~ fitted.values 
+## Chisquare = 0.09317511, Df = 1, p = 0.76018
+]]></output>
+    </console>
     <p>We see that our original impression was right: there's no violations of homogeneity of variance in this data.</p>
     <p>It's a bit beyond the scope of this chapter to talk too much about how to deal with violations of homogeneity of variance, but I'll give you a quick sense of what you need to consider. The <em>main</em> thing to worry about, if homogeneity of variance is violated, is that the standard error estimates associated with the regression coefficients are no longer entirely reliable, and so your <m>t</m> tests for the coefficients aren't quite right either. A simple fix to the problem is to make use of a "heteroscedasticity corrected covariance matrix" when estimating the standard errors. These are often called <em>sandwich estimators</em>, for reasons that only make sense if you understand the maths at a low level<fn>Again, a footnote that should be read only by the two readers of this book that love linear algebra (mmmm... I love the smell of matrix computations in the morning; smells like... nerd). In these estimators, the covariance matrix for <m>b</m> is given by <m>(X^T X)^{-1}\  X^T \Sigma X \ (X^T X)^{-1}</m>. See, it's a "sandwich"? Assuming you think that  <m>(X^T X)^{-1} = \mbox{"bread"}</m> and  <m>X^T \Sigma X = \mbox{"filling"}</m>, that is. Which of course everyone does, right? In any case, the usual estimator is what you get when you set <m>\Sigma = \hat\sigma^2 I</m>. The corrected version that I learned originally uses <m>\Sigma = \mbox{diag}(\epsilon_i^2)</m> [@White1980</fn>. However, the version that  @Fox2011] have implemented as the default in the <c>hccm()</c> function is a tweak on this, proposed by @Long2000. This version uses <m>\Sigma = \mbox{diag}(\epsilon_i^2/(1-h_i^2))</m>, where <m>h_i</m> is the <m>i</m>th hat value. Gosh, regression is <em>fun</em>, isn't it?] You don't need to understand what this means (not for an introductory class), but it might help to note that there's a <c>hccm()</c> function in the <c>car()</c> package that does it. Better yet, you don't even need to use it. You can use the <c>coeftest()</c> function in the <c>lmtest</c> package, but you need the <c>car</c> package loaded:</p>
     <program language="r">
@@ -587,6 +970,19 @@ library(car)
 coeftest( regression.2, vcov= hccm )
 ]]></input>
     </program>
+    <console>
+      <output><![CDATA[
+## 
+## t test of coefficients:
+## 
+##               Estimate Std. Error  t value Pr(>|t|)    
+## (Intercept) 125.965566   3.247285  38.7910   <2e-16 ***
+## dan.sleep    -8.950250   0.615820 -14.5339   <2e-16 ***
+## baby.sleep    0.010524   0.291565   0.0361   0.9713    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+]]></output>
+    </console>
     <p>Not surprisingly, these <m>t</m> tests are pretty much identical to the ones that we saw when we used the <c>summary(regression.2)</c> command earlier; because the homogeneity of variance assumption wasn't violated. But if it had been, we might have seen some more substantial differences.</p>
     </subsection>
     <subsection xml:id="regressioncollinearity">
@@ -598,6 +994,12 @@ coeftest( regression.2, vcov= hccm )
 vif( mod = regression.2 )
 ]]></input>
     </program>
+    <console>
+      <output><![CDATA[
+##  dan.sleep baby.sleep 
+##   1.651038   1.651038
+]]></output>
+    </console>
     <p>And since the square root of 1.65 is 1.28, we see that the correlation between our two predictors isn't causing much of a problem.</p>
     <p>To give a sense of how we could end up with a model that has bigger collinearity problems, suppose I were to run a much less interesting regression model, in which I tried to predict the <c>day</c> on which the data were collected, as a function of all the other variables in the data set. To see why this would be a bit of a problem, let's have a look at the correlation matrix for all four variables:</p>
     <program language="r">
@@ -605,6 +1007,15 @@ vif( mod = regression.2 )
 cor( parenthood )
 ]]></input>
     </program>
+    <console>
+      <output><![CDATA[
+##              dan.sleep  baby.sleep   dan.grump         day
+## dan.sleep   1.00000000  0.62794934 -0.90338404 -0.09840768
+## baby.sleep  0.62794934  1.00000000 -0.56596373 -0.01043394
+## dan.grump  -0.90338404 -0.56596373  1.00000000  0.07647926
+## day        -0.09840768 -0.01043394  0.07647926  1.00000000
+]]></output>
+    </console>
     <p>We have some fairly large correlations between some of our predictor variables! When we run the regression model and look at the VIF values, we see that the collinearity is causing a lot of uncertainty about the coefficients. First, run the regression...</p>
     <program language="r">
       <input><![CDATA[
@@ -617,6 +1028,12 @@ regression.3 <- lm( day ~ baby.sleep + dan.sleep + dan.grump, parenthood )
 vif( regression.3 )
 ]]></input>
     </program>
+    <console>
+      <output><![CDATA[
+## baby.sleep  dan.sleep  dan.grump 
+##   1.651064   6.102337   5.437903
+]]></output>
+    </console>
     <p>Yep, that's some mighty fine collinearity you've got there.</p>
     </subsection>
   </section>
@@ -649,6 +1066,33 @@ full.model <- lm( formula = dan.grump ~ dan.sleep + baby.sleep + day,
  )
 ]]></input>
     </program>
+    <console>
+      <output><![CDATA[
+## Start:  AIC=299.08
+## dan.grump ~ dan.sleep + baby.sleep + day
+## 
+##              Df Sum of Sq    RSS    AIC
+## - baby.sleep  1       0.1 1837.2 297.08
+## - day         1       1.6 1838.7 297.16
+## <none>                    1837.1 299.08
+## - dan.sleep   1    4909.0 6746.1 427.15
+## 
+## Step:  AIC=297.08
+## dan.grump ~ dan.sleep + day
+## 
+##             Df Sum of Sq    RSS    AIC
+## - day        1       1.6 1838.7 295.17
+## <none>                   1837.2 297.08
+## - dan.sleep  1    8103.0 9940.1 463.92
+## 
+## Step:  AIC=295.17
+## dan.grump ~ dan.sleep
+## 
+##             Df Sum of Sq    RSS    AIC
+## <none>                   1838.7 295.17
+## - dan.sleep  1    8159.9 9998.6 462.50
+]]></output>
+    </console>
     <p>although in practice I didn't need to specify <c>direction</c> because <c>"backward"</c> is the default. The output is somewhat lengthy, so I'll go through it slowly. Firstly, the output reports the AIC value for the current best model:</p>
     <pre><![CDATA[
 Start:  AIC=299.08
@@ -705,6 +1149,26 @@ Coefficients:
  )
 ]]></input>
     </program>
+    <console>
+      <output><![CDATA[
+## Start:  AIC=462.5
+## dan.grump ~ 1
+## 
+##              Df Sum of Sq    RSS    AIC
+## + dan.sleep   1    8159.9 1838.7 295.17
+## + baby.sleep  1    3202.7 6795.9 425.89
+## <none>                    9998.6 462.50
+## + day         1      58.5 9940.1 463.92
+## 
+## Step:  AIC=295.17
+## dan.grump ~ dan.sleep
+## 
+##              Df Sum of Sq    RSS    AIC
+## <none>                    1838.7 295.17
+## + day         1   1.55760 1837.2 297.08
+## + baby.sleep  1   0.02858 1838.7 297.16
+]]></output>
+    </console>
     <p>If I do this, the output takes on a similar form, but now it only considers addition (<c>+</c>) moves rather than deletion (<c>-</c>) moves:</p>
     <pre><![CDATA[
 Start:  AIC=462.5
@@ -756,6 +1220,13 @@ M1 <- lm( dan.grump ~ dan.sleep + day + baby.sleep, parenthood )
 AIC( M0, M1 )
 ]]></input>
     </program>
+    <console>
+      <output><![CDATA[
+##    df      AIC
+## M0  4 582.8681
+## M1  5 584.8646
+]]></output>
+    </console>
     <p>Since Model 0 has the smaller AIC value, it is judged to be the better model for these data.</p>
     <p>A somewhat different approach to the problem comes out of the hypothesis testing framework. Suppose you have two regression models, where one of them (Model 0) contains a <em>subset</em> of the predictors from the other one (Model 1). That is, Model 1 contains all of the predictors included in Model 0, plus one or more additional predictors. When this happens we say that Model 0 is <em>nested</em> within Model 1, or possibly that Model 0 is a <em>submodel</em> of Model 1. Regardless of the terminology what this means is that we can think of Model 0 as a null hypothesis and Model 1 as an alternative hypothesis. And in fact we can construct an <m>F</m> test for this in a fairly straightforward fashion. We can fit both models to the data and obtain a residual sum of squares for both models. I'll denote these as SS<m>_{res}^{(0)}</m> and SS<m>_{res}^{(1)}</m> respectively. The superscripting here just indicates which model we're talking about.  Then our <m>F</m> statistic is <me>F = \frac{(\mbox{SS}_{res}^{(0)} - \mbox{SS}_{res}^{(1)})/k}{(\mbox{SS}_{res}^{(1)})/(N-p-1)}</me> where <m>N</m> is the number of observations, <m>p</m> is the number of predictors in the full model (not including the intercept), and <m>k</m> is the difference in the number of parameters between the two models.<fn>It's worth noting in passing that this same <m>F</m> statistic can be used to test a much broader range of hypotheses than those that I'm mentioning here. Very briefly: notice that the nested model M0 corresponds to the full model M1 when we constrain some of the regression coefficients to zero. It is sometimes useful to construct submodels by placing other kinds of constraints on the regression coefficients. For instance, maybe two different coefficients might have to sum to zero, or something like that. You can construct hypothesis tests for those kind of constraints too, but it is somewhat more complicated and the sampling distribution for <m>F</m> can end up being something known as the non-central <m>F</m> distribution, which is waaaaay beyond the scope of this book! All I want to do is alert you to this possibility.</fn> The degrees of freedom here are <m>k</m> and <m>N-p-1</m>. Note that it's often more convenient to think about the difference between those two SS values as a sum of squares in its own right. That is: <me>\mbox{SS}_\Delta = \mbox{SS}_{res}^{(0)} - \mbox{SS}_{res}^{(1)}</me> The reason why this his helpful is that we can express <m>\mbox{SS}_\Delta</m> a measure of the extent to which the two models make different predictions about the the outcome variable. Specifically: <me>\mbox{SS}_\Delta  = \sum_{i} \left( \hat{y}_i^{(1)} - \hat{y}_i^{(0)} \right)^2</me> where <m>\hat{y}_i^{(0)}</m> is the fitted value for <m>y_i</m> according to model <m>M_0</m> and  <m>\hat{y}_i^{(1)}</m> is the is the fitted value for <m>y_i</m> according to model <m>M_1</m>.</p>
     <p>Okay, so that's the hypothesis test that we use to compare two regression models to one another. Now, how do we do it in R? The answer is to use the <c>anova()</c> function. All we have to do is input the two models that we want to compare (null model first):</p>
@@ -764,6 +1235,17 @@ AIC( M0, M1 )
 anova( M0, M1 )
 ]]></input>
     </program>
+    <console>
+      <output><![CDATA[
+## Analysis of Variance Table
+## 
+## Model 1: dan.grump ~ dan.sleep + day
+## Model 2: dan.grump ~ dan.sleep + day + baby.sleep
+##   Res.Df    RSS Df Sum of Sq      F Pr(>F)
+## 1     97 1837.2                           
+## 2     96 1837.1  1  0.063688 0.0033 0.9541
+]]></output>
+    </console>
     <p>Note that, just like we saw with the output from the <c>step()</c> function, R has used the acronym <c>RSS</c> to refer to the residual sum of squares from each model. That is, RSS in this output corresponds to SS<m>_{res}</m> in the formula above.  Since we have <m><![CDATA[p>.05]]></m> we retain the null hypothesis (<c>M0</c>).  This approach to regression, in which we add all of our covariates into a null model, and then <em>add</em> the variables of interest into an alternative model, and then compare the two models in hypothesis testing framework, is often referred to as <em>hierarchical regression</em>.</p>
     </subsection>
   </section>

@@ -122,6 +122,11 @@ colour <- TRUE
 IQ <- round(IQ) # IQs are whole numbers!
 print(head(IQ))]]></input>
 </program>
+    <console>
+      <output><![CDATA[
+## [1] 113 104  64  89 101 100
+]]></output>
+    </console>
 <p>I can compute the mean IQ using the command <c>mean(IQ)</c> and the standard deviation using the command <c>sd(IQ)</c>, and I can draw a histgram using <c>hist()</c>. The histogram of this much larger sample is shown in Figure <xref ref="fig:IQdist"/>c. Even a moment's inspections makes clear that the larger sample is a much better approximation to the true population distribution than the smaller one. This is reflected in the sample statistics: the mean IQ for the larger sample turns out to be 99.9, and the standard deviation is 15.1. These values are now very close to the true population.</p>
 <p>I feel a bit silly saying this, but the thing I want you to take away from this is that large samples generally give you better information. I feel silly saying it because it's so bloody obvious that it shouldn't need to be said. In fact, it's such an obvious point that when Jacob Bernoulli -- one of the founders of probability theory -- formalised this idea back in 1713, he was kind of a jerk about it. Here's how he described the fact that we all share this intuition:</p>
 <blockquote>
@@ -364,10 +369,20 @@ Sample.Mean = c(95, 101, 101.6, 103.8, 104.4, 92.4, 106.4, 102.8, 100.4,
 <program language="r">
 <input><![CDATA[qnorm( p = c(.025, .975) )]]></input>
 </program>
+    <console>
+      <output><![CDATA[
+## [1] -1.959964  1.959964
+]]></output>
+    </console>
 <p>Okay, so I lied earlier on. The more correct answer is that 95\% chance that a normally-distributed quantity will fall within 1.96 standard deviations of the true mean. Next, recall that the standard deviation of the sampling distribution is referred to as the standard error, and the standard error of the mean is written as SEM. When we put all these pieces together, we learn that there is a 95\% probability that the sample mean <m>\bar{X}</m> that we have actually observed lies within 1.96 standard errors of the population mean. Mathematically, we write this as: <me>\mu - \left( 1.96 \times \mbox{SEM} \right) \ \leq \  \bar{X}\  \leq \  \mu + \left( 1.96 \times \mbox{SEM} \right)</me> where the SEM is equal to <m>\sigma / \sqrt{N}</m>, and we can be 95\% confident that this is true. However, that's not answering the question that we're actually interested in. The equation above tells us what we should expect about the sample mean, given that we know what the population parameters are. What we <em>want</em> is to have this work the other way around: we want to know what we should believe about the population parameters, given that we have observed a particular sample. However, it's not too difficult to do this. Using a little high school algebra, a sneaky way to rewrite our equation is like this: <me>\bar{X} -  \left( 1.96 \times \mbox{SEM} \right) \ \leq \ \mu  \ \leq  \ \bar{X} +  \left( 1.96 \times \mbox{SEM}\right)</me> What this is telling is is that the range of values has a 95\% probability of containing the population mean <m>\mu</m>. We refer to this range as a <em>95\% confidence interval</em>, denoted <m>\mbox{CI}_{95}</m>. In short, as long as <m>N</m> is sufficiently large  -- large enough for us to believe that the sampling distribution of the mean is normal -- then we can write this as our formula for the 95\% confidence interval: <me>\mbox{CI}_{95} = \bar{X} \pm \left( 1.96 \times \frac{\sigma}{\sqrt{N}} \right)</me> Of course, there's nothing special about the number 1.96: it just happens to be the multiplier you need to use if you want a 95\% confidence interval. If I'd wanted a 70\% confidence interval, I could have used the <c>qnorm()</c> function to calculate the 15th and 85th quantiles:</p>
 <program language="r">
 <input><![CDATA[qnorm( p = c(.15, .85) )]]></input>
 </program>
+    <console>
+      <output><![CDATA[
+## [1] -1.036433  1.036433
+]]></output>
+    </console>
 <p>and so the formula for <m>\mbox{CI}_{70}</m> would be the same as the formula for <m>\mbox{CI}_{95}</m> except that we'd use 1.04 as our magic number rather than 1.96.</p>
 <subsection>
 <title>A slight mistake in the formula</title>
@@ -376,11 +391,21 @@ Sample.Mean = c(95, 101, 101.6, 103.8, 104.4, 92.4, 106.4, 102.8, 100.4,
 <input><![CDATA[N <- 10000   # suppose our sample size is 10,000
 qt( p = .975, df = N-1)   # calculate the 97.5th quantile of the t-dist]]></input>
 </program>
+    <console>
+      <output><![CDATA[
+## [1] 1.960201
+]]></output>
+    </console>
 <p>But when <m>N</m> is small, we get a much bigger number when we use the <m>t</m> distribution:</p>
 <program language="r">
 <input><![CDATA[N <- 10   # suppose our sample size is 10
 qt( p = .975, df = N-1)   # calculate the 97.5th quantile of the t-dist]]></input>
 </program>
+    <console>
+      <output><![CDATA[
+## [1] 2.262157
+]]></output>
+    </console>
 <p>There's nothing too mysterious about what's happening here. Bigger values mean that the confidence interval is wider, indicating that we're more uncertain about what the true value of <m>\mu</m> actually is. When we use the <m>t</m> distribution instead of the normal distribution, we get bigger numbers, indicating that we have more uncertainty. And why do we have that extra uncertainty? Well, because our estimate of the population standard deviation <m>\hat\sigma</m> might be wrong! If it's wrong, it implies that we're a bit less sure about what our sampling distribution of the mean actually looks like... and this uncertainty ends up getting reflected in a wider confidence interval.</p>
 </subsection>
 <subsection>
