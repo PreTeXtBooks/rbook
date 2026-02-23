@@ -49,7 +49,7 @@ PreTeXt provides "knowls" - collapsible content blocks that allow readers to sho
 
 ### Toggling R Code Listings
 
-R code blocks wrapped in a `<listing>` element are collapsible by default in this book (configured via `listing="yes"` in `publication/publication.ptx`). This lets readers show or hide standalone R code examples with a single click.
+All R code blocks (`<program language="r">`) in this book are wrapped in `<listing>` elements, making them collapsible by default (configured via `listing="yes"` in `publication/publication.ptx`). This lets readers show or hide any R code example with a single click.
 
 ```xml
 <listing xml:id="listing-unique-id">
@@ -67,6 +67,8 @@ x + y
 ```
 
 The caption serves as the clickable toggle label. When the reader clicks it, the code block expands to show (or collapses to hide) the R code.
+
+**Note**: When adding new R code blocks, always wrap them in a `<listing>` element with a descriptive `xml:id` and `<caption>` to ensure show/hide toggle functionality. Use a generic `<caption>R Code</caption>` if no specific description is available.
 
 ### Examples with Solutions
 

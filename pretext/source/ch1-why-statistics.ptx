@@ -279,11 +279,14 @@ a commencement address at Harvard University. The history of the poem is kind of
 
     <remark>
       <title>R Code</title>
-      <program language="r">
+      <listing xml:id="listing-ch1_why_statistics-1">
+        <caption>R Code</caption>
+        <program language="r">
         <input>
 knitr::include_graphics("imgs/figures/1Simpson.png")
         </input>
       </program>
+      </listing>
     </remark>
 
     <figure xml:id="fig-simpson">

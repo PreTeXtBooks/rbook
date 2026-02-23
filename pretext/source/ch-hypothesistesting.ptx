@@ -340,9 +340,12 @@ colour <- TRUE
 <section>
 <title>Running the hypothesis test in practice</title>
 <p>At this point some of you might be wondering if this is a "real" hypothesis test, or just a toy example that I made up. It's real. In the previous discussion I built the test from first principles, thinking that it was the simplest possible problem that you might ever encounter in real life. However, this test already exists: it's called the <em>binomial test</em>, and it's implemented by an R function called <c>binom.test()</c>. To test the null hypothesis that the response probability is one-half <c>p = .5</c>,<fn>Note that the <c>p</c> here has nothing to do with a <m>p</m> value. The <c>p</c> argument in the <c>binom.test()</c> function corresponds to the probability of making a correct response, according to the null hypothesis. In other words, it's the <m>\theta</m> value.</fn> using data in which <c>x = 62</c> of <c>n = 100</c> people made the correct response, here's how to do it in R:</p>
-<program language="r">
+<listing xml:id="listing-ch_hypothesistesting-1">
+  <caption>R Code</caption>
+  <program language="r">
 <input><![CDATA[binom.test( x=62, n=100, p=.5 )]]></input>
 </program>
+</listing>
     <console>
       <output><![CDATA[
 ## 

@@ -8,12 +8,15 @@
     <title>Factorial ANOVA 1: balanced designs, no interactions</title>
 
       <p>When we discussed analysis of variance in Chapter <xref ref="anova"/>, we assumed a fairly simple experimental design: each person falls into one of several groups, and we want to know whether these groups have different means on some outcome variable. In this section, I'll discuss a broader class of experimental designs, known as <em>factorial designs</em>, in we have more than one grouping variable. I gave one example of how this kind of design might arise above. Another example appears in  Chapter <xref ref="anova"/>, in which we were looking at the effect of different drugs on the `mood.gain` experienced by each person. In that chapter we did find a significant effect of drug, but at the end of the chapter we also ran an analysis to see if there was an effect of therapy. We didn't find one, but there's something a bit worrying about trying to run two <em>separate</em> analyses trying to predict the same outcome. Maybe there actually <em>is</em> an effect of therapy on mood gain, but we couldn't find it because it was being "hidden" by the effect of drug? In other words, we're going to want to run a <em>single</em> analysis that includes <em>both</em> `drug` and `therapy` as predictors. For this analysis each person is cross-classified by the drug they were given (a factor with 3 levels) and what therapy they received (a factor with 2 levels). We refer to this as a <m>3 \times 2</m> factorial design. If we cross-tabulate `drug` by `therapy`, using the `xtabs()` function (see Section <xref ref="freqtables"/>), we get the following table:<fn>The R command we need is `xtabs(~ drug+gender, clin.trial)`.</fn></p>
-      <program language="r">
+      <listing xml:id="listing-ch5_factorial_anova-1">
+        <caption>R Code</caption>
+        <program language="r">
         <input><![CDATA[
 load(file.path(projecthome, "data","clinicaltrial.Rdata"))
 xtabs( ~ drug + therapy, clin.trial )
         ]]></input>
       </program>
+      </listing>
     <console>
       <output><![CDATA[
 ##           therapy
@@ -28,11 +31,14 @@ xtabs( ~ drug + therapy, clin.trial )
       <title>What hypotheses are we testing?</title>
 
         <p>Like one-way ANOVA, factorial ANOVA is a tool for testing certain types of hypotheses about population means. So a sensible place to start would be to be explicit about what our hypotheses actually are. However, before we can even get to that point, it's really useful to have some clean and simple notation to describe the population means. Because of the fact that observations are cross-classified in terms of two different factors, there are quite a lot of different means that one might be interested. To see this, let's start by thinking about all the different sample means that we can calculate for this kind of design. Firstly, there's the obvious idea that we might be interested in this table of group means:</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-2">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
 aggregate( mood.gain ~ drug + therapy, clin.trial, mean )
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ##       drug    therapy mood.gain
@@ -45,12 +51,15 @@ aggregate( mood.gain ~ drug + therapy, clin.trial, mean )
 ]]></output>
     </console>
         <p>Now, this output shows a cross-tabulation of the group means for all possible combinations of the two factors (e.g., people who received the placebo and no therapy, people who received the placebo while getting CBT, etc). However, we can also construct tables that ignore one of the two factors. That gives us output that looks like this:</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-3">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
 aggregate( mood.gain ~ drug, clin.trial, mean )
 aggregate( mood.gain ~ therapy, clin.trial, mean )
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ##       drug mood.gain
@@ -60,11 +69,14 @@ aggregate( mood.gain ~ therapy, clin.trial, mean )
 ]]></output>
     </console>
         <p>But of course, if we can ignore one factor we can certainly ignore both. That is, we might also be interested in calculating the average  mood gain across all 18 participants, regardless of what drug or psychological therapy they were given:</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-4">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
 mean( clin.trial$mood.gain )
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ## [1] 0.8833333
@@ -217,12 +229,15 @@ mean( clin.trial$mood.gain )
 
         <p>The null and alternative hypotheses that I described in the last section should seem awfully familiar: they're basically the same as the hypotheses that we were testing in our simpler one-way ANOVAs in Chapter <xref ref="anova"/>. So you're probably expecting that the hypothesis <em>tests</em> that are used in factorial ANOVA will be essentially the same as the <m>F</m>-test from Chapter <xref ref="anova"/>. You're expecting to see references to sums of squares (SS), mean squares (MS), degrees of freedom (df), and finally an <m>F</m>-statistic that we can convert into a <m>p</m>-value, right? Well, you're absolutely and completely right. So much so that I'm going to depart from my usual approach. Throughout this book, I've generally taken the approach of describing the logic (and to an extent the mathematics) that underpins a particular analysis first; and only then introducing the R commands that you'd use to produce the analysis. This time I'm going to do it the other way around, and show you the R commands first. The reason for doing this is that I want to highlight the similarities between the simple one-way ANOVA tool that we discussed in Chapter <xref ref="anova"/>, and the more complicated tools that we're going to use in this chapter.</p>
         <p>If the data you're trying to analyse correspond to a balanced factorial design, then running your analysis of variance is easy. To see how easy it is, let's start by reproducing the original analysis from Chapter <xref ref="anova"/>. In case you've forgotten, for that analysis we were using only a single factor (i.e., `drug`) to predict our outcome variable (i.e., `mood.gain`), and so this was what we did:</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-5">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
 model.1 <- aov( mood.gain ~ drug, clin.trial )  
 summary( model.1 )  
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ##             Df Sum Sq Mean Sq F value   Pr(>F)    
@@ -233,11 +248,14 @@ summary( model.1 )
 ]]></output>
     </console>
         <p>Note that this time around I've used the name `model.1` as the label for my `aov` object, since I'm planning on creating quite a few other models too. To start with, suppose I'm also curious to find out if `therapy` has a relationship to `mood.gain`. In light of what we've seen from our discussion of multiple regression in Chapter <xref ref="regression"/>, you probably won't be surprised that all we have to do is extend the formula: in other words, if we specify `mood.gain ~ drug + therapy` as our model, we'll probably get what we're after:</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-6">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
 model.2 <- aov( mood.gain ~ drug + therapy, clin.trial )  
           ]]></input>
         </program>
+        </listing>
         <p>This output is pretty simple to read too: the first row of the table reports a between-group sum of squares (SS) value associated with the `drug` factor, along with a corresponding between-group <m>df</m> value. It also calculates a mean square value (MS), and <m>F</m>-statistic and a <m>p</m>-value. There is also a row corresponding to the `therapy` factor, and a row corresponding to the residuals (i.e., the within groups variation).</p>
         <p>Not only are all of the individual quantities pretty familiar, the relationships between these different quantities has remained unchanged: just like we saw with the original one-way ANOVA, note that the mean square value is calculated by dividing SS by the corresponding <m>df</m>. That is, it's still true that</p>
         <me><![CDATA[
@@ -250,11 +268,14 @@ F_{A} = \frac{\mbox{MS}_{A}}{\mbox{MS}_{R}}
         ]]></me>
         <p>and an equivalent formula exists for factor B (i.e., `therapy`). Note that this use of "R" to refer to residuals is a bit awkward, since we also used the letter R to refer to the number of rows in the table, but I'm only going to use "R" to mean residuals in the context of SS<m>_R</m> and MS<m>_R</m>, so hopefully this shouldn't be confusing. Anyway, to apply this formula to the  `drugs` factor, we take the mean square of <m>1.73</m> and divide it by the residual mean square value of <m>0.07</m>, which gives us an <m>F</m>-statistic of <m>26.15</m>. The corresponding calculation for the `therapy` variable would be to divide <m>0.47</m> by <m>0.07</m> which gives <m>7.08</m> as the <m>F</m>-statistic. Not surprisingly, of course, these are the same values that R has reported in the ANOVA table above.</p>
         <p>The last part of the ANOVA table is the calculation of the <m>p</m> values. Once again, there is nothing new here: for each of our two factors, what we're trying to do is test the null hypothesis that there is no relationship between the factor and the outcome variable (I'll be a bit more precise about this later on). To that end, we've (apparently) followed a similar strategy that we did in the one way ANOVA, and have calculated an <m>F</m>-statistic for each of these hypotheses. To convert these to <m>p</m> values, all we need to do is note that the  that the sampling distribution for the <m>F</m> <em>statistic</em> under the null hypothesis (that the factor in question is irrelevant) is an <m>F</m> <em>distribution</em>: and that two degrees of freedom values are those corresponding to the factor, and those corresponding to the residuals. For the `drug` factor we're talking about an <m>F</m> distribution with 2 and 14 degrees of freedom (I'll discuss degrees of freedom in more detail later). In contrast, for the `therapy` factor sampling distribution is <m>F</m> with 1 and 14 degrees of freedom. If we really wanted to, we could calculate the <m>p</m> value ourselves using the `pf()` function (see Section <xref ref="otherdists"/>). Just to prove that there's nothing funny going on, here's what that would look like for the `drug` variable:</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-7">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
 pf( q=26.15, df1=2, df2=14, lower.tail=FALSE )
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ## [1] 1.871981e-05
@@ -312,13 +333,16 @@ pf( q=26.15, df1=2, df2=14, lower.tail=FALSE )
 \mbox{SS}_{B} = (N \times R) \sum_{c=1}^C \left( \bar{Y}_{.c} - \bar{Y}_{..} \right)^2
         ]]></me>
         <p>Now that we have these formulas, we can check them against the R output from the earlier section. First, notice that we calculated all the marginal means (i.e., row marginal means <m>\bar{Y}_{r.}</m> and column marginal means <m>\bar{Y}_{.c}</m>) earlier using `aggregate()`, and we also calculated the grand mean. Let's repeat those calculations, but this time we'll save the results to varibles so that we can use them in subsequent calculations:</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-8">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
 drug.means <- aggregate( mood.gain ~ drug, clin.trial, mean )[,2]
 therapy.means <- aggregate( mood.gain ~ therapy, clin.trial, mean )[,2]
 grand.mean <- mean( clin.trial$mood.gain )
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ##       drug mood.gain
@@ -328,24 +352,30 @@ grand.mean <- mean( clin.trial$mood.gain )
 ]]></output>
     </console>
         <p>Okay, now let's calculate the sum of squares associated with the main effect of `drug`. There are a total of <m>N=3</m> people in each group, and <m>C=2</m> different types of therapy. Or, to put it another way, there are <m>3 \times 2 = 6</m> people who received any particular drug. So our calculations are:</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-9">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
 SS.drug <- (3*2) * sum( (drug.means - grand.mean)^2 )
 SS.drug
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ## [1] 3.453333
 ]]></output>
     </console>
         <p>Not surprisingly, this is the same number that you get when you look up the SS value for the drugs factor in the ANOVA table that I presented earlier. We can repeat the same kind of calculation for the effect of therapy. Again there are <m>N=3</m> people in each group, but since there are <m>R=3</m> different drugs, this time around we note that there are <m>3 \times 3 = 9</m> people who received CBT, and an additional 9 people who received the placebo. So our calculation is now:</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-10">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
 SS.therapy <- (3*3) * sum( (therapy.means - grand.mean)^2 )
 SS.therapy
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ## [1] 0.4672222
@@ -364,24 +394,30 @@ SS.therapy
         ]]></me>
         <p>Of course, there is a formula that you can use to calculate the residual SS directly, but I think that it makes more conceptual sense to think of it like this. The whole point of calling it a residual is that it's the leftover variation, and the formula above makes that clear. I should also note that, in keeping with the terminology used in the regression chapter, it is commonplace to refer to <m>\mbox{SS}_A + \mbox{SS}_B</m> as the variance attributable to the "ANOVA model", denoted SS<m>_M</m>, and so we often say that the total sum of squares is equal to the model sum of squares plus the residual sum of squares. Later on in this chapter we'll see that this isn't just a surface similarity: ANOVA and regression are actually the same thing under the hood.</p>
         <p>In any case, it's probably worth taking a moment to check that we can calculate SS<m>_R</m> using this formula, and verify that we do obtain the same answer that R produces in its ANOVA table. The calculations are pretty straightforward. First we calculate the total sum of squares:</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-11">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
 SS.tot <- sum( (clin.trial$mood.gain - grand.mean)^2 )
 SS.tot
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ## [1] 4.845
 ]]></output>
     </console>
         <p>and then we use it to calculate the residual sum of squares:</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-12">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
 SS.res <- SS.tot - (SS.drug + SS.therapy)
 SS.res
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ## [1] 0.9244444
@@ -399,12 +435,15 @@ SS.res
 
         <p>Now that we've seen <em>how</em> a factorial ANOVA works, it's worth taking a moment to compare it to the results of the one way analyses, because this will give us a really good sense of <em>why</em> it's a good idea to run the factorial ANOVA. In Chapter <xref ref="anova"/> that I ran a one-way ANOVA that looked to see if there are any differences between drugs, and a second one-way ANOVA to see if there were any differences between therapies. As we saw in Section <xref ref="factanovahyp"/>, the null and alternative hypotheses tested by the one-way ANOVAs are in fact identical to the hypotheses tested by the factorial ANOVA. Looking even more carefully at the ANOVA tables, we can see that the sum of squares associated with the factors are identical in the two different analyses (3.45 for `drug` and 0.92 for `therapy`), as are the degrees of freedom (2 for `drug`, 1 for `therapy`). But they don't give the same answers! Most notably, when we ran the one-way ANOVA for `therapy` in Section <xref ref="anovaandt"/> we didn't find a significant effect (the <m>p</m>-value was 0.21). However, when we look at the main effect of `therapy` within the context of the two-way ANOVA, we do get a significant effect (<m>p=.019</m>). The two analyses are clearly not the same.</p>
         <p>Why does that happen? The answer lies in understanding how the <em>residuals</em> are calculated. Recall that the whole idea behind an <m>F</m>-test is to compare the variability that can be attributed to a particular factor with the variability that cannot be accounted for (the residuals). If you run a one-way ANOVA for `therapy`, and therefore ignore the effect of `drug`, the ANOVA will end up dumping all of the drug-induced variability into the residuals! This has the effect of making the data look more noisy than they really are, and the effect of `therapy` which is correctly found to be significant in the two-way ANOVA now becomes non-significant. If we ignore something that actually matters (e.g., `drug`) when trying to assess the contribution of something else (e.g., `therapy`) then our analysis will be distorted. Of course, it's perfectly okay to ignore variables that are genuinely irrelevant to the phenomenon of interest: if we had recorded the colour of the walls, and that turned out to be non-significant in a three-way ANOVA (i.e. `mood.gain ~ drug + therapy + wall.colour`), it would be perfectly okay to disregard it and just report the simpler two-way ANOVA that doesn't include this irrelevant factor. What you shouldn't do is drop variables that actually make a difference!</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-13">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
 knitr::include_graphics(file.path(projecthome, "img","factorialanova","maineffectA.png"))
 
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ## 
@@ -416,12 +455,15 @@ knitr::include_graphics(file.path(projecthome, "img","factorialanova","maineffec
 ##   joyzepam  1.3222222 1.6444444
 ]]></output>
     </console>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-14">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
 knitr::include_graphics(file.path(projecthome, "img","factorialanova","maineffectB.png"))
 
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ## 
@@ -433,12 +475,15 @@ knitr::include_graphics(file.path(projecthome, "img","factorialanova","maineffec
 ##   joyzepam  1.3222222 1.6444444
 ]]></output>
     </console>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-15">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
 knitr::include_graphics(file.path(projecthome, "img","factorialanova","maineffectAB.png"))
 
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ## 
@@ -450,12 +495,15 @@ knitr::include_graphics(file.path(projecthome, "img","factorialanova","maineffec
 ##   joyzepam  1.3222222 1.6444444
 ]]></output>
     </console>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-16">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
 knitr::include_graphics(file.path(projecthome, "img","factorialanova","maineffectAB.png"))
 
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ## 
@@ -486,32 +534,46 @@ knitr::include_graphics(file.path(projecthome, "img","factorialanova","maineffec
   <section xml:id="interactions">
     <title>Factorial ANOVA 2: balanced designs, interactions allowed</title>
 
-      <program language="r">
+      <listing xml:id="listing-ch5_factorial_anova-17">
+        <caption>R Code</caption>
+        <program language="r">
         <input><![CDATA[
 knitr::include_graphics(file.path(projecthome, "img","factorialanova","interaction2.png"))
 
         ]]></input>
       </program>
-      <program language="r">
+      </listing>
+      <listing xml:id="listing-ch5_factorial_anova-18">
+        <caption>R Code</caption>
+        <program language="r">
         <input><![CDATA[
 knitr::include_graphics(file.path(projecthome, "img","factorialanova","interaction3.png"))
 
         ]]></input>
       </program>
-      <program language="r">
+      </listing>
+      <listing xml:id="listing-ch5_factorial_anova-19">
+        <caption>R Code</caption>
+        <program language="r">
         <input><![CDATA[
 knitr::include_graphics(file.path(projecthome, "img","factorialanova","interaction1.png"))
 
         ]]></input>
       </program>
-      <program language="r">
+      </listing>
+      <listing xml:id="listing-ch5_factorial_anova-20">
+        <caption>R Code</caption>
+        <program language="r">
         <input><![CDATA[
 knitr::include_graphics(file.path(projecthome, "img","factorialanova","interaction4.png"))
 
         ]]></input>
       </program>
+      </listing>
       <p>The four patterns of data shown in Figure <xref ref="fig-maineffects"/> are all quite realistic: there are a great many data sets that produce exactly those patterns. However, they are not the whole story, and the ANOVA model that we have been talking about up to this point is not sufficient to fully account for a table of group means. Why not? Well, so far we have the ability to talk about the idea that drugs can influence mood, and therapy can influence mood, but no way of talking about the possibility of an <em>interaction</em> between the two. An interaction between A and B is said to occur whenever the effect of Factor A is <em>different</em>, depending on which level of Factor B we're talking about. Several examples of an interaction effect with the context of a 2 x 2 ANOVA are shown in Figure <xref ref="fig-interaction"/>. To give a more concrete example, suppose that the operation of Anxifree and Joyzepam is governed quite different physiological mechanisms, and one consequence of this is that while Joyzepam has more or less the same effect on mood regardless of whether one is in therapy, Anxifree is actually much more effective when administered in conjunction with CBT. The ANOVA that we developed in the previous section does not capture this idea. To get some idea of whether an interaction is actually happening here, it helps to plot the various group means. There are quite a few different ways draw these plots in R. One easy way is to use the `interaction.plot()` function, but this function won't draw error bars for you. A fairly simple function that will include error bars for you is the `lineplot.CI()` function in the `sciplots` package (see Section <xref ref="ciplots"/>). The command</p>
-      <program language="r">
+      <listing xml:id="listing-ch5_factorial_anova-21">
+        <caption>R Code</caption>
+        <program language="r">
         <input><![CDATA[
 library(sciplot)
 library(lsr)
@@ -523,6 +585,7 @@ library(lsr)
               ylab = "mood gain" )
         ]]></input>
       </program>
+      </listing>
       <p>produces the output is shown in Figure <xref ref="fig-interactionplot"/> (don't forget that the `ciMean` function is in the `lsr` package, so you need to have `lsr` loaded!). Our main concern relates to the fact that the two lines aren't parallel. The effect of CBT (difference between solid line and dotted line) when the drug is Joyzepam (right side) appears to be near zero, even smaller than the effect of CBT when a placebo is used (left side). However, when Anxifree is administered, the effect of CBT is larger than the placebo (middle). Is this effect real, or is this just random variation due to chance? Our original ANOVA cannot answer this question, because we make no allowances for the idea that interactions even exist! In this section, we'll fix this problem.</p>
     <subsection>
       <title>What exactly <em>is an interaction effect?</em></title>
@@ -548,7 +611,9 @@ library(lsr)
         <p>for at least one group <m>rc</m> in our table. However, statisticians often like to write this slightly differently. They'll usually define the specific interaction associated with group <m>rc</m> to be some number, awkwardly referred to as <m>(\alpha\beta)_{rc}</m>, and then they will say that the alternative hypothesis is that</p>
         <me><![CDATA[\mu_{rc} = \mu_{..} + \alpha_r + \beta_c + (\alpha\beta)_{rc}]]></me>
         <p>where <m>(\alpha\beta)_{rc}</m> is non-zero for at least one group. This notation is kind of ugly to look at, but it is handy as we'll see in the next section when discussing how to calculate the sum of squares.</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-22">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
 library(sciplot)
 library(lsr)
@@ -560,6 +625,7 @@ library(lsr)
               ylab = "mood gain" )
           ]]></input>
         </program>
+        </listing>
     </subsection>
     <subsection>
       <title>Calculating sums of squares for the interaction</title>
@@ -609,18 +675,24 @@ df_{A:B} &=& (R\times C - 1) - (R - 1) - (C -1 ) \\
       <title>Running the ANOVA in R</title>
 
         <p>Adding interaction terms to the ANOVA model in R is straightforward. Returning to our running example of the clinical trial, in addition to the main effect terms of `drug` and `therapy`, we include the interaction term `drug:therapy`. So the R command to create the ANOVA model now looks like this:</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-23">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
  model.3 <- aov( mood.gain ~ drug + therapy + drug:therapy, clin.trial )
           ]]></input>
         </program>
+        </listing>
         <p>However, R allows a convenient shorthand. Instead of typing out all three terms, you can shorten the right hand side of the formula to `drug*therapy`. The `*` operator inside the formula is taken to indicate that you want both main effects and the interaction. So we can also run our ANOVA like this, and get the same answer:</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-24">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
  model.3 <- aov( mood.gain ~ drug * therapy, clin.trial )
  summary( model.3 )
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ##              Df Sum Sq Mean Sq F value   Pr(>F)    
@@ -674,11 +746,14 @@ df_{A:B} &=& (R\times C - 1) - (R - 1) - (C -1 ) \\
         ]]></me>
         <p>This will always give you a larger number than <m>\eta^2</m>, which the cynic in me suspects accounts for the popularity of partial <m>\eta^2</m>. And once again you get a number between 0 and 1, where 0 represents no effect. However, it's slightly trickier to interpret what a large partial <m>\eta^2</m> value means. In particular, you can't actually compare the partial <m>\eta^2</m> values across terms! Suppose, for instance, there is no within-groups variability at all: if so, SS<m>_R = 0</m>. What that means is that <em>every</em> term has a partial <m>\eta^2</m> value of 1. But that doesn't mean that all terms in your model are equally important, or indeed that they are equally large. All it mean is that all terms in your model have effect sizes that are large <em>relative to the residual variation</em>. It is not comparable across terms.</p>
         <p>To see what I mean by this, it's useful to see a concrete example. Once again, we'll use the `etaSquared()` function from the `lsr` package. As before, we input the `aov` object for which we want the <m>\eta^2</m> calculations performed, and R outputs a matrix showing the effect sizes for each term in the model. First, let's have a look at the effect sizes for the original ANOVA without the interaction term:</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-25">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
  etaSquared( model.2 )
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ##            eta.sq eta.sq.part
@@ -689,11 +764,14 @@ df_{A:B} &=& (R\times C - 1) - (R - 1) - (C -1 ) \\
         <p>Looking at the <m>\eta^2</m> values first, we see that `drug` accounts for 71.3\% of the variance (i.e. <m>\eta^2 = 0.713</m>) in `mood.gain`, whereas `therapy` only accounts for 9.6\%. This leaves a total of 19.1\% of the variation unaccounted for (i.e., the residuals constitute 19.1\% of the variation in the outcome). Overall, this implies that we have a very large effect<fn>Implausibly large, I would think: the artificiality of this data set is really starting to show!</fn> of `drug` and a modest effect of `therapy`.</p>
         <p>Now let's look at the partial <m>\eta^2</m> values. Because the effect of `therapy` isn't all that large, controlling for it doesn't make much of a difference, so the partial <m>\eta^2</m> for `drug` doesn't increase very much, and we obtain a value of <m>_p\eta^2 = 0.789</m>). In contrast, because the effect of `drug` was very large, controlling for it makes a big difference, and so when we calculate the partial <m>\eta^2</m> for `therapy` you can see that it rises to <m>_p\eta^2 = 0.336</m>. The question that we have to ask ourselves is, what does these partial <m>\eta^2</m> values actually <em>mean</em>? The way I generally interpret the partial <m>\eta^2</m> for the main effect of Factor A is to interpret it as a statement about a hypothetical experiment in which <em>only</em> Factor A was being varied. So, even though in <em>this</em> experiment we varied both A and B, we can easily imagine an experiment in which only Factor A was varied: the partial <m>\eta^2</m> statistic tells you how much of the variance in the outcome variable you would expect to see accounted for in that experiment. However, it should be noted that this interpretation -- like many things associated with main effects -- doesn't make a lot of sense when there is a large and significant interaction effect.</p>
         <p>Speaking of interaction effects, here's what we get when we calculate the effect sizes for the model that includes the interaction term. As you can see, the <m>\eta^2</m> values for the main effects don't change, but the partial <m>\eta^2</m> values do:</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-26">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
  etaSquared( model.3 )
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ##                  eta.sq eta.sq.part
@@ -707,7 +785,9 @@ df_{A:B} &=& (R\times C - 1) - (R - 1) - (C -1 ) \\
       <title>Estimated group means</title>
 
         <p>In many situations you will find yourself wanting to report estimates of all the group means based on the results of your ANOVA, as well as confidence intervals associated with them. You can use the `effect()` function in the `effects` package to do this (don't forget to install the package if you don't have it already!). If the ANOVA that you have run is a <em>saturated model</em> (i.e., contains all possible main effects and all possible interaction effects) then the estimates of the group means are actually identical to the sample means, though the confidence intervals will use a pooled estimate of the standard errors, rather than use a separate one for each group. To illustrate this, let's apply the `effect()` function to our saturated model (i.e., `model.3`) for the clinical trial data. The `effect()` function contains two arguments we care about: the `term` argument specifies what terms in the model we want the means to be calculated for, and the `mod` argument specifies the model:</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-27">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
  library(effects)
  eff <- effect( term = "drug*therapy", mod = model.3 )
@@ -715,6 +795,7 @@ df_{A:B} &=& (R\times C - 1) - (R - 1) - (C -1 ) \\
 
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ## 
@@ -727,11 +808,14 @@ df_{A:B} &=& (R\times C - 1) - (R - 1) - (C -1 ) \\
 ]]></output>
     </console>
         <p>Notice that these are actually the same numbers we got when computing the sample means earlier (i.e., the `group.means` variable that we computed using `aggregate()`). One useful thing that we can do using the effect variable `eff`, however, is extract the confidence intervals using the `summary()` function:</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-28">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
  summary(eff)
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ## 
@@ -759,22 +843,28 @@ df_{A:B} &=& (R\times C - 1) - (R - 1) - (C -1 ) \\
     </console>
         <p>In this output, we see that the estimated mean mood gain for the placebo group with no therapy was 0.300, with a 95\% confidence interval from 0.006 to 0.594. Note that these are not the same confidence intervals that you would get if you calculated them separately for each group, because of the fact that the ANOVA model assumes homogeneity of variance and therefore uses a pooled estimate of the standard deviation.</p>
         <p>When the model doesn't contain the interaction term, then the estimated group means will be different from the sample means. Instead of reporting the sample mean, the `effect()` function will calculate the value of the group means that would be expected on the basis of the marginal means (i.e., assuming no interaction). Using the notation we developed earlier, the estimate reported for <m>\mu_{rc}</m>, the mean for level <m>r</m> on the (row) Factor A and level <m>c</m> on the (column) Factor B would be <m>\mu_{..} + \alpha_r + \beta_c</m>. If there are genuinely no interactions between the two factors, this is actually a better estimate of the population mean than the raw sample mean would be. The command to obtain these estimates is actually identical to the last one, except that we use `model.2`. When you do this, R will give you a warning message:</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-29">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
  eff <- effect( "drug*therapy", model.2 )
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ## NOTE: drug:therapy does not appear in the model
 ]]></output>
     </console>
         <p>but this isn't anything to worry about. This is R being polite, and letting you know that the estimates it is constructing are based on the assumption that no interactions exist. It kind of makes sense that it would do this: when we use `"drug*therapy"` as our input, we're telling R that we want it to output the estimated group means (rather than marginal means), but the actual input `"drug*therapy"` might mean that you want interactions included or you might not. There's no <em>actual</em> ambiguity here, because the model itself either does or doesn't have interactions, but the authors of the function thought it sensible to include a warning just to make sure that you've specified the actual model you care about. But, assuming that we genuinely don't believe that there are any interactions, `model.2` is the right model to use, so we can ignore this warning.<fn>In fact, there's a function `Effect()` within the `effects` package that has slightly different arguments, but computes the same things, and won't give you this warning message.</fn> In any case, when we inspect the output, we get the following table of estimated group means:</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-30">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
  eff
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ## 
@@ -787,11 +877,14 @@ df_{A:B} &=& (R\times C - 1) - (R - 1) - (C -1 ) \\
 ]]></output>
     </console>
         <p>As before, we can obtain confidence intervals using the following command:</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-31">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
  summary( eff )
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ## 
@@ -814,13 +907,16 @@ df_{A:B} &=& (R\times C - 1) - (R - 1) - (C -1 ) \\
       <title>Levene test for homogeneity of variance</title>
 
         <p>To test whether the groups have the same variance, we can use the Levene test. The theory behind the Levene test was discussed in Section <xref ref="levene"/>, so I won't discuss it again. Once again, you can use the `leveneTest()` function in the `car` package to do this. This function expects that you have a saturated model (i.e., included all of the relevant terms), because the test is primarily concerned with the within-group variance, and it doesn't really make a lot of sense to calculate this any way other than with respect to the full model. So we try either of the following commands:</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-32">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
 
  leveneTest( model.2 )
  leveneTest( mood.gain ~ drug + therapy, clin.trial )
           ]]></input>
         </program>
+        </listing>
         <p>R will spit out the following error:</p>
         <console>
           <output><![CDATA[
@@ -829,13 +925,16 @@ df_{A:B} &=& (R\times C - 1) - (R - 1) - (C -1 ) \\
 ]]></output>
         </console>
         <p>Instead, if you want to run the Levene test, you need to specify a saturated model. Either of the following two commands would work:<fn>Due to the way that the <c>leveneTest()</c> function is implemented, however, if you use a formula like <c>mood.gain ~ drug + therapy + drug:therapy</c>, or input an ANOVA object based on a formula like this, you actually get the error message. That shouldn't happen, because this actually is a fully crossed model. However, there's a quirky shortcut in the way that the <c>leveneTest()</c> function checks whether your model is fully crossed that means that it doesn't recognise this as a fully crossed model. Essentially what the function is doing is checking that you used <c>*</c> (which ensures that the model is fully crossed), and not <c>+</c> or <c>:</c> in your model formula. So if you've manually typed out all of the relevant terms for a fully crossed model, the <c>leveneTest()</c> function doesn't detect it. I think this is a bug.</fn></p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-33">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
 library(car)
  leveneTest( model.3 )
  leveneTest( mood.gain ~ drug * therapy, clin.trial )
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ## Levene's Test for Homogeneity of Variance (center = median)
@@ -850,7 +949,9 @@ library(car)
       <title>Normality of residuals</title>
 
         <p>As with one-way ANOVA, we can test for the normality of residuals in a straightforward fashion (see Section <xref ref="anovanormality"/>). First, we use the `residuals()` function to extract the residuals from the model itself, and then we can examine those residuals in a few different ways. It's generally a good idea to examine them graphically, by drawing histograms (i.e., `hist()` function) and QQ plots (i.e., `qqnorm()` function. If you want a formal test for the normality of the residuals, then we can run the Shapiro-Wilk test (i.e., `shapiro.test()`). If we wanted to check the residuals with respect to `model.2` (i.e., the model with both main effects but no interactions) then we could do the following:</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-34">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
  resid <- residuals( model.2 )  # pull the residuals
  hist( resid )                  # draw a histogram
@@ -858,6 +959,7 @@ library(car)
  shapiro.test( resid )          # run the Shapiro-Wilk test
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ## 
@@ -939,11 +1041,14 @@ F = \frac\mbox{MS}_{\Delta}\mbox{MS}_{R1}
       <title>Running the test in R</title>
 
         <p>At this point, it may help to go back to our concrete example. The null model here is `model.1`, which stipulates that there is a main effect of drug, but no other effects exist. We expressed this via the model formula `mood.gain ~ drug`. The alternative model here is `model.3`, which stipulates that there is a main effect of drug, a main effect of therapy, <em>and</em> an interaction. If we express this in the "long" format, this model corresponds to the formula `mood.gain ~ drug + therapy + drug:therapy`, though we often express this using the `*` shorthand. The key thing here is that if we compare `model.1` to `model.3`, we're lumping the main effect of therapy and the interaction term together. Running this test in R is straightforward: we just input both models to the `anova()` function, and it will run the exact <m>F</m>-test that I outlined above.</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-35">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
  anova( model.1, model.3 )
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ## Analysis of Variance Table
@@ -958,38 +1063,50 @@ F = \frac\mbox{MS}_{\Delta}\mbox{MS}_{R1}
 ]]></output>
     </console>
         <p>Let's see if we can reproduce this <m>F</m>-test ourselves. Firstly, if you go back and look at the ANOVA tables that we printed out for `model.1` and `model.3` you can reassure yourself that the RSS values printed in this table really do correspond to the residual sum of squares associated with these two models. So let's type them in as variables:</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-36">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
  ss.res.null <- 1.392
  ss.res.full <- 0.653
           ]]></input>
         </program>
+        </listing>
         <p>Now, following the procedure that I described above, we will say that the "between model" sum of squares, is the difference between these two residual sum of squares values. So, if we do the subtraction, we discover that the sum of squares associated with those terms that appear in the full model but not the null model is:</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-37">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
  ss.diff <- ss.res.null - ss.res.full 
  ss.diff
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ## [1] 0.739
 ]]></output>
     </console>
         <p>Right. Next, as always we need to convert these SS values into MS (mean square) values, which we do by dividing by the degrees of freedom. The degrees of freedom associated with the full-model residuals hasn't changed from our original ANOVA for `model.3`: it's the total sample size <m>N</m>, minus the total number of groups <m>G</m> that are relevant to the model. We have 18 people in the trial and 6 possible groups (i.e., 2 therapies <m>\times</m> 3 drugs), so the degrees of freedom here is 12. The degrees of freedom for the null model are calculated similarly. The only difference here is that there are only 3 relevant groups (i.e., 3 drugs), so the degrees of freedom here is 15. And, because the degrees of freedom associated with the difference is equal to the difference in the two degrees of freedom, we arrive at the conclusion that we have <m>15-12 = 3</m> degrees of freedom. Now that we know the degrees of freedom, we can calculate our MS values:</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-38">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
  ms.res <- ss.res.full / 12
  ms.diff <- ss.diff / 3 
           ]]></input>
         </program>
+        </listing>
         <p>Okay, now that we have our two MS values, we can divide one by the other, and obtain an <m>F</m>-statistic ...</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-39">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
  F.stat <- ms.diff / ms.res 
  F.stat
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ## [1] 4.526799
@@ -1075,12 +1192,15 @@ Y_{p} = b_1 X_{1p} + b_2 X_{2p} + b_0 + \epsilon_{p}
           </tabular>
         </table>
         <p>This isn't anything particularly special, of course: it's exactly the format in which we expect to see our data! In other words, if your data have been stored as a data frame in R then you're probably expecting to see something that looks like the `rtfm.1` data frame:</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-40">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
 load(file.path(projecthome, "data","rtfm.Rdata"))
 rtfm.1
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ##   grade attend reading
@@ -1095,11 +1215,14 @@ rtfm.1
 ]]></output>
     </console>
         <p>Well, sort of. I suspect that a few readers are probably frowning a little at this point. Earlier on in the book I emphasised the importance of converting nominal scale variables such as `attend` and `reading` to factors, rather than encoding them as numeric variables. The `rtfm.1` data frame doesn't do this, but the `rtfm.2` data frame does, and so you might instead be expecting to see data like this:</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-41">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
  rtfm.2
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ##   grade attend reading
@@ -1114,11 +1237,14 @@ rtfm.1
 ]]></output>
     </console>
         <p>However, for the purposes of this section it's important that we be able to switch back and forth between these two different ways of thinking about the data. After all, our goal in this section is to look at some of the mathematics that underpins ANOVA, and if we want to do that we need to be able to see the numerical representation of the data (in `rtfm.1`) as well as the more meaningful factor representation (in `rtfm.2`). In any case, we can use the `xtabs()` function to confirm that this data set corresponds to a balanced design</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-42">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
  xtabs( ~ attend + reading, rtfm.2 )
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ##   grade attend reading
@@ -1133,11 +1259,14 @@ rtfm.1
 ]]></output>
     </console>
         <p>For each possible combination of the `attend` and `reading` variables, we have exactly two students. If we're interested in calculating the mean `grade` for each of these cells, we can use the `aggregate()` function:</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-43">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
  aggregate( grade ~ attend + reading, rtfm.2, mean )
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ##   grade attend reading
@@ -1161,12 +1290,15 @@ rtfm.1
 Y_{p} = b_1 X_{1p} + b_2 X_{2p} + b_0 + \epsilon_p
         ]]></me>
         <p>This is, of course, the exact same equation that I used earlier to describe a two-predictor regression model! The only difference is that <m>X_1</m> and <m>X_2</m> are now <em>binary</em> variables (i.e., values can only be 0 or 1), whereas in a regression analysis we expect that <m>X_1</m> and <m>X_2</m> will be continuous.  There's a couple of ways I could try to convince you of this. One possibility would be to do a lengthy mathematical exercise, proving that the two are identical. However, I'm going to go out on a limb and guess that most of the readership of this book will find that to be annoying rather than helpful. Instead, I'll explain the basic ideas, and then rely on R to show that that ANOVA analyses and regression analyses aren't just similar, they're identical for all intents and purposes.<fn>This is cheating in some respects: because ANOVA and regression are provably the same thing, R is lazy: if you read the help documentation closely, you'll notice that the `aov()` function is actually just the `lm()` function in disguise! But we shan't let such things get in the way of our story, shall we?</fn> Let's start by running this as an ANOVA. To do this, we'll use the `rtfm.2` data frame, since that's the one in which I did the proper thing of coding `attend` and `reading` as factors, and I'll use the `aov()` function to do the analysis. Here's what we get...</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-44">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
  anova.model <- aov( grade ~ attend + reading, data = rtfm.2 )
  summary( anova.model )    
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ##   grade attend reading
@@ -1181,12 +1313,15 @@ Y_{p} = b_1 X_{1p} + b_2 X_{2p} + b_0 + \epsilon_p
 ]]></output>
     </console>
         <p>So, by reading the key numbers off the ANOVA table and the table of means that we presented earlier, we can see that the students obtained a higher grade if they attended class <m>(F_{1,5} = 26.1, p = .0056)</m> and if they read the textbook <m>(F_{1,5} = 52.3, p = .0008)</m>. Let's make a note of those <m>p</m>-values and those <m>F</m> statistics.</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-45">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
  library(effects)
  Effect( c("attend","reading"), anova.model )
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ## 
@@ -1246,12 +1381,15 @@ Y_{p} = b_1 X_{1p} + b_2 X_{2p} + b_0 + \epsilon_p
         </table>
         <p>As you can see, the intercept term <m>b_0</m> acts like a kind of "baseline" grade that you would expect from those students who don't take the time to attend class or read the textbook. Similarly, <m>b_1</m> represents the boost that you're expected to get if you come to class, and <m>b_2</m> represents the boost that comes from reading the textbook. In fact, if this were an ANOVA you might very well want to characterise <m>b_1</m> as the main effect of attendance, and <m>b_2</m> as the main effect of reading! In fact, for a simple <m>2 \times 2</m> ANOVA that's <em>exactly</em> how it plays out.</p>
         <p>Okay, now that we're really starting to see why ANOVA and regression are basically the same thing, let's actually run our regression using the `rtfm.1` data and the `lm()` function to convince ourselves that this is really true. Running the regression in the usual way gives us the following output:<fn>In the example given above, I've typed `summary( regression.model )` to get the hypothesis tests. However, the `summary()` function does produce a lot of output, which is why I've used the `BLAH BLAH BLAH` text to hide the unnecessary parts of the output. But in fact, you can use the `coef()` function to do the same job. If you the command `coef( summary( regression.model ))` you'll get exactly the same output that I've shown above (minus the `BLAH BLAH BLAH`). Compare and contrast this to the output of `coef( regression.model )`.</fn></p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-46">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
  regression.model <- lm( grade ~ attend + reading, data = rtfm.1 )
  summary( regression.model )
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ## 
@@ -1278,11 +1416,14 @@ Y_{p} = b_1 X_{1p} + b_2 X_{2p} + b_0 + \epsilon_p
         <p>There's a few interesting things to note here. Firstly, notice that the intercept term is 43.5, which is close to the "group" mean of 42.5 observed for those two students who didn't read the text or attend class. Moreover, it's <em>identical</em> to the predicted group mean that we pulled out of our ANOVA using the `Effects()` function! Secondly, notice that we have the regression coefficient of <m>b_1 = 18.0</m> for the attendance variable, suggesting that those students that attended class scored 18\% higher than those who didn't. So our expectation would be that those students who turned up to class but didn't read the textbook would obtain a grade of <m>b_0 + b_1</m>, which is equal to <m>43.5 + 18.0 = 61.5</m>. Again, this is similar to the observed group mean of 62.5, and identical to the expected group mean that we pulled from our ANOVA. You can verify for yourself that the same thing happens when we look at the students that read the textbook.</p>
         <p>Actually, we can push a little further in establishing the equivalence of our ANOVA and our regression. Look at the <m>p</m>-values associated with the `attend` variable and the `reading` variable in the regression output. They're identical to the ones we encountered earlier when running the ANOVA. This might seem a little surprising, since the test used when running our regression model calculates a <m>t</m>-statistic and the ANOVA calculates an <m>F</m>-statistic. However, if you can remember all the way back to Chapter <xref ref="probability"/>, I mentioned that there's a relationship between the <m>t</m>-distribution and the <m>F</m>-distribution: if you have some quantity that is distributed according to a <m>t</m>-distribution with <m>k</m> degrees of freedom and you square it, then this new squared quantity follows an <m>F</m>-distribution whose degrees of freedom are 1 and <m>k</m>. We can check this with respect to the <m>t</m> statistics in our regression model. For the `attend` variable we get a <m>t</m> value of 4.648. If we square this number we end up with 21.604, which is identical to the corresponding <m>F</m> statistic in our ANOVA.</p>
         <p>Finally, one last thing you should know. Because R understands the fact that ANOVA and regression are both examples of linear models, it lets you extract the classic ANOVA table from your regression model using the `anova()` function. All you have to do is this:</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-47">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
  anova( regression.model )
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ## Analysis of Variance Table
@@ -1301,12 +1442,15 @@ Y_{p} = b_1 X_{1p} + b_2 X_{2p} + b_0 + \epsilon_p
       <title>Changing the baseline category</title>
 
         <p>At this point, you're probably convinced that the ANOVA and the regression are actually identical to each other. So there's one last thing I should show you. What happens if I use the data from `rtfm.2` to run the regression? In `rtfm.2`, we coded the `attend` and `reading` variables as factors rather than as numeric variables. Does this matter? It turns out that it doesn't. The only differences are superficial:</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-48">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
  regression.model.2 <- lm( grade ~ attend + reading, data = rtfm.2 )
  summary( regression.model.2 )
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ##   grade attend reading
@@ -1321,11 +1465,14 @@ Y_{p} = b_1 X_{1p} + b_2 X_{2p} + b_0 + \epsilon_p
 ]]></output>
     </console>
         <p>The only thing that is different is that R labels the two variables differently: the output now refers to `attendyes` and `readingyes`. You can probably guess what this means. When R refers to `readingyes` it's trying to indicate that it is assuming that "yes = 1" and "no = 0". This is important. Suppose we wanted to say that "yes = 0" and "no = 1". We could still run this as a regression model, but now all of our coefficients will go in the opposite direction, because the effect of `readingno` would be referring to the consequences of <em>not</em> reading the textbook. To show you how this works, we can use the `relevel()` function in R to change which level of the `reading` variable is set to "0". Here's how it works. First, let's get R to print out the `reading` factor as it currently stands:</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-49">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
  rtfm.2$reading
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ##   grade attend reading
@@ -1340,11 +1487,14 @@ Y_{p} = b_1 X_{1p} + b_2 X_{2p} + b_0 + \epsilon_p
 ]]></output>
     </console>
         <p>Notice that order in which R prints out the levels is "no" and then "yes". Now let's apply the `relevel()` function:</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-50">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
  relevel( x = rtfm.2$reading, ref = "yes" )
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ##   grade attend reading
@@ -1359,13 +1509,16 @@ Y_{p} = b_1 X_{1p} + b_2 X_{2p} + b_0 + \epsilon_p
 ]]></output>
     </console>
         <p>R now lists "yes" before "no". This means that R will now treat "yes" as the "reference" level (sometimes called the baseline level) when you include it in an ANOVA. So let's now create a new data frame with our factors recoded...</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-51">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
  rtfm.3 <- rtfm.2                                        # copy the old data frame
  rtfm.3$reading <- relevel( rtfm.2$reading, ref="yes" )  # re-level the reading factor
  rtfm.3$attend <- relevel( rtfm.2$attend, ref="yes" )    # re-level the attend factor
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ##   grade attend reading
@@ -1380,12 +1533,15 @@ Y_{p} = b_1 X_{1p} + b_2 X_{2p} + b_0 + \epsilon_p
 ]]></output>
     </console>
         <p>Finally, let's re-run our regression, this time using the re-coded data:</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-52">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
  regression.model.3 <- lm( grade ~ attend + reading, data = rtfm.3 )
  summary( regression.model.3 )
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ## 
@@ -1442,30 +1598,39 @@ Y_{p} = b_1 X_{1p} + b_2 X_{2p} + b_0 + \epsilon_p
         </table>
         <p>If the drug administered to a patient is a placebo, then both of the two contrast variables will equal 0. If the drug is Anxifree, then the `druganxifree` variable will equal 1, and `drugjoyzepam` will be 0. The reverse is true for Joyzepam: `drugjoyzepam` is 1, and `druganxifree` is 0.</p>
         <p>Creating contrast variables manually is not too difficult to do using basic R commands. For example, here's how we would create the `druganxifree` variable:</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-53">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
  druganxifree <- as.numeric( clin.trial$drug == "anxifree" )
  druganxifree
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ##  [1] 0 0 0 1 1 1 0 0 0 0 0 0 1 1 1 0 0 0
 ]]></output>
     </console>
         <p>The `clin.trial$drug == "anxifree"` part of the command returns a logical vector that has a value of `TRUE` if the drug is Anxifree, and a value of `FALSE` if the drug is Joyzepam or the placebo. The `as.numeric()` function just converts `TRUE` to 1 and `FALSE` to 0. Obviously, this command creates the `druganxifree` variable inside the workspace. If you wanted to add it to the `clin.trial` data frame, you'd use a commmand like this instead:</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-54">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
  clin.trial$druganxifree <- as.numeric( clin.trial$drug == "anxifree" )
           ]]></input>
         </program>
+        </listing>
         <p>You could then repeat this for the other contrasts that you wanted to use. However, it's kind of tedious to do this over and over again for every single contrast that you want to create. To make it a little easier, the `lsr` package contains a simple function called `expandFactors()` that will convert every factor in a data frame into a set of contrast variables.<fn>Advanced users may want to look into the `model.matrix()` function, which produces similar output. Alternatively, you can use a command like `contr.treatment(3)[clin.trial\$drug,]`. I'll talk about the `contr.treatment()` function later.</fn> We can use it to create a new data frame, `clin.trial.2` that contains the same data as `clin.trial`, but with the two factors represented in terms of the contrast variables:</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-55">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
  clin.trial.2 <- expandFactors( clin.trial )
  clin.trial.2
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ##    (Intercept) druganxifree drugjoyzepam therapyCBT mood.gain druganxifree
@@ -1503,12 +1668,15 @@ Y_{p} = b_1 X_{1p} + b_2 X_{2p} + b_0 + \epsilon_p
       <title>The equivalence between ANOVA and regression for non-binary factors</title>
 
         <p>Now we have two different versions of the same data set: our original data frame `clin.trial` in which the `drug` variable is expressed as a single three-level factor, and the expanded data set `clin.trial.2` in which it is expanded into two binary contrasts. Once again, the thing that we want to demonstrate is that our original <m>3 \times 2</m> factorial ANOVA is equivalent to a regression model applied to the contrast variables. Let's start by re-running the ANOVA:</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-56">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
  drug.anova <- aov( mood.gain ~ drug + therapy, clin.trial )
  summary( drug.anova )
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ##             Df Sum Sq Mean Sq F value   Pr(>F)    
@@ -1520,12 +1688,15 @@ Y_{p} = b_1 X_{1p} + b_2 X_{2p} + b_0 + \epsilon_p
 ]]></output>
     </console>
         <p>Obviously, there's no surprises here. That's the exact same ANOVA that we ran earlier, except for the fact that I've arbitrarily decided to rename the output variable as `drug.anova` for some stupid reason.<fn>Future versions of this book will try to be a bit more consistent with the naming scheme for variables. One of the many problems with having to write a lengthy text very quickly to meet a teaching deadline is that you lose some internal consistency.</fn> Next, let's run a regression, using `druganxifree`, `drugjoyzepam` and `therapyCBT` as the predictors. Here's what we get:</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-57">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
  drug.regression <- lm( mood.gain ~ druganxifree + drugjoyzepam + therapyCBT, clin.trial.2 )
  summary( drug.regression )
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ##    druganxifree drugjoyzepam therapyCBT mood.gain druganxifree
@@ -1550,12 +1721,15 @@ Y_{p} = b_1 X_{1p} + b_2 X_{2p} + b_0 + \epsilon_p
 ]]></output>
     </console>
         <p>Hm. This isn't the same output that we got last time. Not surprisingly, the regression output prints out the results for each of the three predictors separately, just like it did every other time we used `lm()`. On the one hand, we can see that the <m>p</m>-value for the `therapyCBT` variable is exactly the same as the one for the `therapy` factor in our original ANOVA, so we can be reassured that the regression model is doing the same thing as the ANOVA did. On the other hand, this regression model is testing the `druganxifree` contrast and the `drugjoyzepam` contrast <em>separately</em>, as if they were two completely unrelated variables. It's not surprising of course, because the poor `lm()` function has no way of knowing that `drugjoyzepam` and `druganxifree` are actually the two different contrasts that we used to encode our three-level `drug` factor. As far as it knows, `drugjoyzepam` and `druganxifree` are no more related to one another than `drugjoyzepam` and `therapyCBT`. However, you and I know better. At this stage we're not at all interested in determining whether these two contrasts are individually significant. We just want to know if there's an "overall" effect of drug. That is, what <em>we</em> want R to do is to run some kind of "omnibus" test, one in which the two "drug-related" contrasts are lumped together for the purpose of the test. Sound familiar? This is <em>exactly</em> the situation that we discussed in Section <xref ref="omnibusF"/>, and it is precisely this situation that the <m>F</m>-test is built to handle. All we need to do is specify our null model, which in this case would include the `therapyCBT` predictor, and omit both of the drug-related variables, and then run it through the `anova()` function:</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-58">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
  nodrug.regression <- lm( mood.gain ~ therapyCBT, clin.trial.2 )
  anova( nodrug.regression, drug.regression )
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ##    druganxifree drugjoyzepam therapyCBT mood.gain druganxifree
@@ -1592,18 +1766,24 @@ Y_{p} = b_1 X_{1p} + b_2 X_{2p} + b_0 + \epsilon_p
       <title>A postscript</title>
 
         <p>There's one last thing I want to mention in this section. In the previous example, I  used the `aov()` function to run an ANOVA using the `clin.trial` data which codes `drug` variable as a single factor. I also used the `lm()` function to run a regression using the `clin.trial` data in which we have two separate contrasts describing the drug. However, it's also possible to use the `lm()` function on the the original data. That is, you could use a command like this:</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-59">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
  drug.lm <- lm( mood.gain ~ drug + therapy, clin.trial )
           ]]></input>
         </program>
+        </listing>
         <p>The fact that `drug` is a three-level factor does not matter. As long as the `drug` variable has been declared to be a factor, R will automatically translate it into two binary contrast variables, and will perform the appropriate analysis. After all, as I've been saying throughout this section, ANOVA and regression are both linear models, and `lm()` is the function that handles linear models. In fact, the `aov()` function doesn't actually do very much of the work when you run an ANOVA using it: internally, R just passes all the hard work straight to `lm()`. However, I want to emphasise again that it is <em>critical</em> that your factor variables are declared as such. If `drug` were declared to be a numeric variable, then R would be happy to treat it as one. After all, it might be that `drug` refers to the number of drugs that one has taken in the past, or something that is genuinely numeric. R won't second guess you here. It assumes your factors are factors and your numbers are numbers. Don't make the mistake of encoding your factors as numbers, or R will run the wrong analysis. This is <em>not</em> a flaw in R: it is <em>your</em> responsibility as the analyst to make sure you're specifying the right model for your data. Software really can't be trusted with this sort of thing.</p>
         <p>Okay, warnings aside, it's actually kind of neat to run your ANOVA using the `lm()` function in the way I did above. Because you've called the `lm()` function, the `summary()` that R pulls out is formatted like a regression. To save space I won't show you the output here, but you can easily verify this by typing</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-60">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
  summary( drug.lm )
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ## 
@@ -1629,11 +1809,14 @@ Y_{p} = b_1 X_{1p} + b_2 X_{2p} + b_0 + \epsilon_p
 ]]></output>
     </console>
         <p>However, because the `drug` and `therapy` variables were both factors, the `anova()` function actually knows which contrasts to group together for the purposes of running the <m>F</m>-tests, so you can extract the classic ANOVA table. Again, I won't reproduce the output here since it's identical to the ANOVA table I showed at the start of the section, but it's worth trying the following command</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-61">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
  anova( drug.lm )
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ## Analysis of Variance Table
@@ -1684,11 +1867,14 @@ Y_{p} = b_1 X_{1p} + b_2 X_{2p} + b_0 + \epsilon_p
 
         <p>In the particular kind of contrasts that I've described above, one level of the factor is special, and acts as a kind of "baseline" category (i.e., `placebo` in our example), against which the other two are defined. The name for these kinds of contrast is <em>treatment contrasts</em>. The name reflects the fact that these contrasts are quite natural and sensible when one of the categories in your factor really is special because it actually does represent a baseline. That  makes sense in our clinical trial example: the `placebo` condition corresponds to the situation where you don't give people any real drugs, and so it's special. The other two conditions are defined in relation to the placebo: in one case you replace the placebo with Anxifree, and in the other case your replace it with Joyzepam.</p>
         <p>R comes with a variety of functions that can generate different kinds of contrast matrices. For example, the table shown above is a matrix of treatment contrasts for a factor that has 3 levels. But suppose I want a matrix of treatment contrasts for a factor with 5 levels? The `contr.treatment()` function will do this:</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-62">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
  contr.treatment( n=5 )
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ##   2 3 4 5
@@ -1700,11 +1886,14 @@ Y_{p} = b_1 X_{1p} + b_2 X_{2p} + b_0 + \epsilon_p
 ]]></output>
     </console>
         <p>Notice that, by default, the <em>first</em> level of the factor is always treated as the baseline category (i.e., it's the one that has all zeros, and doesn't have an explicit contrast associated with it). In Section <xref ref="changingbaseline"/> I mentioned that you can use the `relevel()` function to change which category is the first level of the factor.<fn>The `lsr` package contains a more general function called `permuteLevels()` that can shuffle them in any way you like.</fn> There's also a special function in R called `contr.SAS()` that generates a treatment contrast	 matrix in which the <em>last</em> category is treated as the baseline:</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-63">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
  contr.SAS( n=5 )
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ##   1 2 3 4
@@ -1721,11 +1910,14 @@ Y_{p} = b_1 X_{1p} + b_2 X_{2p} + b_0 + \epsilon_p
       <title>Helmert contrasts</title>
 
         <p>Treatment contrasts are useful for a lot of situations, and they're the default in R. However, they make most sense in the situation when there really is a baseline category, and you want to assess all the other groups in relation to that one. In other situations, however, no such baseline category exists, and it may make more sense to compare each group to the mean of the other groups. This is where <em>Helmert contrasts</em>, generated by the `contr.helmert()` function, can be useful. The idea behind Helmert contrasts is to compare each group to the mean of the "previous" ones. That is, the first contrast represents the difference between group 2 and group 1, the second contrast represents the difference between group 3 and the mean of groups 1 and 2, and so on. This translates to a contrast matrix that looks like this:</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-64">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
  contr.helmert( n=5 )
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ##   [,1] [,2] [,3] [,4]
@@ -1742,11 +1934,14 @@ Y_{p} = b_1 X_{1p} + b_2 X_{2p} + b_0 + \epsilon_p
       <title>Sum to zero contrasts</title>
 
         <p>The third option that I should briefly mention are "sum to zero" contrasts, which are used to construct pairwise comparisons between groups. Specifically, each contrast encodes the difference between one of the groups and a baseline category, which in this case corresponds to the last group:</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-65">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
  contr.sum( n=5 )
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ##   [,1] [,2] [,3] [,4]
@@ -1763,22 +1958,28 @@ Y_{p} = b_1 X_{1p} + b_2 X_{2p} + b_0 + \epsilon_p
       <title>Viewing and setting the default contrasts in R</title>
 
         <p>Every factor variable in R is associated with a contrast matrix. It has to be, otherwise R wouldn't be able to run ANOVAs properly! If you don't specify one explictly, or R will implicitly specify one for you. Here's what I mean. When I created the `clin.trial` data, I didn't specify any contrast matrix for either of the factors. You can see this by using the `attr()` function to print out the "contrasts" attribute of the factors. For example:</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-66">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
  attr( clin.trial$drug, "contrasts" )
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ## NULL
 ]]></output>
     </console>
         <p>The `NULL` output here means that R is telling you that the `drug` factor doesn't have any attribute called "contrasts"  for which it has any data. There is no contrast matrix stored anywhere explicitly for this factor. However, if we now ask R to tell us what contrasts are set up for this factor, it give us this:</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-67">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
  contrasts( clin.trial$drug )
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ##          anxifree joyzepam
@@ -1788,11 +1989,14 @@ Y_{p} = b_1 X_{1p} + b_2 X_{2p} + b_0 + \epsilon_p
 ]]></output>
     </console>
         <p>These are the same treatment contrast that we set up manually in Section <xref ref="anovalm"/>. How did R know to set up treatment contrasts, even though I never actually told it anything about what contrasts I wanted? The answer is that R has a hidden list of default "options" that it looks up to resolve situations like this. You can print out all of the options by typing `options()` at the command prompt, but it's not a very enlightening read. There are a lot of options, and we're only interested in contrasts right now. Instead of printing out all of the options, we can ask for just one, like this:</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-68">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
  options( "contrasts" )
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ## $contrasts
@@ -1800,17 +2004,23 @@ Y_{p} = b_1 X_{1p} + b_2 X_{2p} + b_0 + \epsilon_p
 ]]></output>
     </console>
         <p>What this is telling us is that the default contrasts for unordered factors (i.e., nominal scale variables) are treatment contrasts, and the default for ordered factors (i.e., interval scale variables) are "polynomial" contrasts. I don't discuss ordered factors much in this book, and so I won't go into what polynomial contrasts are all about. The key thing is that the `options()` function also allows you to reset these defaults (though only for the current session: they'll revert to the original settings once you close R). Here's the command:</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-69">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
  options(contrasts = c("contr.helmert", "contr.poly"))
           ]]></input>
         </program>
+        </listing>
         <p>Once we've done this, we can inspect the contrast settings again:</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-70">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
  options("contrasts") 
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ## $contrasts
@@ -1818,11 +2028,14 @@ Y_{p} = b_1 X_{1p} + b_2 X_{2p} + b_0 + \epsilon_p
 ]]></output>
     </console>
         <p>Now we see that the default contrasts for unordered factors have changed. So if I now ask R to tell me what contrasts are associated with the `drug` factor, it gives a different answer because I changed the default:</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-71">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
  contrasts( clin.trial$drug )
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ##          anxifree joyzepam
@@ -1832,21 +2045,27 @@ Y_{p} = b_1 X_{1p} + b_2 X_{2p} + b_0 + \epsilon_p
 ]]></output>
     </console>
         <p>Those are Helmert contrasts. In general, if you're changing the default settings for something in R, it's a good idea to reset them to their original values once you're done. So let's do that:</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-72">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
  options(contrasts = c("contr.treatment", "contr.poly"))
           ]]></input>
         </program>
+        </listing>
     </subsection>
     <subsection>
       <title>Setting the contrasts for a single factor</title>
 
         <p>In the previous section, I showed you how to alter the default contrasts. However, suppose that all you really want to do is change the contrasts associated with a single factor, and leave the defaults as they are. To do this, what you need to do is specifically assign the contrast matrix as an "attribute' of the factor. This is easy to do via the `contrasts()` function. For instance, suppose I wanted to use sum to zero contrasts for the `drug` factor, but keep the default treatment contrasts for everything else. I could do that like so:</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-73">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
  contrasts( clin.trial$drug ) <- contr.sum(3)
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ##          anxifree joyzepam
@@ -1856,11 +2075,14 @@ Y_{p} = b_1 X_{1p} + b_2 X_{2p} + b_0 + \epsilon_p
 ]]></output>
     </console>
         <p>And if I now inspect the contrasts, I get the following</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-74">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
  contrasts( clin.trial$drug)
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ##          [,1] [,2]
@@ -1870,11 +2092,14 @@ Y_{p} = b_1 X_{1p} + b_2 X_{2p} + b_0 + \epsilon_p
 ]]></output>
     </console>
         <p>However, the contrasts for everything else will still be the defaults. You can check that we have actually made a specific change to the factor itself by checking to see if it now has an attribute, using the command `attr( clin.trial$drug, "contrasts" )`. This will print out the same output shown above, because the contrast has in fact been attached to the `drug` factor, and does not rely on the defaults. If you want to wipe the attribute and revert the defaults, use a command like this:</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-75">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
  contrasts( clin.trial$drug ) <- NULL
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ##          anxifree joyzepam
@@ -1888,23 +2113,32 @@ Y_{p} = b_1 X_{1p} + b_2 X_{2p} + b_0 + \epsilon_p
       <title>Setting the contrasts for a single analysis</title>
 
         <p>One last way of changing contrasts. You might find yourself wanting to change the contrasts only for one specific analysis. That's allowed too, because the `aov()` and `lm()` functions have a `contrasts` argument that you can use. To change contrasts for one specific analysis, we first set up a list variable that names<fn>Technically, this list actually stores the functions themselves. R allows lists to contain functions, which is really neat for advanced purposes, but not something that matters for this book.</fn> the contrast types that you want to use for each of the factors:</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-76">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
  my.contrasts <- list( drug = contr.helmert, therapy = contr.helmert )
           ]]></input>
         </program>
+        </listing>
         <p>Next, fit the ANOVA model in the usual way, but this time we'll specify the `contrasts` argument:</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-77">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
  mod <- aov( mood.gain ~ drug*therapy, clin.trial, contrasts = my.contrasts )
           ]]></input>
         </program>
+        </listing>
         <p>If you try a command like `summary(aov)` you won't see any difference in the output because the choice of contrasts does not affect the outcome when you have a balanced design (this won't always be true later on). However, if you want to check that it has actually worked, you can inspect the value of `mod$contrasts`:</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-78">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
  mod$contrasts
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ## $drug
@@ -1935,11 +2169,14 @@ Y_{p} = b_1 X_{1p} + b_2 X_{2p} + b_0 + \epsilon_p
       </ul>
       <p>For any one of these comparisons, we're interested in the true difference between (population) group means. Tukey's HSD constructs <em>simultaneous confidence intervals</em> for all four of these comparisons. What we mean by 95\% "simultaneous" confidence interval is that there is a 95\% probability that <em>all</em> of these confidence intervals contain the relevant true value. Moreover, we can use these confidence intervals to calculate an adjusted <m>p</m> value for any specific comparison.</p>
       <p>The `TukeyHSD()` function in R is pretty easy to use: you simply input the model that you want to run the post hoc tests for. For example, if we were looking to run post hoc tests for `model.2`, here's the command we would use:</p>
-      <program language="r">
+      <listing xml:id="listing-ch5_factorial_anova-79">
+        <caption>R Code</caption>
+        <program language="r">
         <input><![CDATA[
  TukeyHSD( model.2 )
         ]]></input>
       </program>
+      </listing>
     <console>
       <output><![CDATA[
 ##   Tukey multiple comparisons of means
@@ -1966,11 +2203,14 @@ Y_{p} = b_1 X_{1p} + b_2 X_{2p} + b_0 + \epsilon_p
         <li><p>etc</p></li>
       </ul>
       <p>There are quite a lot of these comparisons that you need to consider. So, when we run the `TukeyHSD()` command for `model.3` we see that it has made a <em>lot</em> of pairwise comparisons (19 in total). Here's the output:</p>
-      <program language="r">
+      <listing xml:id="listing-ch5_factorial_anova-80">
+        <caption>R Code</caption>
+        <program language="r">
         <input><![CDATA[
  TukeyHSD( model.3 )
         ]]></input>
       </program>
+      </listing>
     <console>
       <output><![CDATA[
 ##   Tukey multiple comparisons of means
@@ -2040,12 +2280,15 @@ Y_{p} = b_1 X_{1p} + b_2 X_{2p} + b_0 + \epsilon_p
       <title>The coffee data</title>
 
         <p>As usual, it will help us to work with some data. The `coffee.Rdata` file contains a hypothetical data set (the `coffee` data frame) that produces an unbalanced <m>3 \times 2</m> ANOVA. Suppose we were interested in finding out whether or not the tendency of people to `babble` when they have too much coffee is purely an effect of the coffee itself, or whether there's some effect of the `milk` and `sugar` that people add to the coffee. Suppose we took 18 people, and gave them some coffee to drink. The amount of coffee / caffeine was held constant, and we varied whether or not milk was added: so `milk` is a binary factor with two levels, `"yes"` and `"no"`. We also varied the kind of sugar involved. The coffee might contain `"real"` sugar, or it might contain `"fake"` sugar (i.e., artificial sweetener), or it might contain `"none"` at all, so the `sugar` variable is a three level factor. Our outcome variable is a continuous variable that presumably refers to some psychologically sensible measure of the extent to which someone is "babbling". The details don't really matter for our purpose. To get a sense of what the data look like, we use the `some()` function in the `car` package. The `some()` function randomly picks a few of the observations in the data frame to print out, which is often very handy:</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-81">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
 load(file.path(projecthome, "data","coffee.Rdata"))
  some( coffee )
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ##    milk sugar babble
@@ -2062,11 +2305,14 @@ load(file.path(projecthome, "data","coffee.Rdata"))
 ]]></output>
     </console>
         <p>If we use the `aggregate()` function to quickly produce a table of means, we get a strong impression that there are differences between the groups:</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-82">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
  aggregate( babble ~ milk + sugar, coffee, mean )
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ##   milk sugar babble
@@ -2079,11 +2325,14 @@ load(file.path(projecthome, "data","coffee.Rdata"))
 ]]></output>
     </console>
         <p>This is especially true when we compare these means to the standard deviations for the `babble` variable, which you can calculate using `aggregate()` in much the same way. Across groups, this standard deviation varies from .14 to .71, which is fairly small relative to the differences in group means.<fn>This discrepancy in standard deviations might (and should) make you wonder if we have a violation of the homogeneity of variance assumption. I'll leave it as an exercise for the reader to check this using the `leveneTest()` function.</fn> So far, it's looking like a straightforward factorial ANOVA, just like we did earlier. The problem arises when we check to see how many observations we have in each group:</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-83">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
  xtabs( ~ milk + sugar, coffee )
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ##      sugar
@@ -2156,12 +2405,15 @@ load(file.path(projecthome, "data","coffee.Rdata"))
           </tabular>
         </table>
         <p>Type I sum of squares is the default hypothesis testing method used by the `anova()` function, so it's easy to produce the results from a Type I analysis. We just type in the same commands that we always did. Since we've now reached the point that we don't need to hide the fact that ANOVA and regression are both linear models, I'll use the `lm()` function to run the analyses:</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-84">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
  mod <- lm( babble ~ sugar + milk + sugar:milk, coffee )
  anova( mod )
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ## Analysis of Variance Table
@@ -2177,7 +2429,9 @@ load(file.path(projecthome, "data","coffee.Rdata"))
 ]]></output>
     </console>
         <p>Leaving aside for one moment the question of how this result should be interpreted, let's take note of the fact that our three <m>p</m>-values are <m>.0109</m>, <m>.0811</m> and <m>.0018</m> respectively. Next, let's see if we can replicate the analysis using tools that we're a little more familiar with. First, let's fit all four models:</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-85">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
  mod.1 <- lm( babble ~ 1, coffee )
  mod.2 <- lm( babble ~ sugar, coffee )
@@ -2185,12 +2439,16 @@ load(file.path(projecthome, "data","coffee.Rdata"))
  mod.4 <- lm( babble ~ sugar + milk + sugar:milk, coffee )
           ]]></input>
         </program>
+        </listing>
         <p>To run the first hypothesis test comparing `mod.1` to `mod.2` we can use the command `anova(mod.1, mod.2)` in much the same way that we did in Section <xref ref="omnibusF"/>. Similarly, we can use the commands `anova(mod.2, mod.3)` and `anova(mod.3, mod.4)` and to run the second and third hypothesis tests. However, rather than run each of those commands separately, we can  enter the full sequence of models like this:</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-86">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
  anova( mod.1, mod.2, mod.3, mod.4 )
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ## Analysis of Variance Table
@@ -2210,12 +2468,15 @@ load(file.path(projecthome, "data","coffee.Rdata"))
     </console>
         <p>This output is rather more verbose than the last one, but it's telling essentially  the same story.<fn>The one thing that might seem a little opaque to some people is why the residual degrees of freedom in this output look different from one another (i.e., ranging from 12 to 17) whereas in the original one the residual degrees of freedom is fixed at 12. It's actually the case that R uses a residual df of 12 in all cases (that's why the <m>p</m> values are the same in the two outputs, and it's enough to verify that `pf(6.7495, 2,12, lower.tail=FALSE))` gives the correct answer of <m>p=.010863</m>, for instance, whereas `pf(6.7495, 2,15, lower.tail=FALSE))` would have given a <m>p</m>-value of about <m>.00812</m>. It's the residual degrees of freedom in the full model (i.e., the last one) that matters here.</fn></p>
         <p>The big problem with using Type I sum of squares is the fact that it really does depend on the order in which you enter the variables. Yet, in many situations the researcher has no reason to prefer one ordering over another. This is presumably the case for our milk and sugar problem. Should we add milk first, or sugar first? It feels exactly as arbitrary as a data analysis question as it does as a coffee-making question. There may in fact be some people with firm opinions about ordering, but it's hard to imagine a principled answer to the question. Yet, look what happens when we change the ordering:</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-87">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
  mod <- lm( babble ~  milk + sugar + sugar:milk, coffee )
  anova( mod )
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ## Analysis of Variance Table
@@ -2233,17 +2494,23 @@ load(file.path(projecthome, "data","coffee.Rdata"))
         <p>The <m>p</m>-values for both main effect terms have changed, and fairly dramatically. Among other things, the effect of `milk` has become significant (though one should avoid drawing any strong conclusions about this, as I've mentioned previously). Which of these two ANOVAs should one report? It's not immediately obvious.</p>
         <p>When you look at the hypothesis tests that are used to define the "first" main effect and the "second" one, it's clear that they're qualitatively different from one another. In our initial example, we saw that the test for the main effect of `sugar` completely ignores `milk`, whereas the test of the main effect of `milk` does take `sugar` into account. As such, the Type I testing strategy really does treat the first main effect as if it had a kind of theoretical primacy over the second one. In my experience there is very rarely if ever any theoretically primacy of this kind that would justify treating any two main effects asymmetrically.</p>
         <p>The consequence of all this is that Type I tests are very rarely of much interest, and so we should move on to discuss Type II tests and Type III tests. However, for the sake of completeness -- on the off chance that you ever find yourself needing to run Type I tests -- I'll comment briefly on how R determines the ordering of terms in a Type I test. The key principle in Type I sum of squares is that the hypothesis testing be sequential, with terms added one at a time. However, it does also imply that main effects be added first (e.g., factors `A`, `B`, `C` etc), followed by first order interaction terms (e.g., terms like `A:B` and `B:C`), then second order interactions (e.g., `A:B:C`) and so on. Within each "block" you can specify whatever order you like. So, for instance, if we specified our model using a command like this,</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-88">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
  mod <- lm( outcome ~ A + B + C + B:C + A:B + A:C )
           ]]></input>
         </program>
+        </listing>
         <p>and then used `anova(mod)` to produce sequential hypothesis tests, what we'd see is that the main effect terms would be entered `A` then `B` and then `C`, but then the interactions would be entered in the order `B:C` first, then `A:B` and then finally `A:C`. Reordering the terms within each group will change the ordering, as we saw earlier. However, changing the order of terms across blocks has no effect. For instance, if we tried to move the interaction term `B:C` to the front, like this,</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-89">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
  mod <- lm( outcome ~ B:C + A + B + C + A:B + A:C )
           ]]></input>
         </program>
+        </listing>
         <p>it would have no effect. R would still enter the terms in the same order as last time. If for some reason you really, really need an interaction term to be entered first, then you have to do it the long way, creating each model manually using a separate `lm()` command and then using a command like `anova(mod.1, mod.2, mod.3, mod.4)` to force R to enter them in the order that you want.</p>
     </subsection>
     <subsection>
@@ -2348,12 +2615,15 @@ load(file.path(projecthome, "data","coffee.Rdata"))
         <p>As ugly as that table looks, it's pretty simple. In all cases, the alternative hypothesis corresponds to the full model, which contains three main effect terms (e.g. `A`), three first order interactions (e.g. `A:B`) and one second order interaction (i.e., `A:B:C`). The null model always contains 6 of thes 7 terms: and the missing one is the one whose significance we're trying to test.</p>
         <p>At first pass, Type III tests seem like a nice idea. Firstly, we've removed the asymmetry that caused us to have problems when running Type I tests. And because we're now treating all terms the same way, the results of the hypothesis tests do not depend on the order in which we specify them. This is definitely a good thing. However, there is a big problem when interpreting the results of the tests, especially for main effect terms. Consider the coffee data. Suppose it turns out that the main effect of `milk` is not significant according to the Type III tests. What this is telling us is that `babble ~ sugar + sugar:milk` is a better model for the data than the full model. But what does that even <em>mean</em>? If the interaction term `sugar:milk` was also non-significant, we'd be tempted to conclude that the data are telling us that the only thing that matters is `sugar`. But suppose we have a significant interaction term, but a non-significant main effect of `milk`. In this case, are we to assume that there really is an "effect of sugar", an "interaction between milk and sugar", but no "effect of milk"? That seems crazy. The right answer simply <em>must</em> be that it's meaningless<fn>Or, at the very least, rarely of interest.</fn> to talk about the main effect if the interaction is significant. In general, this seems to be what most statisticians advise us to do, and I think that's the right advice. But if it really is meaningless to talk about non-significant main effects in the presence of a significant interaction, then it's not at all obvious why Type III tests should allow the null hypothesis to rely on a model that includes the interaction but omits one of the main effects that make it up. When characterised in this fashion, the null hypotheses really don't make much sense at all.</p>
         <p>Later on, we'll see that Type III tests can be redeemed in some contexts, but I'd better show you how to actually compute a Type III ANOVA first. The `anova()` function in R does not directly support Type II tests or Type III tests. Technically, you <em>can</em> do it by creating the various models that form the null and alternative hypotheses for each test, and then using `anova()` to compare the models to one another. I outlined the gist of how that would be done when talking about Type I tests, but speaking from first hand experience<fn>Yes, I'm actually a big enough nerd that I've written my own functions implementing Type II tests and Type III tests. I only did it to convince myself that I knew how the different Types of test worked, but it did turn out to be a handy exercise: the `etaSquared()` function in the `lsr` package relies on it. There's actually even an argument in the `etaSquared()` function called `anova`. By default, `anova=FALSE` and the function just prints out the effect sizes. However, if you set `anova=TRUE` it will spit out the full ANOVA table as well. This works for Types I, II and III. Just set the `types` argument to select which type of test you want.</fn> I can tell you that it's very tedious. In practice, the `anova()` function is only used to produce Type I tests or to compare specific models of particular interest (see Section <xref ref="omnibusF"/>). If you want Type II or Type III tests you need to use the `Anova()` function in the `car` package. It's pretty easy to use, since there's a `type` argument that you specify. So, to return to our coffee example, our Type III tests are run as follows:</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-90">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
  mod <- lm( babble ~ sugar * milk, coffee )
  Anova( mod, type=3 )
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ## Anova Table (Type III tests)
@@ -2371,13 +2641,16 @@ load(file.path(projecthome, "data","coffee.Rdata"))
     </console>
         <p>As you can see, I got lazy this time and used `sugar * milk` as a shorthand way of referring to `sugar + milk + sugar:milk`. The important point here is that this is just a regular ANOVA table, and we can see that our Type III tests are significant for all terms, even the intercept.</p>
         <p>Except, as usual, it's not that simple. One of the perverse features of the Type III testing strategy is that the results turn out to depend on the <em>contrasts</em> that you use to encode your factors (see Section <xref ref="contrasts"/> if you've forgotten what the different types of contrasts are). The results that I presented in the ANOVA table above are based on the R default, which is treatment contrasts; and as we'll see later, this is usually a very poor choice if you want to run Type III tests. So let's see what happens if switch to Helmert contrasts:</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-91">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
  my.contrasts <- list( milk = "contr.Helmert", sugar = "contr.Helmert" )
  mod.H <- lm( babble ~ sugar * milk, coffee, contrasts = my.contrasts )
  Anova( mod.H, type=3 )
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ## Anova Table (Type III tests)
@@ -2395,7 +2668,9 @@ load(file.path(projecthome, "data","coffee.Rdata"))
     </console>
         <p>Oh, that's not good at all. In the case of `milk` in particular, the <m>p</m>-value has changed from .002 to .07. This is a pretty substantial difference, and hopefully it gives you a sense of how important it is that you take care when using Type III tests.</p>
         <p>Okay, so if the <m>p</m>-values that come out of Type III analyses are so sensitive to the choice of contrasts, does that mean that Type III tests are essentially arbitrary and not to be trusted? To some extent that's true, and when we turn to a discussion of Type II tests we'll see that Type II analyses avoid this arbitrariness entirely, but I think that's too strong a conclusion. Firstly, it's important to recognise that some choices of contrasts will always produce the same answers. Of particular importance is the fact that if the columns of our contrast matrix are all constrained to sum to zero, then the Type III analysis will always give the same answers. This means that you'll get the same answers if you use `contr.Helmert` or `contr.sum` or `contr.poly`, but different answers for `contr.treatment` or `contr.SAS`.</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-92">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
  random.contrasts <- matrix( rnorm(6), 3, 2 )   # create a random matrix
  random.contrasts[, 1] <- random.contrasts[, 1] - mean( random.contrasts[, 1] ) # contrast 1 sums to 0
@@ -2403,6 +2678,7 @@ load(file.path(projecthome, "data","coffee.Rdata"))
  random.contrasts  # print it to check that we really have an arbitrary contrast matrix...
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ##            [,1]       [,2]
@@ -2411,7 +2687,9 @@ load(file.path(projecthome, "data","coffee.Rdata"))
 ## [3,] -0.7897556 -0.1335037
 ]]></output>
     </console>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-93">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
  contrasts( coffee$sugar ) <- random.contrasts # random contrasts for sugar
  contrasts( coffee$milk ) <- contr.Helmert(2)  # Helmert contrasts for the milk factor 
@@ -2419,6 +2697,7 @@ load(file.path(projecthome, "data","coffee.Rdata"))
  Anova( mod.R, type = 3 )                   
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ## Anova Table (Type III tests)
@@ -2571,12 +2850,15 @@ load(file.path(projecthome, "data","coffee.Rdata"))
           </tabular>
         </table>
         <p>Running the tests are again straightforward. We use the `Anova()` function, specifying `type=2`:</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-94">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
  mod <- lm( babble ~  sugar*milk, coffee )
  Anova( mod, type = 2 )
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ## Anova Table (Type II tests)
@@ -2597,11 +2879,14 @@ load(file.path(projecthome, "data","coffee.Rdata"))
       <title>Effect sizes (and non-additive sums of squares)</title>
 
         <p>The `etaSquared()` function in the `lsr` package computes <m>\eta^2</m> and partial <m>\eta^2</m> values for unbalanced designs and for different Types of tests. It's pretty straightforward. All you have to do is indicate which `type` of tests you're doing,</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-95">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
  etaSquared( mod, type=2 )
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ##                eta.sq eta.sq.part
@@ -2611,12 +2896,15 @@ load(file.path(projecthome, "data","coffee.Rdata"))
 ]]></output>
     </console>
         <p>and out pops the <m>\eta^2</m> and partial <m>\eta^2</m> values, as requested. However, when you've got an unbalanced design, there's a bit of extra complexity involved. To see why, let's expand the output from the `etaSquared()` function so that it displays the full ANOVA table:</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-96">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
  es <- etaSquared( mod, type=2, anova=TRUE )
  es
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ##                eta.sq eta.sq.part        SS df        MS         F
@@ -2633,11 +2921,14 @@ load(file.path(projecthome, "data","coffee.Rdata"))
     </console>
         <p>Okay, if you remember back to our very early discussions of ANOVA, one of the key ideas behind the sums of squares calculations is that if we add up all the SS terms associated with the effects in the model, and add that to the residual SS, they're supposed to add up to the total sum of squares. And, on top of that, the whole idea behind <m>\eta^2</m> is that -- because you're dividing one of the SS terms by the total SS value -- is that an <m>\eta^2</m> value can be interpreted as the proportion of variance accounted for by a particular term.</p>
         <p>Now take a look at the output above. Because I've included the <m>\eta^2</m> value associated with the residuals (i.e., proportion of variance in the outcome attributed to the residuals, rather than to one of the effects), you'd expect all the <m>\eta^2</m> values to sum to 1. Because, the whole idea here was that the variance in the outcome variable can be divided up into the variability attributable to the model, and the variability in the residuals. Right? Right? And yet when we add up the <m>\eta^2</m> values for our model...</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-97">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
  sum( es[,"eta.sq"] )
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ## [1] 0.9641783
@@ -2645,36 +2936,45 @@ load(file.path(projecthome, "data","coffee.Rdata"))
     </console>
         <p>... we discover that for Type II and Type III tests they generally don't sum to 1. Some of the variability has gone "missing". It's not being attributed to the model, and it's not being attributed to the residuals either. What's going on here?</p>
         <p>Before giving you the answer, I want to push this idea a little further. From a mathematical perspective, it's easy enough to see that the missing variance is a consequence of the fact that in Types II and III, the individual SS values are not obliged to the total sum of squares, and will only do so if you have balanced data. I'll explain why this happens and what it means in a second, but first let's verify that this is the case using the ANOVA table. First, we can calculate the total sum of squares directly from the raw data:</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-98">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
  ss.tot <- sum( (coffee$babble - mean(coffee$babble))^2 )
  ss.tot
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ## [1] 13.62
 ]]></output>
     </console>
         <p>Next, we can read off all the SS values from one of our Type I ANOVA tables, and add them up. As you can see, this gives us the same answer, just like it's supposed to:</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-99">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
  type.I.sum <- 3.5575 + 0.9561 + 5.9439 + 3.1625
  type.I.sum
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ## [1] 13.62
 ]]></output>
     </console>
         <p>However, when we do the same thing for the Type II ANOVA table, it turns out that the SS values in the table add up to slightly less than the total SS value:</p>
-        <program language="r">
+        <listing xml:id="listing-ch5_factorial_anova-100">
+          <caption>R Code</caption>
+          <program language="r">
           <input><![CDATA[
  type.II.sum <- 0.9561 + 3.0696 + 5.9439 + 3.1625
  type.II.sum
           ]]></input>
         </program>
+        </listing>
     <console>
       <output><![CDATA[
 ## [1] 13.1321
