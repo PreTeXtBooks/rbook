@@ -304,7 +304,7 @@ population mean.
 <image source="images/IQsampc.png"/>
 </figure>
 
-<p>Okay, so that's one part of the story. However, there's something I've been glossing over so far. All my examples up to this point have been based on the "IQ scores" experiments, and because IQ scores are roughly normally distributed, I've assumed that the population distribution is normal. What if it isn't normal? What happens to the sampling distribution of the mean? The remarkable thing is this: no matter what shape your population distribution is, as <m>N</m> increases the sampling distribution of the mean starts to look more like a normal distribution. To give you a sense of this, I ran some simulations using R. To do this, I started with the "ramped" distribution shown in the histogram in <xref ref="fig-cltdemo"/>. As you can see by comparing the triangular shaped histogram to the bell curve plotted by the black line, the population distribution doesn't look very much like a normal distribution at all. Next, I used R to simulate the results of a large number of experiments. In each experiment I took <m>N=2</m> samples from this distribution, and then calculated the sample mean. <xref ref="fig-cltdemob"/> plots the histogram of these sample means (i.e., the sampling distribution of the mean for <m>N=2</m>). This time, the histogram produces a <m>\cap</m>-shaped distribution: it's still not normal, but it's a lot closer to the black line than the population distribution in <xref ref="fig-cltdemoa"/>. When I increase the sample size to <m>N=4</m>, the sampling distribution of the mean is very close to normal (<xref ref="fig-cltdemoc"/>, and by the time we reach a sample size of <m>N=8</m> it's almost perfectly normal. In other words, as long as your sample size isn't tiny, the sampling distribution of the mean will be approximately normal no matter what your population distribution looks like!</p>
+<p>Okay, so that's one part of the story. However, there's something I've been glossing over so far. All my examples up to this point have been based on the "IQ scores" experiments, and because IQ scores are roughly normally distributed, I've assumed that the population distribution is normal. What if it isn't normal? What happens to the sampling distribution of the mean? The remarkable thing is this: no matter what shape your population distribution is, as <m>N</m> increases the sampling distribution of the mean starts to look more like a normal distribution. To give you a sense of this, I ran some simulations using R. To do this, I started with the "ramped" distribution shown in the histogram in <xref ref="fig-cltdemo"/>. As you can see by comparing the triangular shaped histogram to the bell curve plotted by the black line, the population distribution doesn't look very much like a normal distribution at all. Next, I used R to simulate the results of a large number of experiments. In each experiment I took <m>N=2</m> samples from this distribution, and then calculated the sample mean. <xref ref="fig-cltdemob"/> plots the histogram of these sample means (i.e., the sampling distribution of the mean for <m>N=2</m>). This time, the histogram produces a <m>\cap</m>-shaped distribution: it's still not normal, but it's a lot closer to the black line than the population distribution in <xref ref="fig-cltdemoa"/>. When I increase the sample size to <m>N=4</m>, the sampling distribution of the mean is very close to normal (<xref ref="fig-cltdemoc"/>), and by the time we reach a sample size of <m>N=8</m> it's almost perfectly normal. In other words, as long as your sample size isn't tiny, the sampling distribution of the mean will be approximately normal no matter what your population distribution looks like!</p>
 <remark>
   <title>R Code</title>
 <program language="r">
@@ -351,7 +351,7 @@ population mean.
 <figure xml:id="fig-cltdemo">
   <caption>
 A demonstration of the central limit theorem. Here, we have a non-normal population
-distribution; and <xref ref = "cltdemoa"/>-<xref ref = "cltdemoc"/> show the sampling
+distribution; and <xref ref = "fig-cltdemoa"/>-<xref ref = "fig-cltdemoc"/> show the sampling
 distribution of the mean for samples of size 2,4 and 8, for data drawn from the
 distribution in panel a. As you can see, even though the original population
 distribution is non-normal, the sampling distribution of the mean becomes pretty
@@ -363,7 +363,7 @@ close to normal by the time you have a sample of even 4 observations.
   <caption>
 A demonstration of the central limit theorem.
 Here we see the sampling distribution of the mean for samples of size 2 for data drawn from the
-distribution in <xref ref = "cltdemo"/>. As you can see, even though the original population
+distribution in <xref ref = "fig-cltdemo"/>. As you can see, even though the original population
 distribution is non-normal, the sampling distribution of the mean becomes pretty
 close to normal as the sample size increases.
 </caption>
@@ -373,7 +373,7 @@ close to normal as the sample size increases.
   <caption>
 A demonstration of the central limit theorem.
 Here we see the sampling distribution of the mean for samples of size 4 for data drawn from the
-distribution in <xref ref = "cltdemo"/>. As you can see, even though the original population
+distribution in <xref ref = "fig-cltdemo"/>. As you can see, even though the original population
 distribution is non-normal, the sampling distribution of the mean becomes pretty
 close to normal as the sample size increases.
 </caption>
@@ -383,7 +383,7 @@ close to normal as the sample size increases.
   <caption>
 A demonstration of the central limit theorem.
 Here we see the sampling distribution of the mean for samples of size 8 for data drawn from the
-distribution in <xref ref = "cltdemo"/>. As you can see, even though the original population
+distribution in <xref ref = "fig-cltdemo"/>. As you can see, even though the original population
 distribution is non-normal, the sampling distribution of the mean becomes pretty
 close to normal as the sample size increases.
 </caption>
@@ -403,7 +403,7 @@ close to normal as the sample size increases.
 <section xml:id="pointestimates">
 <title>Estimating population parameters</title>
 <p>In all the IQ examples in the previous sections, we actually knew the population parameters ahead of time. As every undergraduate gets taught in their very first lecture on the measurement of intelligence, IQ scores are <em>defined</em> to have mean 100 and standard deviation 15. However, this is a bit of a lie. How do we know that IQ scores have a true population mean of 100? Well, we know this because the people who designed the tests have administered them to very large samples, and have then "rigged" the scoring rules so that their sample has mean 100. That's not a bad thing of course: it's an important part of designing a psychological measurement. However, it's important to keep in mind that this theoretical mean of 100 only attaches to the population that the test designers used to design the tests. Good test designers will actually go to some lengths to provide "test norms" that can apply to lots of different populations (e.g., different age groups, nationalities etc).</p>
-<p>This is very handy, but of course almost every research project of interest involves looking at a different population of people to those used in the test norms. For instance, suppose you wanted to measure the effect of low level lead poisoning on cognitive functioning in Port Pirie, a South Australian industrial town with a lead smelter. Perhaps you decide that you want to compare IQ scores among people in Port Pirie to a comparable sample in Whyalla, a South Australian industrial town with a steel refinery.<fn>Please note that if you were <em>actually</em> interested in this question, you would need to be a <em>lot</em> more careful than I'm being here. You <em>can't</em> just compare IQ scores in Whyalla to Port Pirie and assume that any differences are due to lead poisoning. Even if it were true that the only differences between the two towns corresponded to the different refineries (and it isn't, not by a long shot), you need to account for the fact that people already <em>believe</em> that lead pollution causes cognitive deficits: if you recall back to <xref ref="ch2-research-statistics"/>, this means that there are different demand effects for the Port Pirie sample than for the Whyalla sample. In other words, you might end up with an illusory group difference in your data, caused by the fact that people <em>think</em> that there is a real difference. I find it pretty implausible to think that the locals wouldn't be well aware of what you were trying to do if a bunch of researchers turned up in Port Pirie with lab coats and IQ tests, and even less plausible to think that a lot of people would be pretty resentful of you for doing it. Those people won't be as co-operative in the tests. Other people in Port Pirie might be <em>more</em> motivated to do well because they don't want their home town to look bad. The motivational effects that would apply in Whyalla are likely to be weaker, because people don't have any concept of "iron ore poisoning" in the same way that they have a concept for "lead poisoning". Psychology is <em>hard</em>.</fn> Regardless of which town you're thinking about, it doesn't make a lot of sense simply to <em>assume</em> that the true population mean IQ is 100. No-one has, to my knowledge, produced sensible norming data that can automatically be applied to South Australian industrial towns. We're going to have to <em>estimate</em> the population parameters from a sample of data. So how do we do this?</p>
+<p>This is very handy, but of course almost every research project of interest involves looking at a different population of people to those used in the test norms. For instance, suppose you wanted to measure the effect of low level lead poisoning on cognitive functioning in Port Pirie, a South Australian industrial town with a lead smelter. Perhaps you decide that you want to compare IQ scores among people in Port Pirie to a comparable sample in Whyalla, a South Australian industrial town with a steel refinery.<fn>Please note that if you were <em>actually</em> interested in this question, you would need to be a <em>lot</em> more careful than I'm being here. You <em>can't</em> just compare IQ scores in Whyalla to Port Pirie and assume that any differences are due to lead poisoning. Even if it were true that the only differences between the two towns corresponded to the different refineries (and it isn't, not by a long shot), you need to account for the fact that people already <em>believe</em> that lead pollution causes cognitive deficits: if you recall back to <xref ref="studydesign"/>, this means that there are different demand effects for the Port Pirie sample than for the Whyalla sample. In other words, you might end up with an illusory group difference in your data, caused by the fact that people <em>think</em> that there is a real difference. I find it pretty implausible to think that the locals wouldn't be well aware of what you were trying to do if a bunch of researchers turned up in Port Pirie with lab coats and IQ tests, and even less plausible to think that a lot of people would be pretty resentful of you for doing it. Those people won't be as co-operative in the tests. Other people in Port Pirie might be <em>more</em> motivated to do well because they don't want their home town to look bad. The motivational effects that would apply in Whyalla are likely to be weaker, because people don't have any concept of "iron ore poisoning" in the same way that they have a concept for "lead poisoning". Psychology is <em>hard</em>.</fn> Regardless of which town you're thinking about, it doesn't make a lot of sense simply to <em>assume</em> that the true population mean IQ is 100. No-one has, to my knowledge, produced sensible norming data that can automatically be applied to South Australian industrial towns. We're going to have to <em>estimate</em> the population parameters from a sample of data. So how do we do this?</p>
 <subsection>
 <title>Estimating the population mean</title>
 <p>Suppose we go to Port Pirie and 100 of the locals are kind enough to sit through an IQ test. The average IQ score among these people turns out to be <m>\bar{X}=98.5</m>. So what is the true mean IQ for the entire population of Port Pirie? Obviously, we don't know the answer to that question. It could be <m>97.2</m>, but if could also be <m>103.5</m>. Our sampling isn't exhaustive so we cannot give a definitive answer. Nevertheless if I was forced at gunpoint to give a "best guess" I'd have to say <m>98.5</m>. That's the essence of statistical estimation: giving a best guess.</p>
@@ -665,7 +665,7 @@ from 1987 to 2010. This graph was drawn using the <c>bargraph.CI()</c> function.
 Means and 95% confidence intervals for AFL <c>attendance</c>, plotted separately for each year
 from 1987 to 2010. This graph was drawn using the <c>lineplot.CI()</c> function.
 </caption>
-  <image source="images/cilineplot.png"/>
+  <image source="generated/CI_lineplot.png"/>
 </figure>
 
 <p>Finally, here's how you would do it using <c>plotmeans()</c>:</p>
@@ -683,7 +683,7 @@ from 1987 to 2010. This graph was drawn using the <c>lineplot.CI()</c> function.
 Means and 95% confidence intervals for AFL <c>attendance</c>, plotted separately for each year
 from 1987 to 2010. This graph was drawn using the <c>plotmeans()</c> function.
 </caption>
-  <image source="images/ciplotmeans.png"/>
+  <image source="generated/CI_plotmeans.png"/>
 </figure>
 </subsection>
 

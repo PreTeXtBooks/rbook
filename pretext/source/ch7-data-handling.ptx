@@ -3276,7 +3276,7 @@ BLAH BLAH BLAH
         </li>
       </ul>
       <p>
-        It's kind of nice to be able to have all these options that you can tinker with. For instance, have a look at the data file shown pictured in <xref ref="fig-booksales2csv" />. This file contains almost the same data as the last file (except it doesn't have a header), and it uses a bunch of wacky features that you don't normally see in CSV files. In fact, it just so happens that I'm going to have to change all five of those arguments listed above in order to load this file. Here's how I would do it:
+        It's kind of nice to be able to have all these options that you can tinker with. For instance, have a look at the data file shown pictured in <xref ref="fig-booksalescsv" />. This file contains almost the same data as the last file (except it doesn't have a header), and it uses a bunch of wacky features that you don't normally see in CSV files. In fact, it just so happens that I'm going to have to change all five of those arguments listed above in order to load this file. Here's how I would do it:
       </p>
       <remark>
         <title>R Code</title>
@@ -3322,7 +3322,7 @@ BLAH BLAH BLAH
       <p>
         Because I told R to expect <c>*</c> to be used as the quoting character instead of <c>"</c>; to look for tabs (which we write like this: <c>\t</c>) instead of commas, and to skip the first 8 lines of the file, it's basically loaded the right data. However, since <c>booksales2.csv</c> doesn't contain the column names, R has made them up. Showing the kind of imagination I expect from insentient software, R decided to call them <c>V1</c>, <c>V2</c>, <c>V3</c> and <c>V4</c>. Finally, because I told it that the file uses "NFI" to denote missing data, R correctly figures out that the sales data for May are actually missing.
       </p>
-      <figure>
+      <figure xml:id="fig-booksales2csv">
         <caption>The <c>booksales2.csv</c> data file. It contains more or less the same data as the original <c>booksales.csv</c> data file, but has a lot of very quirky features.</caption>
         <image source="generated/booksales2csv.jpg"/>
       </figure>
@@ -3948,7 +3948,7 @@ In x + y : longer object length is not a multiple of shorter object length
     </subsection>
     <subsection xml:id="environments">
       <title>An introduction to environments</title>
-      <figure>
+      <figure xml:id="fig-envs">
         <caption>The environment panel in Rstudio can actually show you the contents of any loaded package: each package defines a separate environment, so you can select the one you want to look at in this panel.</caption>
         <image source="generated/environments.png"/>
       </figure>
@@ -3990,7 +3990,7 @@ In x + y : longer object length is not a multiple of shorter object length
     </console>
       </remark>
       <p>
-        where this time I've used head() to hide a lot of output because the stats package contains about 500 functions. In fact, you can actually use the environment panel in Rstudio to browse any of your loaded packages (just click on the text that says "Global Environment" and you'll see a dropdown menu like the one shown in <xref ref="fig-envs" />). The key thing to understand then, is that you can access any of the R variables and functions that are stored in one of these environments, precisely because those are the environments that you have loaded!<fn>For advanced users: that's a little over simplistic in two respects. First, it's a terribly imprecise way of talking about scoping. Second, it might give you the impression that all the variables in question are actually loaded into memory. That's not quite true, since that would be very wasteful of memory. Instead R has a "lazy loading" mechanism, in which what R actually does is create a "promise" to load those objects if they're actually needed. For details, check out the <c>delayedAssign()</c> function.</fn>
+        where this time I've used head() to hide a lot of output because the stats package contains about 500 functions. In fact, you can actually use the environment panel in Rstudio to browse any of your loaded packages (just click on the text that says "Global Environment" and you'll see a dropdown menu like the one shown in <xref ref="environments" />). The key thing to understand then, is that you can access any of the R variables and functions that are stored in one of these environments, precisely because those are the environments that you have loaded!<fn>For advanced users: that's a little over simplistic in two respects. First, it's a terribly imprecise way of talking about scoping. Second, it might give you the impression that all the variables in question are actually loaded into memory. That's not quite true, since that would be very wasteful of memory. Instead R has a "lazy loading" mechanism, in which what R actually does is create a "promise" to load those objects if they're actually needed. For details, check out the <c>delayedAssign()</c> function.</fn>
       </p>
     </subsection>
     <subsection>
